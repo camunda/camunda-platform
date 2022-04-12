@@ -144,6 +144,8 @@ services:
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
+    volumes:
+      - "./.keycloak/themes/identity:/opt/jboss/keycloak/themes/identity"
     networks:
       - identity-network
 

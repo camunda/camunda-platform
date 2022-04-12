@@ -1,0 +1,92 @@
+@font-face {
+  font-family: ibm-plex-sans;
+  src: url('../font/IBMPlexSans-Regular.ttf');
+}
+
+body {
+  background-color: #fff;
+  font-family: ibm-plex-sans, sans-serif;
+}
+
+h1 {
+  margin-bottom: 1rem;
+}
+
+hr {
+  border-top: 1px solid #e0e0e0;
+  border-bottom: none;
+  margin: 1.5rem 0 1rem;
+}
+
+.red {
+  color: red;
+}
+
+.alert-error {
+  margin-bottom: 1rem;
+}
+
+.bx--btn {
+  width: 100%;
+}
+
+.bx--form-item {
+  margin-bottom: 0.5rem;
+}
+
+.bx--form-item > div {
+  width: 100%;
+}
+
+.bx--input__field-outer-wrapper {
+  width: 100%;
+}
+
+.input-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.input-label-row a {
+  margin-bottom: 0.5rem;
+}
+
+.login-box {
+  background-color: #fff;
+  max-width: 20rem;
+  margin: 10rem auto;
+}
+
+.social-providers ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bx--link {
+  display: block;
+}
+
+.bx--form-requirement p {
+  font-size: inherit;
+}
+
+#kc-header-wrapper {
+  display: none;
+}
+
+#kc-form-buttons {
+  margin-top: 1rem;
+}
+
+#kc-registration {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+#kc-social-providers ul a {
+  margin-top: 1rem;
+}

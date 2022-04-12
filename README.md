@@ -57,4 +57,4 @@ Zeebe, Operate, Tasklist, along with Optimize require a separate network from Id
 # Camunda Platform 7
 
 - [Documentation](https://docs.camunda.org/)
-- [GitHub](https://docs.camunda.org/)
+- [GitHub](https://github.com/camunda/camunda-bpm-platform)

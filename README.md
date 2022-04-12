@@ -1,11 +1,12 @@
 # Camunda Platform 8
 
-This repository contains links to Camunda Platform 8 resources, the offical release artifacts and a [docker-compose.yaml](docker-compose.yaml) file for local development.
+This repository contains links to Camunda Platform 8 resources, the offical release artifacts and a [docker-compose.yaml](docker-compose.yaml) file for local development. For production setups we recommend to use our [helm charts](https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/).
 
 - [Documentation](https://docs.camunda.io)
 - [Camunda Platform SaaS](https://camunda.io)
 - [Getting Started Guide](https://github.com/camunda/camunda-platform-get-started)
 - [Releases](https://github.com/camunda/camunda-platform/releases)
+- [Helm Charts](https://helm.camunda.io/)
 - [Zeebe Workflow Engine](https://github.com/camunda/zeebe)
 - [Contact](https://docs.camunda.io/contact/)
 

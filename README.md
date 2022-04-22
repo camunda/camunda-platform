@@ -32,13 +32,14 @@ docker-compose up -d
 Wait a few minutes for the environment to start up and settle down. Monitor the logs, especially the Keycloak container log, to ensure the components have started.
 
 Now you can navigate to the different web apps and log in with the user `demo` and password `demo`:
-- Zeebe: [http://localhost:26500](http://localhost:26500)
 - Operate: [http://localhost:8081](http://localhost:8081)
 - Tasklist: [http://localhost:8082](http://localhost:8082)
 - Optimize: [http://localhost:8083](http://localhost:8083)
 - Identity: [http://localhost:8084](http://localhost:8084)
 - Elasticsearch: [http://localhost:9200](http://localhost:9200)
 - KeyCloak: [http://localhost:18080](http://localhost:18080)
+
+The workflow engine Zeebe is available using gRPC at `localhost:26500`.
 
 To tear down the whole environment run the following command
 

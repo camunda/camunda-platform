@@ -50,7 +50,7 @@ docker-compose down -v
 If Optimize, Identity, and Keycloak are not needed you can use the [docker-compose-core.yaml](docker-compose-core.yaml) instead which does not include these components:
 
 ```
-docker-compose -f docker-compose-core.yml up -d
+docker-compose -f docker-compose-core.yaml up -d
 ```
 
 Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file. Feedback and updates are welcome!

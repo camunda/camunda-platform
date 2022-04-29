@@ -12,6 +12,8 @@ This repository contains links to Camunda Platform 8 resources, the offical rele
 
 ## Using docker-compose
 
+> :information_source: The docker-compose file in this repository uses the latest [compose specification](https://docs.docker.com/compose/compose-file/), which was introduced with docker-compose version 1.27.0+. Please make sure to use an up-to-date docker-compose version.
+
 To stand-up a complete Camunda Platform 8 Self-Managed environment locally the [docker-compose.yaml](docker-compose.yaml) file in this repository can be used.
 
 The full enviornment contains these components:

@@ -9,6 +9,8 @@
 # This is a full configuration with Zeebe, Operate, Tasklist, Optimize, Identity, Keycloak, and Elasticsearch
 # See docker-compose-core.yml for a lightweight configuration that does not include Optimize, Identity, and Keycloak.
 
+version: "1"
+
 services:
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe

@@ -84,7 +84,7 @@ services:
       - elasticsearch
 
   optimize: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#optimize
-    image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION:-3.8.1}
+    image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION:-3.8.2}
     container_name: optimize
     ports:
       - "8083:8090"

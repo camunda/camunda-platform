@@ -55,7 +55,11 @@ If Optimize, Identity, and Keycloak are not needed you can use the [docker-compo
 docker-compose -f docker-compose-core.yaml up -d
 ```
 
-Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file. Feedback and updates are welcome!
+Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file. 
+
+In addition to the local environment setup with docker-compose, you can download the [Camunda Desktop Modeler](https://camunda.com/download/modeler/) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
+
+Feedback and updates are welcome!
 
 # Camunda Platform 7
 

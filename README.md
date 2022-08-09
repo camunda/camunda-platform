@@ -14,6 +14,8 @@ This repository contains links to Camunda Platform 8 resources, the offical rele
 
 > :information_source: The docker-compose file in this repository uses the latest [compose specification](https://docs.docker.com/compose/compose-file/), which was introduced with docker-compose version 1.27.0+. Please make sure to use an up-to-date docker-compose version.
 
+> :information_source: The Docker required is 20.10.16+
+
 To stand-up a complete Camunda Platform 8 Self-Managed environment locally the [docker-compose.yaml](docker-compose.yaml) file in this repository can be used.
 
 The full enviornment contains these components:
@@ -55,7 +57,7 @@ If Optimize, Identity, and Keycloak are not needed you can use the [docker-compo
 docker-compose -f docker-compose-core.yaml up -d
 ```
 
-Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file. 
+Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file.
 
 In addition to the local environment setup with docker-compose, you can download the [Camunda Desktop Modeler](https://camunda.com/download/modeler/) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
 

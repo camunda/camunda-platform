@@ -120,6 +120,7 @@ services:
       - "8084:8084"
     environment: # https://docs.camunda.io/docs/self-managed/identity/deployment/configuration-variables/
       SERVER_PORT: 8084
+      IDENTITY_RETRY_DELAY_SECONDS: 30
       KEYCLOAK_URL: http://keycloak:8080/auth
       IDENTITY_AUTH_PROVIDER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
       KEYCLOAK_INIT_OPERATE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
@@ -141,16 +142,34 @@ services:
     depends_on:
       - keycloak
 
-  keycloak: # https://hub.docker.com/r/jboss/keycloak
+  postgres: # https://hub.docker.com/_/postgres
+    container_name: keycloak-postgres
+    image: postgres:${POSTGRES_VERSION:-14.5-alpine}
+    environment:
+      POSTGRES_DB: bitnami_keycloak
+      POSTGRES_USER: bn_keycloak
+      POSTGRES_PASSWORD: "#3$]O?4RGj)DE7Z!9SA5"
+
+  keycloak: # https://hub.docker.com/r/bitnami/keycloak
+    depends_on:
+      - postgres
     container_name: keycloak
-    image: jboss/keycloak:${KEYCLOAK_VERSION:-16.1.1}
+    image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION:-16.1.1}
+    volumes:
+      - ./keycloak/themes/identity:/opt/bitnami/keycloak/themes/identity
     ports:
       - "18080:8080"
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-    volumes:
-      - "./.keycloak/themes/identity:/opt/jboss/keycloak/themes/identity"
+      KEYCLOAK_DATABASE_HOST: keycloak-postgres
+      KEYCLOAK_DATABASE_PASSWORD: "#3$]O?4RGj)DE7Z!9SA5"
+      KEYCLOAK_ADMIN_USER: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9990/health" ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 30s
     networks:
       - identity-network
 

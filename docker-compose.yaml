@@ -143,16 +143,24 @@ services:
       - keycloak
 
   postgres: # https://hub.docker.com/_/postgres
-    container_name: keycloak-postgres
+    container_name: postgres
     image: postgres:${POSTGRES_VERSION:-14.5-alpine}
     environment:
       POSTGRES_DB: bitnami_keycloak
       POSTGRES_USER: bn_keycloak
-      POSTGRES_PASSWORD: "#3$]O?4RGj)DE7Z!9SA5"
+      POSTGRES_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres:/usr/local/postgres/data
+    networks:
+      - identity-network
 
   keycloak: # https://hub.docker.com/r/bitnami/keycloak
-    depends_on:
-      - postgres
     container_name: keycloak
     image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION:-16.1.1}
     volumes:
@@ -161,9 +169,10 @@ services:
       - "18080:8080"
     environment:
       KEYCLOAK_DATABASE_HOST: keycloak-postgres
-      KEYCLOAK_DATABASE_PASSWORD: "#3$]O?4RGj)DE7Z!9SA5"
+      KEYCLOAK_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
       KEYCLOAK_ADMIN_USER: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+    restart: on-failure
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9990/health" ]
       interval: 30s
@@ -172,6 +181,8 @@ services:
       start_period: 30s
     networks:
       - identity-network
+    depends_on:
+      - postgres
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.0}

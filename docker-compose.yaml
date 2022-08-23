@@ -164,11 +164,11 @@ services:
     container_name: keycloak
     image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION:-16.1.1}
     volumes:
-      - ./keycloak/themes/identity:/opt/bitnami/keycloak/themes/identity
+      - ./.keycloak/themes/identity:/opt/bitnami/keycloak/themes/identity
     ports:
       - "18080:8080"
     environment:
-      KEYCLOAK_DATABASE_HOST: keycloak-postgres
+      KEYCLOAK_DATABASE_HOST: postgres
       KEYCLOAK_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
       KEYCLOAK_ADMIN_USER: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -214,6 +214,7 @@ services:
 volumes:
   zeebe:
   elastic:
+  postgres:
 
 networks:
   # Note there are two bridge networks: One for Camunda Platform and one for Identity.

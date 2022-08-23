@@ -122,6 +122,7 @@ services:
       - "8084:8084"
     environment: # https://docs.camunda.io/docs/self-managed/identity/deployment/configuration-variables/
       SERVER_PORT: 8084
+      IDENTITY_RETRY_DELAY_SECONDS: 30
       KEYCLOAK_URL: http://keycloak:8080/auth
       IDENTITY_AUTH_PROVIDER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
       KEYCLOAK_INIT_OPERATE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
@@ -143,18 +144,47 @@ services:
     depends_on:
       - keycloak
 
-  keycloak: # https://hub.docker.com/r/jboss/keycloak
+  postgres: # https://hub.docker.com/_/postgres
+    container_name: postgres
+    image: postgres:${POSTGRES_VERSION:-14.5-alpine}
+    environment:
+      POSTGRES_DB: bitnami_keycloak
+      POSTGRES_USER: bn_keycloak
+      POSTGRES_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres:/usr/local/postgres/data
+    networks:
+      - identity-network
+
+  keycloak: # https://hub.docker.com/r/bitnami/keycloak
     container_name: keycloak
-    image: jboss/keycloak:${KEYCLOAK_VERSION:-16.1.1}
+    image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION:-16.1.1}
+    volumes:
+      - ./.keycloak/themes/identity:/opt/bitnami/keycloak/themes/identity
     ports:
       - "18080:8080"
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-    volumes:
-      - "./.keycloak/themes/identity:/opt/jboss/keycloak/themes/identity"
+      KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
+      KEYCLOAK_ADMIN_USER: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9990/health" ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 30s
     networks:
       - identity-network
+    depends_on:
+      - postgres
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.0}
@@ -187,6 +217,7 @@ services:
 volumes:
   zeebe:
   elastic:
+  postgres:
 
 networks:
   # Note there are two bridge networks: One for Camunda Platform and one for Identity.

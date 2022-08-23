@@ -105,6 +105,8 @@ services:
       - CAMUNDA_OPTIMIZE_IDENTITY_AUDIENCE=optimize-api
       - CAMUNDA_OPTIMIZE_SECURITY_AUTH_COOKIE_SAME_SITE_ENABLED=false
       - CAMUNDA_OPTIMIZE_UI_LOGOUT_HIDDEN=true
+    volumes:
+      - "./.optimize/environment-config.yaml:/optimize/config/environment-config.yaml"
     restart: on-failure
     networks:
       - camunda-platform

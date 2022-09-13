@@ -30,8 +30,14 @@ services:
       - zeebe:/usr/local/zeebe/data
     networks:
       - camunda-platform
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9600/ready" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
     image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.0.6}
@@ -44,9 +50,16 @@ services:
       - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
     networks:
       - camunda-platform
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/readiness" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     depends_on:
-      - zeebe
-      - elasticsearch
+      zeebe:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
     image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION:-8.0.6}
@@ -59,9 +72,16 @@ services:
       - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
     networks:
       - camunda-platform
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/readiness" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     depends_on:
-      - zeebe
-      - elasticsearch
+      zeebe:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.0}

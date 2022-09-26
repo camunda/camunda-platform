@@ -91,6 +91,17 @@ services:
     networks:
       - camunda-platform
 
+  connectors:
+    image: connectors:latest
+    container_name: connectors
+    environment:
+      - ZEEBE_ADDRESS=zeebe:26500
+      - ZEEBE_INSECURE=true
+    networks:
+      - camunda-platform
+    depends_on:
+      - zeebe
+
 volumes:
   zeebe:
   elastic:

@@ -22,6 +22,7 @@ The full enviornment contains these components:
 - Zeebe
 - Operate
 - Tasklist
+- Connectors
 - Optimize
 - Identity
 - Elasticsearch
@@ -63,6 +64,20 @@ In addition to the local environment setup with docker-compose, you can download
 
 Feedback and updates are welcome!
 
+## Connectors
+
+Both docker-compose files contain our [out-of-the-box Connectors](https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/).
+
+To inject secrets into the Connector runtime they can be added to the
+[`connector-secrets.txt`](connector-secrets.txt) file inside the repository in the format `NAME=VALUE`
+per line. The secrets will then be available in the Connector runtime with the
+format `secrets.NAME`.
+
+To add custom Connectors either create a new docker image bundling them as
+described [here](https://github.com/camunda/connector-sdk/tree/main/runtime-job-worker#docker-job-worker-runtime-image).
+
+Alternatively, you can mount new Connector JARs as volumes into the `/opt/app` folder by adding this to the docker-compose file. Keep in mind that the Connector JARs need to bring along all necessary dependencies inside the JAR.
+
 ## Web Modeler Self-Managed Beta Release
 
 > :warning: Web Modeler Self-Managed is currently offered as a [beta release](https://docs.camunda.io/docs/next/reference/early-access#beta) with limited availability for enterprise customers only. It is not recommended for production use, and there is no maintenance service guaranteed. Special [terms & conditions](https://camunda.com/legal/terms/camunda-platform/camunda-platform-8-self-managed/) apply. However, we encourage you to provide feedback via your designated support channel or the [Camunda Forum](https://forum.camunda.io/).
@@ -90,8 +105,6 @@ Once you are ready to deploy or execute processes use these settings to deploy t
 The setup includes [MailHog](https://github.com/mailhog/MailHog) as a test SMTP server. It captures all emails sent by Web Modeler, but does not forward them to the actual recipients. 
 
 You can access emails in MailHog's Web UI at [http://localhost:8075](http://localhost:8075).
-
-
 
 # Camunda Platform 7
 

@@ -63,6 +63,36 @@ In addition to the local environment setup with docker-compose, you can download
 
 Feedback and updates are welcome!
 
+## Web Modeler Self-Managed Beta Release
+
+> :warning: Web Modeler Self-Managed is currently offered as a [beta release](https://docs.camunda.io/docs/next/reference/early-access#beta) with limited availability for enterprise customers only. It is not recommended for production use, and there is no maintenance service guaranteed. Special [terms & conditions](https://camunda.com/legal/terms/camunda-platform/camunda-platform-8-self-managed/) apply. However, we encourage you to provide feedback via your designated support channel or the [Camunda Forum](https://forum.camunda.io/).
+
+The Docker images for Web Modeler Beta are available in a private registry. Enterprise customers either already have credentials to this registry, or they can request access to this registry through their CSM contact at Camunda.
+
+To run Camunda Platform with Web Modeler Self-Managed clone this repo and issue the following commands:
+
+```
+$ docker login registry.camunda.cloud
+Username: your_username
+Password: ******
+Login Succeeded
+$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml up -d
+```
+
+### Web Modeler
+Now you can access Web Modeler Self-Managed and log in with the user `demo` and password `demo` at [http://localhost:8070](http://localhost:8070).
+
+Once you are ready to deploy or execute processes use these settings to deploy to the local Zeebe instance:
+* Authentication: None
+* URL: `zeebe:26500`
+
+### Emails
+The setup includes [MailHog](https://github.com/mailhog/MailHog) as a test SMTP server. It captures all emails sent by Web Modeler, but does not forward them to the actual recipients. 
+
+You can access emails in MailHog's Web UI at [http://localhost:8075](http://localhost:8075).
+
+
+
 # Camunda Platform 7
 
 - [Documentation](https://docs.camunda.org/)

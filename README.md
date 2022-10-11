@@ -78,6 +78,23 @@ described [here](https://github.com/camunda/connector-sdk/tree/main/runtime-job-
 
 Alternatively, you can mount new Connector JARs as volumes into the `/opt/app` folder by adding this to the docker-compose file. Keep in mind that the Connector JARs need to bring along all necessary dependencies inside the JAR.
 
+## Development
+
+A `dev` profile is available to support troubleshooting in the provided docker compose files.
+It can be enabled by adding `--profile dev` to your docker compose command.
+In addition to the other components, this profile spins up Kibana which can be used to explore the records exported into Elasticsearch.
+
+You can navigate to the Kibana web app and start exploring the log without login credentials:
+
+- Kibana: [http://localhost:5601](http://localhost:5601)
+
+> **Note**
+> You need to configure the index patterns in Kibana before you can explore the exported records.
+> - Go to `Management > Stack Management > Kibana > Index Patters`.
+> - Create a new index pattern for `zeebe-record-*`.
+>   - If you don't see any indexes then make sure to export some data first (e.g. deploy a process). The indexes of the records are created when the first record of this type is exported.
+> - Go to `Analytics > Discover` and select the index pattern.
+
 ## Web Modeler Self-Managed Beta Release
 
 > :warning: Web Modeler Self-Managed is currently offered as a [beta release](https://docs.camunda.io/docs/next/reference/early-access#beta) with limited availability for enterprise customers only. It is not recommended for production use, and there is no maintenance service guaranteed. Special [terms & conditions](https://camunda.com/legal/terms/camunda-platform/camunda-platform-8-self-managed/) apply. However, we encourage you to provide feedback via your designated support channel or the [Camunda Forum](https://forum.camunda.io/).

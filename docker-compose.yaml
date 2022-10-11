@@ -87,6 +87,18 @@ services:
       - identity
       - elasticsearch
 
+  connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
+    image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-0.1.0}
+    container_name: connectors
+    environment:
+      - ZEEBE_ADDRESS=zeebe:26500
+      - ZEEBE_INSECURE=true
+    env_file: connector-secrets.txt
+    networks:
+      - camunda-platform
+    depends_on:
+      - zeebe
+
   optimize: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#optimize
     image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION:-3.9.0}
     container_name: optimize

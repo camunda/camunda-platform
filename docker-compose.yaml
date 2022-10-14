@@ -160,6 +160,8 @@ services:
       retries: 30
       start_period: 60s      
     restart: on-failure
+    volumes:
+      - keycloak-theme:/app/keycloak-theme
     networks:
       - identity-network
     depends_on:
@@ -188,7 +190,7 @@ services:
     container_name: keycloak
     image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION:-16.1.1}
     volumes:
-      - ./.keycloak/themes/identity:/opt/bitnami/keycloak/themes/identity
+      - keycloak-theme:/opt/bitnami/keycloak/themes/identity
     ports:
       - "18080:8080"
     environment:
@@ -240,6 +242,7 @@ volumes:
   zeebe:
   elastic:
   postgres:
+  keycloak-theme:
 
 networks:
   # Note there are two bridge networks: One for Camunda Platform and one for Identity.

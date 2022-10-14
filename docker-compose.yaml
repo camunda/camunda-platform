@@ -12,7 +12,7 @@
 services:
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
-    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION:-8.1.0}
+    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION:-8.1.1}
     container_name: zeebe
     ports:
       - "26500:26500"
@@ -34,7 +34,7 @@ services:
       - elasticsearch
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
-    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.1.0}
+    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.1.1}
     container_name: operate
     ports:
       - "8081:8080"
@@ -61,7 +61,7 @@ services:
       - elasticsearch
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
-    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION:-8.1.0}
+    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION:-8.1.1}
     container_name: tasklist
     ports:
       - "8082:8080"
@@ -100,7 +100,7 @@ services:
       - zeebe
 
   optimize: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#optimize
-    image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION:-3.9.0}
+    image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION:-3.9.1}
     container_name: optimize
     ports:
       - "8083:8090"
@@ -129,7 +129,7 @@ services:
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
     container_name: identity
-    image: camunda/identity:${CAMUNDA_PLATFORM_VERSION:-8.1.0}
+    image: camunda/identity:${CAMUNDA_PLATFORM_VERSION:-8.1.1}
     ports:
       - "8084:8084"
     environment: # https://docs.camunda.io/docs/self-managed/identity/deployment/configuration-variables/
@@ -160,6 +160,8 @@ services:
       retries: 30
       start_period: 60s      
     restart: on-failure
+    volumes:
+      - keycloak-theme:/app/keycloak-theme
     networks:
       - identity-network
     depends_on:
@@ -188,7 +190,7 @@ services:
     container_name: keycloak
     image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION:-16.1.1}
     volumes:
-      - ./.keycloak/themes/identity:/opt/bitnami/keycloak/themes/identity
+      - keycloak-theme:/opt/bitnami/keycloak/themes/identity
     ports:
       - "18080:8080"
     environment:
@@ -240,6 +242,7 @@ volumes:
   zeebe:
   elastic:
   postgres:
+  keycloak-theme:
 
 networks:
   # Note there are two bridge networks: One for Camunda Platform and one for Identity.

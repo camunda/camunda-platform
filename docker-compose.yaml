@@ -180,7 +180,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - postgres:/usr/local/postgres/data
+      - postgres:/var/lib/postgresql/data
     networks:
       - identity-network
 

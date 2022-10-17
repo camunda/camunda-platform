@@ -42,6 +42,8 @@ Now you can navigate to the different web apps and log in with the user `demo` a
 - Optimize: [http://localhost:8083](http://localhost:8083)
 - Identity: [http://localhost:8084](http://localhost:8084)
 - Elasticsearch: [http://localhost:9200](http://localhost:9200)
+
+KeyCloak is used to manage users. Here you can log in with the user `admin` and password `admin`
 - KeyCloak: [http://localhost:18080](http://localhost:18080)
 
 The workflow engine Zeebe is available using gRPC at `localhost:26500`.
@@ -109,6 +111,19 @@ Username: your_username
 Password: ******
 Login Succeeded
 $ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml up -d
+```
+
+To tear down the whole environment run the following command
+
+```
+$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml down -v
+```
+
+If you want to delete everything (including any data you created).
+Alternatively, if you want to keep the data run:
+
+```
+$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml down
 ```
 
 ### Web Modeler

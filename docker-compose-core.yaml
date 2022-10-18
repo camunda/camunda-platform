@@ -103,9 +103,24 @@ services:
     networks:
       - camunda-platform
 
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-7.17.0}
+    container_name: kibana
+    ports:
+      - 5601:5601
+    volumes:
+      - kibana:/usr/share/kibana/data
+    networks:
+      - camunda-platform
+    depends_on:
+      - elasticsearch
+    profiles:
+      - dev
+
 volumes:
   zeebe:
   elastic:
+  kibana:
 
 networks:
   camunda-platform:

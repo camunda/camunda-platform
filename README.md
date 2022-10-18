@@ -90,7 +90,7 @@ You can navigate to the Kibana web app and start exploring the log without login
 
 > **Note**
 > You need to configure the index patterns in Kibana before you can explore the exported records.
-> - Go to `Management > Stack Management > Kibana > Index Patters`.
+> - Go to `Management > Stack Management > Kibana > Index Patterns`.
 > - Create a new index pattern for `zeebe-record-*`.
 >   - If you don't see any indexes then make sure to export some data first (e.g. deploy a process). The indexes of the records are created when the first record of this type is exported.
 > - Go to `Analytics > Discover` and select the index pattern.

@@ -177,7 +177,7 @@ services:
       POSTGRES_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
     restart: on-failure
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5

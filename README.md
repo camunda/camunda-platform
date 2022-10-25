@@ -70,6 +70,8 @@ Feedback and updates are welcome!
 
 Both docker-compose files contain our [out-of-the-box Connectors](https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/).
 
+Refer to the [Connector installation guide](https://docs.camunda.io/docs/self-managed/connectors-deployment/install-and-start/) for details on how to provide the related Connector templates for modeling.
+
 To inject secrets into the Connector runtime they can be added to the
 [`connector-secrets.txt`](connector-secrets.txt) file inside the repository in the format `NAME=VALUE`
 per line. The secrets will then be available in the Connector runtime with the

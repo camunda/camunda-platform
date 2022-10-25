@@ -250,7 +250,7 @@ services:
     depends_on:
       - elasticsearch
     profiles:
-      - dev
+      - kibana
 
 volumes:
   zeebe:

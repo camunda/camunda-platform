@@ -82,20 +82,21 @@ described [here](https://github.com/camunda/connector-sdk/tree/main/runtime-job-
 
 Alternatively, you can mount new Connector JARs as volumes into the `/opt/app` folder by adding this to the docker-compose file. Keep in mind that the Connector JARs need to bring along all necessary dependencies inside the JAR.
 
-## Development
+## Kibana
 
-A `dev` profile is available to support troubleshooting in the provided docker compose files.
-It can be enabled by adding `--profile dev` to your docker compose command.
-In addition to the other components, this profile spins up Kibana which can be used to explore the records exported into Elasticsearch.
+A `kibana` profile is available in the provided docker compose files to support inspection and exploration of the Camunda Platform 8 data in Elasticsearch.
+It can be enabled by adding `--profile kibana` to your docker compose command.
+In addition to the other components, this profile spins up [Kibana](https://www.elastic.co/kibana/).
+Kibana can be used to explore the records exported by Zeebe into Elasticsearch, or to discover the data in Elasticsearch used by the other components (e.g. Operate).
 
-You can navigate to the Kibana web app and start exploring the log without login credentials:
+You can navigate to the Kibana web app and start exploring the data without login credentials:
 
 - Kibana: [http://localhost:5601](http://localhost:5601)
 
 > **Note**
-> You need to configure the index patterns in Kibana before you can explore the exported records.
+> You need to configure the index patterns in Kibana before you can explore the data.
 > - Go to `Management > Stack Management > Kibana > Index Patterns`.
-> - Create a new index pattern for `zeebe-record-*`.
+> - Create a new index pattern. For example, `zeebe-record-*` matches the exported records.
 >   - If you don't see any indexes then make sure to export some data first (e.g. deploy a process). The indexes of the records are created when the first record of this type is exported.
 > - Go to `Analytics > Discover` and select the index pattern.
 

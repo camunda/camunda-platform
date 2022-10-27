@@ -188,19 +188,20 @@ services:
 
   keycloak: # https://hub.docker.com/r/bitnami/keycloak
     container_name: keycloak
-    image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION:-16.1.1}
+    image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION:-19.0.3}
     volumes:
       - keycloak-theme:/opt/bitnami/keycloak/themes/identity
     ports:
       - "18080:8080"
     environment:
+      KEYCLOAK_HTTP_RELATIVE_PATH: /auth
       KEYCLOAK_DATABASE_HOST: postgres
       KEYCLOAK_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
       KEYCLOAK_ADMIN_USER: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     restart: on-failure
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9990/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/auth" ]
       interval: 30s
       timeout: 15s
       retries: 5

@@ -44,7 +44,7 @@ Now you can navigate to the different web apps and log in with the user `demo` a
 - Elasticsearch: [http://localhost:9200](http://localhost:9200)
 
 KeyCloak is used to manage users. Here you can log in with the user `admin` and password `admin`
-- KeyCloak: [http://localhost:18080](http://localhost:18080)
+- KeyCloak: [http://localhost:18080/auth/](http://localhost:18080/auth/)
 
 The workflow engine Zeebe is available using gRPC at `localhost:26500`.
 

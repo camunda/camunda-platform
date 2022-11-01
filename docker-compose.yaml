@@ -199,9 +199,10 @@ services:
       KEYCLOAK_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
       KEYCLOAK_ADMIN_USER: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: true
     restart: on-failure
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/auth" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/auth/health" ]
       interval: 30s
       timeout: 15s
       retries: 5

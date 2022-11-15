@@ -78,7 +78,7 @@ per line. The secrets will then be available in the Connector runtime with the
 format `secrets.NAME`.
 
 To add custom Connectors either create a new docker image bundling them as
-described [here](https://github.com/camunda-community-hub/spring-zeebe/tree/master/connector-runtime#via-docker).
+described [here](https://github.com/camunda/connectors-bundle/tree/main/runtime).
 
 Alternatively, you can mount new Connector JARs as volumes into the `/opt/app` folder by adding this to the docker-compose file. Keep in mind that the Connector JARs need to bring along all necessary dependencies inside the JAR.
 

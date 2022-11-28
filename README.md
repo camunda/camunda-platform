@@ -26,7 +26,7 @@ The full enviornment contains these components:
 - Optimize
 - Identity
 - Elasticsearch
-- KeyCloak
+- Keycloak
 
 Clone this repo and issue the following command to start your environment:
 
@@ -43,8 +43,8 @@ Now you can navigate to the different web apps and log in with the user `demo` a
 - Identity: [http://localhost:8084](http://localhost:8084)
 - Elasticsearch: [http://localhost:9200](http://localhost:9200)
 
-KeyCloak is used to manage users. Here you can log in with the user `admin` and password `admin`
-- KeyCloak: [http://localhost:18080/auth/](http://localhost:18080/auth/)
+Keycloak is used to manage users. Here you can log in with the user `admin` and password `admin`
+- Keycloak: [http://localhost:18080/auth/](http://localhost:18080/auth/)
 
 The workflow engine Zeebe is available using gRPC at `localhost:26500`.
 
@@ -145,3 +145,15 @@ You can access emails in MailHog's Web UI at [http://localhost:8075](http://loca
 
 - [Documentation](https://docs.camunda.org/)
 - [GitHub](https://github.com/camunda/camunda-bpm-platform)
+
+# Troubleshooting
+## Running on arm64 based hardware
+When using arm64-based hardware like a M1 or M2 Mac the Keycloak container might not start because Bitnami only
+provides amd64-based images. Until bitnami adds
+[support for linux/arm64 images](https://github.com/bitnami/charts/issues/7305), you can build and tag an arm-based
+image locally using the following command. After building and tagging the image you can start the environment as
+described in [Using docker-compose](#using-docker-compose).
+
+```
+$ DOCKER_BUILDKIT=0 docker build -t bitnami/keycloak:19.0.3 "https://github.com/camunda/camunda-platform.git#main:.keycloak/"
+```

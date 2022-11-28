@@ -149,7 +149,7 @@ You can access emails in MailHog's Web UI at [http://localhost:8075](http://loca
 # Troubleshooting
 ## Running on arm64 based hardware
 When using arm64-based hardware like a M1 or M2 Mac the Keycloak container might not start because Bitnami only
-provides amd64-based images. You can build and tag an arm-based image locally using following command. After building
+provides amd64-based images. You can build and tag an arm-based image locally using the following command. After building
 and tagging the image you can start the environment as described in [Using docker-compose](#using-docker-compose).
 
 ```

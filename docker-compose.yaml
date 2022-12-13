@@ -88,16 +88,24 @@ services:
       - elasticsearch
 
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
-    image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-0.2.3}
+    image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-0.14.2}
     container_name: connectors
+    ports:
+      - "8085:8080"
     environment:
       - ZEEBE_CLIENT_BROKER_GATEWAY-ADDRESS=zeebe:26500
       - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
+      - CAMUNDA_CONNECTOR_POLLING_ENABLED=false
+      - CAMUNDA_CONNECTOR_WEBHOOK_ENABLED=false
+      - SPRING_MAIN_WEB-APPLICATION-TYPE=none
     env_file: connector-secrets.txt
     networks:
       - camunda-platform
+      - identity-network
     depends_on:
       - zeebe
+      - operate
+      - identity
 
   optimize: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#optimize
     image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION:-3.9.3}

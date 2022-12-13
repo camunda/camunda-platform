@@ -64,16 +64,20 @@ services:
       - elasticsearch
 
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
-    image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-0.2.3}
+    image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-0.14.2}
     container_name: connectors
     environment:
       - ZEEBE_CLIENT_BROKER_GATEWAY-ADDRESS=zeebe:26500
       - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
+      - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
+      - CAMUNDA_OPERATE_CLIENT_USERNAME=demo
+      - CAMUNDA_OPERATE_CLIENT_PASSWORD=demo
     env_file: connector-secrets.txt
     networks:
       - camunda-platform
     depends_on:
       - zeebe
+      - operate
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.5}

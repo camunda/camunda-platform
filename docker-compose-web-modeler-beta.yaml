@@ -102,6 +102,7 @@ services:
       RESTAPI_OAUTH2_TOKEN_AUDIENCE: web-modeler-api
       RESTAPI_OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
       RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
+      RESTAPI_PUBLICAPI_OAUTH2_TOKEN_AUDIENCE: web-modeler-public-api
       RESTAPI_IDENTITY_BASE_URL: http://identity:8084/          
       RESTAPI_SERVER_URL: http://localhost:8070
       RESTAPI_SERVER_HOST: localhost

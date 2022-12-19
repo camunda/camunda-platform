@@ -114,6 +114,7 @@ services:
       RESTAPI_MAIL_HOST: mailhog
       RESTAPI_MAIL_PORT: 1025
       RESTAPI_MAIL_ENABLE_TLS: "false"
+      RESTAPI_MAIL_FROM_ADDRESS: "noreply@example.com"
       RESTAPI_SERVER_SHUTDOWN_TIMEOUT: 3000
     networks:
     - modeler 

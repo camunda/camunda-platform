@@ -35,7 +35,7 @@ services:
       POSTGRES_USER: modeler-db-user
       POSTGRES_PASSWORD: modeler-db-password
     networks:
-      - modeler      
+      - modeler
 
   modeler-websockets:
     container_name: modeler-websockets
@@ -49,11 +49,11 @@ services:
       APP_NAME: "Web Modeler Self-Managed WebSockets"
       APP_DEBUG: "true"
       PUSHER_APP_ID: modeler-app
-      PUSHER_APP_KEY: modeler-app-key 
+      PUSHER_APP_KEY: modeler-app-key
       PUSHER_APP_SECRET: modeler-app-secret
       PUSHER_APP_CLUSTER: modeler
     networks:
-      - modeler      
+      - modeler
 
   mailhog:
     # If you want to use your own SMTP server, you can remove this container
@@ -66,9 +66,9 @@ services:
       - "8075:8025"
     healthcheck:
       test: /usr/bin/nc -v localhost 1025
-      interval: 30s  
+      interval: 30s
     networks:
-      - modeler                
+      - modeler
 
   # Modeler containers
   modeler-restapi:
@@ -82,9 +82,9 @@ services:
       modeler-db:
         condition: service_healthy
       mailhog:
-        condition: service_started  
+        condition: service_started
       identity:
-        condition: service_healthy      
+        condition: service_healthy
 
     healthcheck:
       test: /usr/bin/nc -v localhost 8081
@@ -93,7 +93,7 @@ services:
     environment:
       JAVA_OPTIONS: -Xmx128m
       LOGGING_LEVEL_IO_CAMUNDA_MODELER: DEBUG
-      SPRING_PROFILES_INCLUDE: default-logging  
+      SPRING_PROFILES_INCLUDE: default-logging
       RESTAPI_PUSHER_HOST: modeler-websockets
       RESTAPI_PUSHER_PORT: "8060"
       RESTAPI_PUSHER_APP_ID: modeler-app
@@ -103,7 +103,7 @@ services:
       RESTAPI_OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
       RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
       RESTAPI_PUBLICAPI_OAUTH2_TOKEN_AUDIENCE: web-modeler-public-api
-      RESTAPI_IDENTITY_BASE_URL: http://identity:8084/          
+      RESTAPI_IDENTITY_BASE_URL: http://identity:8084/
       RESTAPI_SERVER_URL: http://localhost:8070
       RESTAPI_DB_HOST: modeler-db
       RESTAPI_DB_NAME: modeler-db
@@ -115,9 +115,9 @@ services:
       RESTAPI_MAIL_ENABLE_TLS: "false"
       RESTAPI_MAIL_FROM_ADDRESS: "noreply@example.com"
     networks:
-    - modeler 
+    - modeler
     - identity-network
-    - camunda-platform    
+    - camunda-platform
 
   modeler-webapp:
     container_name: modeler-webapp
@@ -144,19 +144,19 @@ services:
       PUSHER_PORT: "8060"
       CLIENT_PUSHER_HOST: localhost
       CLIENT_PUSHER_PORT: "8060"
-      CLIENT_PUSHER_FORCE_TLS: "false"      
-      CLIENT_PUSHER_KEY: modeler-app-key   
+      CLIENT_PUSHER_FORCE_TLS: "false"
+      CLIENT_PUSHER_KEY: modeler-app-key
       OAUTH2_CLIENT_ID: web-modeler
       OAUTH2_TOKEN_AUDIENCE: web-modeler
       OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
       KEYCLOAK_BASE_URL: http://localhost:18080
       KEYCLOAK_REALM: camunda-platform
-      KEYCLOAK_JWKS_URL: http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/certs      
-      IDENTITY_BASE_URL: http://identity:8084/         
+      KEYCLOAK_JWKS_URL: http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/certs
+      IDENTITY_BASE_URL: http://identity:8084/
     networks:
-      - modeler 
+      - modeler
       - identity-network
-      - camunda-platform      
+      - camunda-platform
 
 networks:
   camunda-platform:

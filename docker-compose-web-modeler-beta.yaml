@@ -39,7 +39,7 @@ services:
 
   modeler-websockets:
     container_name: modeler-websockets
-    image: registry.camunda.cloud/web-modeler-ee/modeler-websockets:0.2.1-beta
+    image: registry.camunda.cloud/web-modeler-ee/modeler-websockets:0.3.0-beta
     ports:
       - "8060:8060"
     healthcheck:
@@ -73,7 +73,7 @@ services:
   # Modeler containers
   modeler-restapi:
     container_name: modeler-restapi
-    image: registry.camunda.cloud/web-modeler-ee/modeler-restapi:0.2.1-beta
+    image: registry.camunda.cloud/web-modeler-ee/modeler-restapi:0.3.0-beta
     ports:
       - "8085:8081"
       - "8086:8091"
@@ -105,7 +105,6 @@ services:
       RESTAPI_PUBLICAPI_OAUTH2_TOKEN_AUDIENCE: web-modeler-public-api
       RESTAPI_IDENTITY_BASE_URL: http://identity:8084/          
       RESTAPI_SERVER_URL: http://localhost:8070
-      RESTAPI_SERVER_HOST: localhost
       RESTAPI_DB_HOST: modeler-db
       RESTAPI_DB_NAME: modeler-db
       RESTAPI_DB_PORT: 5432
@@ -115,7 +114,6 @@ services:
       RESTAPI_MAIL_PORT: 1025
       RESTAPI_MAIL_ENABLE_TLS: "false"
       RESTAPI_MAIL_FROM_ADDRESS: "noreply@example.com"
-      RESTAPI_SERVER_SHUTDOWN_TIMEOUT: 3000
     networks:
     - modeler 
     - identity-network
@@ -123,7 +121,7 @@ services:
 
   modeler-webapp:
     container_name: modeler-webapp
-    image: registry.camunda.cloud/web-modeler-ee/modeler-webapp:0.2.1-beta
+    image: registry.camunda.cloud/web-modeler-ee/modeler-webapp:0.3.0-beta
     ports:
       - "8070:8070"
     depends_on:
@@ -148,9 +146,9 @@ services:
       CLIENT_PUSHER_PORT: "8060"
       CLIENT_PUSHER_FORCE_TLS: "false"      
       CLIENT_PUSHER_KEY: modeler-app-key   
-      AUTH0_CLIENT_ID: web-modeler
-      AUTH0_TOKEN_AUDIENCE: web-modeler
-      AUTH0_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
+      OAUTH2_CLIENT_ID: web-modeler
+      OAUTH2_TOKEN_AUDIENCE: web-modeler
+      OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
       KEYCLOAK_BASE_URL: http://localhost:18080
       KEYCLOAK_REALM: camunda-platform
       KEYCLOAK_JWKS_URL: http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/certs      

@@ -39,7 +39,7 @@ services:
 
   modeler-websockets:
     container_name: modeler-websockets
-    image: registry.camunda.cloud/web-modeler-ee/modeler-websockets:0.3.0-beta
+    image: registry.camunda.cloud/web-modeler-ee/modeler-websockets:0.4.0-beta
     ports:
       - "8060:8060"
     healthcheck:
@@ -73,9 +73,8 @@ services:
   # Modeler containers
   modeler-restapi:
     container_name: modeler-restapi
-    image: registry.camunda.cloud/web-modeler-ee/modeler-restapi:0.3.0-beta
+    image: registry.camunda.cloud/web-modeler-ee/modeler-restapi:0.4.0-beta
     ports:
-      - "8085:8081"
       - "8086:8091"
     command: /bin/sh -c "java $JAVA_OPTIONS org.springframework.boot.loader.JarLauncher"
     depends_on:
@@ -99,10 +98,8 @@ services:
       RESTAPI_PUSHER_APP_ID: modeler-app
       RESTAPI_PUSHER_KEY: modeler-app-key
       RESTAPI_PUSHER_SECRET: modeler-app-secret
-      RESTAPI_OAUTH2_TOKEN_AUDIENCE: web-modeler-api
       RESTAPI_OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
       RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
-      RESTAPI_PUBLICAPI_OAUTH2_TOKEN_AUDIENCE: web-modeler-public-api
       RESTAPI_IDENTITY_BASE_URL: http://identity:8084/
       RESTAPI_SERVER_URL: http://localhost:8070
       RESTAPI_DB_HOST: modeler-db
@@ -121,7 +118,7 @@ services:
 
   modeler-webapp:
     container_name: modeler-webapp
-    image: registry.camunda.cloud/web-modeler-ee/modeler-webapp:0.3.0-beta
+    image: registry.camunda.cloud/web-modeler-ee/modeler-webapp:0.4.0-beta
     ports:
       - "8070:8070"
     depends_on:
@@ -133,8 +130,7 @@ services:
       timeout: 15s
       retries: 5
     environment:
-      REST_API_URL: http://modeler-restapi:8081
-      REST_MANAGEMENT_API_URL: http://modeler-restapi:8091
+      RESTAPI_HOST: modeler-restapi
       SERVER_HOST: modeler-webapp
       SERVER_URL: http://localhost:8070
       PUSHER_APP_ID: modeler-app

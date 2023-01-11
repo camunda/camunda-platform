@@ -95,9 +95,11 @@ services:
     environment:
       - ZEEBE_CLIENT_BROKER_GATEWAY-ADDRESS=zeebe:26500
       - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
-      - CAMUNDA_CONNECTOR_POLLING_ENABLED=false
-      - CAMUNDA_CONNECTOR_WEBHOOK_ENABLED=false
-      - SPRING_MAIN_WEB-APPLICATION-TYPE=none
+      - CAMUNDA_OPERATE_CLIENT_KEYCLOAK-URL=http://keycloak:8080
+      - CAMUNDA_OPERATE_CLIENT_CLIENT-ID=connectors
+      - CAMUNDA_OPERATE_CLIENT_CLIENT-SECRET=c0nn3ct0rsAr3Aw3s0me
+      - CAMUNDA_OPERATE_CLIENT_KEYCLOAK-REALM=camunda-platform
+      - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
     env_file: connector-secrets.txt
     networks:
       - camunda-platform
@@ -161,6 +163,13 @@ services:
       KEYCLOAK_USERS_0_ROLES_2: "Operate"
       KEYCLOAK_USERS_0_ROLES_3: "Tasklist"
       KEYCLOAK_USERS_0_ROLES_4: "Web Modeler"
+      KEYCLOAK_CLIENTS_0_NAME: Connectors
+      KEYCLOAK_CLIENTS_0_ID: connectors
+      KEYCLOAK_CLIENTS_0_SECRET: c0nn3ct0rsAr3Aw3s0me
+      KEYCLOAK_CLIENTS_0_ROOT_URL: https://localhost:8080
+      KEYCLOAK_CLIENTS_0_REDIRECT_URIS_0: /
+      KEYCLOAK_CLIENTS_0_PERMISSIONS_0_RESOURCE_SERVER_ID: operate-api
+      KEYCLOAK_CLIENTS_0_PERMISSIONS_0_DEFINITION: read:*
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
       interval: 5s

@@ -1,0 +1,9 @@
+services:
+  connectors:
+    environment:
+      - JAVAX_NET_SSL_TRUSTSTORE=/opt/security/truststore/<change to your trust store file name>
+      - JAVAX_NET_SSL_TRUSTSTOREPASSWORD=password
+      #- JAVA_OPTS=-Djavax.net.debug=all # Uncomment this line to fine tune additional JVM options
+      #- DEBUG_JVM_PRINT_JAVA_OPTS=1 # Uncomment this line to debug print $JAVA_OPTS
+    volumes:
+      - /path/to/your/folder/with/trust/store:/opt/security/truststore

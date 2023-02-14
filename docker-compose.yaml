@@ -90,6 +90,7 @@ services:
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
     image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-0.16.0}
     container_name: connectors
+    platform: linux/amd64
     ports:
       - "8085:8080"
     environment:

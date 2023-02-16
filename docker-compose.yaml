@@ -171,11 +171,11 @@ services:
       KEYCLOAK_CLIENTS_0_PERMISSIONS_0_RESOURCE_SERVER_ID: operate-api
       KEYCLOAK_CLIENTS_0_PERMISSIONS_0_DEFINITION: read:*
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
       interval: 5s
       timeout: 15s
       retries: 30
-      start_period: 60s      
+      start_period: 60s
     restart: on-failure
     volumes:
       - keycloak-theme:/app/keycloak-theme

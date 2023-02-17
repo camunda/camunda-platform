@@ -12,7 +12,7 @@
 services:
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
-    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION:-8.1.7}
+    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION:-8.1.8}
     container_name: zeebe
     ports:
       - "26500:26500"
@@ -34,7 +34,7 @@ services:
       - elasticsearch
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
-    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.1.7}
+    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.1.8}
     container_name: operate
     ports:
       - "8081:8080"
@@ -49,7 +49,7 @@ services:
       - elasticsearch
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
-    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION:-8.1.7}
+    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION:-8.1.8}
     container_name: tasklist
     ports:
       - "8082:8080"

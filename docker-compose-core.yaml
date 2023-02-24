@@ -66,6 +66,8 @@ services:
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
     image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-0.16.0}
     container_name: connectors
+    ports:
+      - "8085:8080"
     environment:
       - ZEEBE_CLIENT_BROKER_GATEWAY-ADDRESS=zeebe:26500
       - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true

@@ -171,7 +171,7 @@ services:
       KEYCLOAK_CLIENTS_0_PERMISSIONS_0_RESOURCE_SERVER_ID: operate-api
       KEYCLOAK_CLIENTS_0_PERMISSIONS_0_DEFINITION: read:*
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
+      test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
       interval: 5s
       timeout: 15s
       retries: 30

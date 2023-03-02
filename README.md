@@ -1,6 +1,14 @@
 # Camunda Platform 8
 
-This repository contains links to Camunda Platform 8 resources, the offical release artifacts and a [docker-compose.yaml](docker-compose.yaml) file for local development. For production setups we recommend to use our [helm charts](https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/).
+This repository contains links to Camunda Platform 8 resources, the offical release artifacts (binaries), and supporting config files for running Docker Compose as a local development option. 
+
+:warning: **Docker Compose is only recommended for local development.** :warning:
+
+For more information about Self-Managed, including additional development installation options, see our [documentation](https://docs.camunda.io/docs/next/self-managed/about-self-managed/).
+
+For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/) which can be found at [helm.camunda.io](https://helm.camunda.io/).
+
+## Links to additional Camunda Platform 8 repos and assets
 
 - [Documentation](https://docs.camunda.io)
 - [Camunda Platform SaaS](https://camunda.io)
@@ -14,11 +22,11 @@ This repository contains links to Camunda Platform 8 resources, the offical rele
 
 > :information_source: The docker-compose file in this repository uses the latest [compose specification](https://docs.docker.com/compose/compose-file/), which was introduced with docker-compose version 1.27.0+. Please make sure to use an up-to-date docker-compose version.
 
-> :information_source: The Docker required is 20.10.16+
+> :information_source: Docker 20.10.16+ is required.
 
 To stand-up a complete Camunda Platform 8 Self-Managed environment locally the [docker-compose.yaml](docker-compose.yaml) file in this repository can be used.
 
-The full enviornment contains these components:
+The full environment contains these components:
 - Zeebe
 - Operate
 - Tasklist
@@ -48,7 +56,7 @@ Keycloak is used to manage users. Here you can log in with the user `admin` and 
 
 The workflow engine Zeebe is available using gRPC at `localhost:26500`.
 
-To tear down the whole environment run the following command
+To tear down the whole environment run the following command:
 
 ```
 docker-compose down -v
@@ -141,13 +149,8 @@ The setup includes [MailHog](https://github.com/mailhog/MailHog) as a test SMTP 
 
 You can access emails in MailHog's Web UI at [http://localhost:8075](http://localhost:8075).
 
-# Camunda Platform 7
-
-- [Documentation](https://docs.camunda.org/)
-- [GitHub](https://github.com/camunda/camunda-bpm-platform)
-
-# Troubleshooting
-## Running on arm64 based hardware
+## Troubleshooting
+### Running on arm64 based hardware
 When using arm64-based hardware like a M1 or M2 Mac the Keycloak container might not start because Bitnami only
 provides amd64-based images. Until bitnami adds
 [support for linux/arm64 images](https://github.com/bitnami/charts/issues/7305), you can build and tag an arm-based
@@ -157,3 +160,10 @@ described in [Using docker-compose](#using-docker-compose).
 ```
 $ DOCKER_BUILDKIT=0 docker build -t bitnami/keycloak:19.0.3 "https://github.com/camunda/camunda-platform.git#main:.keycloak/"
 ```
+
+## Camunda Platform 7
+
+Looking for information on Camunda Platform 7? Check out the links below:
+
+- [Documentation](https://docs.camunda.org/)
+- [GitHub](https://github.com/camunda/camunda-bpm-platform)

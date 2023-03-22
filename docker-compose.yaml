@@ -4,7 +4,7 @@
 # We recommend to use Kubernetes in production with our Helm Charts:
 # https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/
 # For local development, we recommend using KIND instead of `docker-compose`:
-# https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/#installing-the-camunda-helm-chart-locally-using-kind
+# https://docs.camunda.io/docs/self-managed/platform-deployment/helm-kubernetes/guides/local-kubernetes-cluster/
 
 # This is a full configuration with Zeebe, Operate, Tasklist, Optimize, Identity, Keycloak, and Elasticsearch
 # See docker-compose-core.yml for a lightweight configuration that does not include Optimize, Identity, and Keycloak.
@@ -12,7 +12,7 @@
 services:
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
-    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION:-8.0.5}
+    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION:-8.1.9}
     container_name: zeebe
     ports:
       - "26500:26500"
@@ -34,7 +34,7 @@ services:
       - elasticsearch
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
-    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.0.5}
+    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.1.9}
     container_name: operate
     ports:
       - "8081:8080"
@@ -61,7 +61,7 @@ services:
       - elasticsearch
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
-    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION:-8.0.5}
+    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION:-8.1.9}
     container_name: tasklist
     ports:
       - "8082:8080"
@@ -87,8 +87,30 @@ services:
       - identity
       - elasticsearch
 
+  connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
+    image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-0.17.1}
+    container_name: connectors
+    ports:
+      - "8085:8080"
+    environment:
+      - ZEEBE_CLIENT_BROKER_GATEWAY-ADDRESS=zeebe:26500
+      - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
+      - CAMUNDA_OPERATE_CLIENT_KEYCLOAK-URL=http://keycloak:8080
+      - CAMUNDA_OPERATE_CLIENT_CLIENT-ID=connectors
+      - CAMUNDA_OPERATE_CLIENT_CLIENT-SECRET=c0nn3ct0rsAr3Aw3s0me
+      - CAMUNDA_OPERATE_CLIENT_KEYCLOAK-REALM=camunda-platform
+      - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
+    env_file: connector-secrets.txt
+    networks:
+      - camunda-platform
+      - identity-network
+    depends_on:
+      - zeebe
+      - operate
+      - identity
+
   optimize: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#optimize
-    image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION:-3.8.5}
+    image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION:-3.9.4}
     container_name: optimize
     ports:
       - "8083:8090"
@@ -105,6 +127,8 @@ services:
       - CAMUNDA_OPTIMIZE_IDENTITY_AUDIENCE=optimize-api
       - CAMUNDA_OPTIMIZE_SECURITY_AUTH_COOKIE_SAME_SITE_ENABLED=false
       - CAMUNDA_OPTIMIZE_UI_LOGOUT_HIDDEN=true
+    volumes:
+      - "./.optimize/environment-config.yaml:/optimize/config/environment-config.yaml"
     restart: on-failure
     networks:
       - camunda-platform
@@ -115,11 +139,12 @@ services:
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
     container_name: identity
-    image: camunda/identity:${CAMUNDA_PLATFORM_VERSION:-8.0.5}
+    image: camunda/identity:${CAMUNDA_PLATFORM_VERSION:-8.1.9}
     ports:
       - "8084:8084"
     environment: # https://docs.camunda.io/docs/self-managed/identity/deployment/configuration-variables/
       SERVER_PORT: 8084
+      IDENTITY_RETRY_DELAY_SECONDS: 30
       KEYCLOAK_URL: http://keycloak:8080/auth
       IDENTITY_AUTH_PROVIDER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
       KEYCLOAK_INIT_OPERATE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
@@ -128,34 +153,83 @@ services:
       KEYCLOAK_INIT_TASKLIST_ROOT_URL: http://localhost:8082
       KEYCLOAK_INIT_OPTIMIZE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       KEYCLOAK_INIT_OPTIMIZE_ROOT_URL: http://localhost:8083
+      KEYCLOAK_INIT_WEBMODELER_ROOT_URL: http://localhost:8070   
       KEYCLOAK_USERS_0_USERNAME: "demo"
       KEYCLOAK_USERS_0_PASSWORD: "demo"
       KEYCLOAK_USERS_0_FIRST_NAME: "demo"
+      KEYCLOAK_USERS_0_EMAIL: "demo@acme.com"
       KEYCLOAK_USERS_0_ROLES_0: "Identity"
       KEYCLOAK_USERS_0_ROLES_1: "Optimize"
       KEYCLOAK_USERS_0_ROLES_2: "Operate"
       KEYCLOAK_USERS_0_ROLES_3: "Tasklist"
+      KEYCLOAK_USERS_0_ROLES_4: "Web Modeler"
+      KEYCLOAK_CLIENTS_0_NAME: Connectors
+      KEYCLOAK_CLIENTS_0_ID: connectors
+      KEYCLOAK_CLIENTS_0_SECRET: c0nn3ct0rsAr3Aw3s0me
+      KEYCLOAK_CLIENTS_0_ROOT_URL: https://localhost:8080
+      KEYCLOAK_CLIENTS_0_REDIRECT_URIS_0: /
+      KEYCLOAK_CLIENTS_0_PERMISSIONS_0_RESOURCE_SERVER_ID: operate-api
+      KEYCLOAK_CLIENTS_0_PERMISSIONS_0_DEFINITION: read:*
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
+      interval: 5s
+      timeout: 15s
+      retries: 30
+      start_period: 60s
     restart: on-failure
+    volumes:
+      - keycloak-theme:/app/keycloak-theme
     networks:
       - identity-network
     depends_on:
-      - keycloak
+      keycloak:
+        condition: service_healthy
 
-  keycloak: # https://hub.docker.com/r/jboss/keycloak
-    container_name: keycloak
-    image: jboss/keycloak:${KEYCLOAK_VERSION:-16.1.1}
-    ports:
-      - "18080:8080"
+  postgres: # https://hub.docker.com/_/postgres
+    container_name: postgres
+    image: postgres:${POSTGRES_VERSION:-14.5-alpine}
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
+      POSTGRES_DB: bitnami_keycloak
+      POSTGRES_USER: bn_keycloak
+      POSTGRES_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
-      - "./.keycloak/themes/identity:/opt/jboss/keycloak/themes/identity"
+      - postgres:/var/lib/postgresql/data
     networks:
       - identity-network
 
+  keycloak: # https://hub.docker.com/r/bitnami/keycloak
+    container_name: keycloak
+    image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION:-19.0.3}
+    volumes:
+      - keycloak-theme:/opt/bitnami/keycloak/themes/identity
+    ports:
+      - "18080:8080"
+    environment:
+      KEYCLOAK_HTTP_RELATIVE_PATH: /auth
+      KEYCLOAK_DATABASE_HOST: postgres
+      KEYCLOAK_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
+      KEYCLOAK_ADMIN_USER: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/auth" ]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 30s
+    networks:
+      - identity-network
+    depends_on:
+      - postgres
+
   elasticsearch: # https://hub.docker.com/_/elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.0}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.5}
     container_name: elasticsearch
     ports:
       - "9200:9200"
@@ -163,6 +237,7 @@ services:
     environment:
       - bootstrap.memory_lock=true
       - discovery.type=single-node
+      - xpack.security.enabled=false
       # allow running with low disk space
       - cluster.routing.allocation.disk.threshold_enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -181,9 +256,26 @@ services:
     networks:
       - camunda-platform
 
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-7.17.0}
+    container_name: kibana
+    ports:
+      - 5601:5601
+    volumes:
+      - kibana:/usr/share/kibana/data
+    networks:
+      - camunda-platform
+    depends_on:
+      - elasticsearch
+    profiles:
+      - kibana
+
 volumes:
   zeebe:
   elastic:
+  postgres:
+  keycloak-theme:
+  kibana:
 
 networks:
   # Note there are two bridge networks: One for Camunda Platform and one for Identity.

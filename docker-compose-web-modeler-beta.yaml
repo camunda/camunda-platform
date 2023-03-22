@@ -1,0 +1,155 @@
+# Docker compose file for Web Modeler Self-Managed Beta Release [*]. This file is not intended to be used stand-alone.
+# Use it in combination with docker-compose.yml:  
+#
+#    docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml up -d
+#
+#
+# [*] Web Modeler Self-Managed is currently offered as a beta release [1] with limited availability 
+#     for enterprise customers only. It is not recommended for production use, and there is no maintenance 
+#     service guaranteed. Special terms & conditions [2] apply. 
+#     However, we encourage you to provide feedback via your designated support channel or the Camunda Forum [3].
+# 
+#     Links
+#     [1] - https://docs.camunda.io/docs/next/reference/early-access#beta
+#     [2] - https://camunda.com/legal/terms/camunda-platform/camunda-platform-8-self-managed/
+#     [3] - https://forum.camunda.io/
+
+# Notes: this file is using MailHog to simulate a mail server
+
+version: "2.4"
+
+services:
+
+  modeler-db:
+    container_name: modeler-db
+    image: postgres:14.2-alpine
+    healthcheck:
+      test: pg_isready -d modeler-db -U modeler-db-user
+      interval: 5s
+      timeout: 15s
+      retries: 30
+    environment:
+      POSTGRES_DB: modeler-db
+      POSTGRES_USER: modeler-db-user
+      POSTGRES_PASSWORD: modeler-db-password
+    networks:
+      - modeler
+
+  modeler-websockets:
+    container_name: modeler-websockets
+    image: registry.camunda.cloud/web-modeler-ee/modeler-websockets:0.8.0-beta
+    ports:
+      - "8060:8060"
+    healthcheck:
+      test: /usr/bin/nc -v localhost 8060
+      interval: 30s
+    environment:
+      APP_NAME: "Web Modeler Self-Managed WebSockets"
+      APP_DEBUG: "true"
+      PUSHER_APP_ID: modeler-app
+      PUSHER_APP_KEY: modeler-app-key
+      PUSHER_APP_SECRET: modeler-app-secret
+      PUSHER_APP_CLUSTER: modeler
+    networks:
+      - modeler
+
+  mailhog:
+    # If you want to use your own SMTP server, you can remove this container
+    # and configure RESTAPI_MAIL_HOST, RESTAPI_MAIL_PORT, REST_API_MAIL_USER,
+    # REST_API_MAIL_PASSWORD and RESTAPI_MAIL_ENABLE_TLS in modeler-restapi
+    container_name: mailhog
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - "1025:1025"
+      - "8075:8025"
+    healthcheck:
+      test: /usr/bin/nc -v localhost 1025
+      interval: 30s
+    networks:
+      - modeler
+
+  # Modeler containers
+  modeler-restapi:
+    container_name: modeler-restapi
+    image: registry.camunda.cloud/web-modeler-ee/modeler-restapi:0.8.0-beta
+    command: /bin/sh -c "java $JAVA_OPTIONS org.springframework.boot.loader.JarLauncher"
+    depends_on:
+      modeler-db:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+      identity:
+        condition: service_healthy
+    healthcheck:
+      test: /usr/bin/nc -v localhost 8081
+      interval: 30s
+      retries: 10
+    environment:
+      JAVA_OPTIONS: -Xmx128m
+      LOGGING_LEVEL_IO_CAMUNDA_MODELER: DEBUG
+      SPRING_PROFILES_INCLUDE: default-logging
+      RESTAPI_PUSHER_HOST: modeler-websockets
+      RESTAPI_PUSHER_PORT: "8060"
+      RESTAPI_PUSHER_APP_ID: modeler-app
+      RESTAPI_PUSHER_KEY: modeler-app-key
+      RESTAPI_PUSHER_SECRET: modeler-app-secret
+      RESTAPI_OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
+      RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
+      RESTAPI_IDENTITY_BASE_URL: http://identity:8084/
+      RESTAPI_SERVER_URL: http://localhost:8070
+      RESTAPI_DB_HOST: modeler-db
+      RESTAPI_DB_NAME: modeler-db
+      RESTAPI_DB_PORT: 5432
+      RESTAPI_DB_USER: modeler-db-user
+      RESTAPI_DB_PASSWORD: modeler-db-password
+      RESTAPI_MAIL_HOST: mailhog
+      RESTAPI_MAIL_PORT: 1025
+      RESTAPI_MAIL_ENABLE_TLS: "false"
+      RESTAPI_MAIL_FROM_ADDRESS: "noreply@example.com"
+    networks:
+    - modeler
+    - identity-network
+    - camunda-platform
+
+  modeler-webapp:
+    container_name: modeler-webapp
+    image: registry.camunda.cloud/web-modeler-ee/modeler-webapp:0.8.0-beta
+    ports:
+      - "8070:8070"
+    depends_on:
+      modeler-restapi:
+        condition: service_healthy
+    healthcheck:
+      test: /usr/bin/nc -v localhost 8070
+      interval: 30s
+      timeout: 15s
+      retries: 5
+    environment:
+      RESTAPI_HOST: modeler-restapi
+      SERVER_HOST: modeler-webapp
+      SERVER_URL: http://localhost:8070
+      PUSHER_APP_ID: modeler-app
+      PUSHER_KEY: modeler-app-key
+      PUSHER_SECRET: modeler-app-secret
+      PUSHER_HOST: modeler-websockets
+      PUSHER_PORT: "8060"
+      CLIENT_PUSHER_HOST: localhost
+      CLIENT_PUSHER_PORT: "8060"
+      CLIENT_PUSHER_FORCE_TLS: "false"
+      CLIENT_PUSHER_KEY: modeler-app-key
+      OAUTH2_CLIENT_ID: web-modeler
+      OAUTH2_TOKEN_AUDIENCE: web-modeler
+      OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
+      KEYCLOAK_BASE_URL: http://localhost:18080
+      KEYCLOAK_REALM: camunda-platform
+      KEYCLOAK_JWKS_URL: http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/certs
+      IDENTITY_BASE_URL: http://identity:8084/
+    networks:
+      - modeler
+      - identity-network
+      - camunda-platform
+
+networks:
+  camunda-platform:
+  identity-network:
+  modeler:

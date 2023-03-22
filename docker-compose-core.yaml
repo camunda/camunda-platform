@@ -4,7 +4,7 @@
 # We recommend to use Kubernetes in production with our Helm Charts:
 # https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/
 # For local development, we recommend using KIND instead of `docker-compose`:
-# https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/#installing-the-camunda-helm-chart-locally-using-kind
+# https://docs.camunda.io/docs/self-managed/platform-deployment/helm-kubernetes/guides/local-kubernetes-cluster/
 
 # This is a lightweight configuration with Zeebe, Operate, Tasklist, and Elasticsearch
 # See docker-compose.yml for a configuration that also includes Optimize, Identity, and Keycloak.
@@ -12,7 +12,7 @@
 services:
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
-    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION:-8.0.5}
+    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION:-8.1.9}
     container_name: zeebe
     ports:
       - "26500:26500"
@@ -34,7 +34,7 @@ services:
       - elasticsearch
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
-    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.0.5}
+    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION:-8.1.9}
     container_name: operate
     ports:
       - "8081:8080"
@@ -49,7 +49,7 @@ services:
       - elasticsearch
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
-    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION:-8.0.5}
+    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION:-8.1.9}
     container_name: tasklist
     ports:
       - "8082:8080"
@@ -63,8 +63,24 @@ services:
       - zeebe
       - elasticsearch
 
+  connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
+    image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION:-0.17.1}
+    container_name: connectors
+    environment:
+      - ZEEBE_CLIENT_BROKER_GATEWAY-ADDRESS=zeebe:26500
+      - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
+      - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
+      - CAMUNDA_OPERATE_CLIENT_USERNAME=demo
+      - CAMUNDA_OPERATE_CLIENT_PASSWORD=demo
+    env_file: connector-secrets.txt
+    networks:
+      - camunda-platform
+    depends_on:
+      - zeebe
+      - operate
+
   elasticsearch: # https://hub.docker.com/_/elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.0}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.17.5}
     container_name: elasticsearch
     ports:
       - "9200:9200"
@@ -91,9 +107,24 @@ services:
     networks:
       - camunda-platform
 
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-7.17.0}
+    container_name: kibana
+    ports:
+      - 5601:5601
+    volumes:
+      - kibana:/usr/share/kibana/data
+    networks:
+      - camunda-platform
+    depends_on:
+      - elasticsearch
+    profiles:
+      - kibana
+
 volumes:
   zeebe:
   elastic:
+  kibana:
 
 networks:
   camunda-platform:

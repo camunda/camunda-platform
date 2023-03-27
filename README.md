@@ -74,6 +74,16 @@ In addition to the local environment setup with docker-compose, you can download
 
 Feedback and updates are welcome!
 
+## Securing the Zeebe API
+
+By default the Zeebe GRPC API is publicly accessible without requiring any client credentials for development purposes.
+
+You can however enable authentication of GRPC requests in Zeebe by setting the environment variable `ZEEBE_AUTHENTICATION_MODE` to `identity`, e.g. via running:
+```
+ZEEBE_AUTHENTICATION_MODE=identity docker-compose up -d
+```
+or by modifying the default value in the [`.env`](.env) file.
+
 ## Connectors
 
 Both docker-compose files contain our [out-of-the-box Connectors](https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/).
@@ -141,8 +151,18 @@ $ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml 
 Now you can access Web Modeler Self-Managed and log in with the user `demo` and password `demo` at [http://localhost:8070](http://localhost:8070).
 
 Once you are ready to deploy or execute processes use these settings to deploy to the local Zeebe instance:
-* Authentication: None
+* Authentication: `None`
 * URL: `zeebe:26500`
+
+### Web Modeler with Zeebe request authentication
+
+If you enabled authentication for GRPC requests on Zeebe you need to provide client credentials when deploying and executing processes:
+* Authentication: `Oauth`
+* URL: `zeebe:26500`
+* Client ID: `zeebe`
+* Client secret: `zecret`
+* OAuth URL: `http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token`
+* Audience: `zeebe-api`
 
 ### Emails
 The setup includes [MailHog](https://github.com/mailhog/MailHog) as a test SMTP server. It captures all emails sent by Web Modeler, but does not forward them to the actual recipients. 

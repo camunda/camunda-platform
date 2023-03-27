@@ -18,6 +18,9 @@ services:
       - "26500:26500"
       - "9600:9600"
     environment: # https://docs.camunda.io/docs/self-managed/zeebe-deployment/configuration/environment-variables/
+      - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE=${ZEEBE_AUTHENTICATION_MODE}
+      - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_ISSUERBACKENDURL=http://keycloak:8080/auth/realms/camunda-platform
+      - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_AUDIENCE=zeebe-api
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE=1
@@ -32,6 +35,7 @@ services:
       - camunda-platform
     depends_on:
       - elasticsearch
+      - identity
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
     image: camunda/operate:${CAMUNDA_PLATFORM_VERSION}
@@ -40,6 +44,10 @@ services:
       - "8081:8080"
     environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
+      - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
+      - ZEEBE_TOKEN_AUDIENCE=zeebe-api
+      - ZEEBE_AUTHORIZATION_SERVER_URL=http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token
       - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
       # For more information regarding configuration with Identity see:
@@ -54,7 +62,6 @@ services:
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/certs
     networks:
       - camunda-platform
-      - identity-network
     depends_on:
       - zeebe
       - identity
@@ -67,6 +74,10 @@ services:
       - "8082:8080"
     environment: # https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
+      - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
+      - ZEEBE_TOKEN_AUDIENCE=zeebe-api
+      - ZEEBE_AUTHORIZATION_SERVER_URL=http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token
       - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
       # For more information regarding configuration with Identity see:
@@ -81,7 +92,6 @@ services:
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/certs
     networks:
       - camunda-platform
-      - identity-network
     depends_on:
       - zeebe
       - identity
@@ -95,6 +105,10 @@ services:
     environment:
       - ZEEBE_CLIENT_BROKER_GATEWAY-ADDRESS=zeebe:26500
       - ZEEBE_CLIENT_SECURITY_PLAINTEXT=true
+      - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
+      - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
+      - ZEEBE_TOKEN_AUDIENCE=zeebe-api
+      - ZEEBE_AUTHORIZATION_SERVER_URL=http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token
       - CAMUNDA_OPERATE_CLIENT_KEYCLOAK-URL=http://keycloak:8080
       - CAMUNDA_OPERATE_CLIENT_CLIENT-ID=connectors
       - CAMUNDA_OPERATE_CLIENT_CLIENT-SECRET=c0nn3ct0rsAr3Aw3s0me
@@ -103,7 +117,6 @@ services:
     env_file: connector-secrets.txt
     networks:
       - camunda-platform
-      - identity-network
     depends_on:
       - zeebe
       - operate
@@ -132,7 +145,6 @@ services:
     restart: on-failure
     networks:
       - camunda-platform
-      - identity-network
     depends_on:
       - identity
       - elasticsearch
@@ -153,7 +165,8 @@ services:
       KEYCLOAK_INIT_TASKLIST_ROOT_URL: http://localhost:8082
       KEYCLOAK_INIT_OPTIMIZE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       KEYCLOAK_INIT_OPTIMIZE_ROOT_URL: http://localhost:8083
-      KEYCLOAK_INIT_WEBMODELER_ROOT_URL: http://localhost:8070   
+      KEYCLOAK_INIT_WEBMODELER_ROOT_URL: http://localhost:8070  
+      KEYCLOAK_INIT_ZEEBE_NAME: zeebe
       KEYCLOAK_USERS_0_USERNAME: "demo"
       KEYCLOAK_USERS_0_PASSWORD: "demo"
       KEYCLOAK_USERS_0_FIRST_NAME: "demo"
@@ -170,6 +183,12 @@ services:
       KEYCLOAK_CLIENTS_0_REDIRECT_URIS_0: /
       KEYCLOAK_CLIENTS_0_PERMISSIONS_0_RESOURCE_SERVER_ID: operate-api
       KEYCLOAK_CLIENTS_0_PERMISSIONS_0_DEFINITION: read:*
+      KEYCLOAK_CLIENTS_1_NAME: zeebe
+      KEYCLOAK_CLIENTS_1_ID: ${ZEEBE_CLIENT_ID}
+      KEYCLOAK_CLIENTS_1_SECRET: ${ZEEBE_CLIENT_SECRET}
+      KEYCLOAK_CLIENTS_1_TYPE: M2M
+      KEYCLOAK_CLIENTS_1_PERMISSIONS_0_RESOURCE_SERVER_ID: zeebe-api
+      KEYCLOAK_CLIENTS_1_PERMISSIONS_0_DEFINITION: write:*
     healthcheck:
       test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
       interval: 5s
@@ -180,6 +199,7 @@ services:
     volumes:
       - keycloak-theme:/app/keycloak-theme
     networks:
+      - camunda-platform
       - identity-network
     depends_on:
       keycloak:
@@ -224,6 +244,7 @@ services:
       retries: 5
       start_period: 30s
     networks:
+      - camunda-platform
       - identity-network
     depends_on:
       - postgres
@@ -279,6 +300,6 @@ volumes:
 
 networks:
   # Note there are two bridge networks: One for Camunda Platform and one for Identity.
-  # Operate, Tasklist, and Optimize use both
+  # Identity and Keycloak are part of both as they need to be accessible by platform components.
   camunda-platform:
   identity-network:

@@ -35,6 +35,7 @@ The full environment contains these components:
 - Identity
 - Elasticsearch
 - Keycloak
+- PostgreSQL
 
 Clone this repo and issue the following command to start your environment:
 

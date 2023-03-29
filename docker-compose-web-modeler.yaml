@@ -1,20 +1,9 @@
-# Docker compose file for Web Modeler Self-Managed Beta Release [*]. This file is not intended to be used stand-alone.
-# Use it in combination with docker-compose.yml:  
+# Docker Compose file for Web Modeler Self-Managed. This file is not intended to be used stand-alone.
+# Use it in combination with docker-compose.yaml:
 #
-#    docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml up -d
+#    docker-compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml up -d
 #
-#
-# [*] Web Modeler Self-Managed is currently offered as a beta release [1] with limited availability 
-#     for enterprise customers only. It is not recommended for production use, and there is no maintenance 
-#     service guaranteed. Special terms & conditions [2] apply. 
-#     However, we encourage you to provide feedback via your designated support channel or the Camunda Forum [3].
-# 
-#     Links
-#     [1] - https://docs.camunda.io/docs/next/reference/early-access#beta
-#     [2] - https://camunda.com/legal/terms/camunda-platform/camunda-platform-8-self-managed/
-#     [3] - https://forum.camunda.io/
-
-# Notes: this file is using MailHog to simulate a mail server
+# Note: this file is using MailHog to simulate a mail server
 
 version: "2.4"
 

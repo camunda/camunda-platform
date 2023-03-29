@@ -1,6 +1,6 @@
 # Camunda Platform 8
 
-This repository contains links to Camunda Platform 8 resources, the offical release artifacts (binaries), and supporting config files for running Docker Compose as a local development option. 
+This repository contains links to Camunda Platform 8 resources, the official release artifacts (binaries), and supporting config files for running Docker Compose as a local development option. 
 
 :warning: **Docker Compose is only recommended for local development.** :warning:
 
@@ -26,7 +26,7 @@ For production setups we recommend using [Helm charts](https://docs.camunda.io/d
 
 > :information_source: Docker 20.10.16+ is required.
 
-To stand-up a complete Camunda Platform 8 Self-Managed environment locally the [docker-compose.yaml](docker-compose.yaml) file in this repository can be used.
+To spin up a complete Camunda Platform 8 Self-Managed environment locally the [docker-compose.yaml](docker-compose.yaml) file in this repository can be used.
 
 The full environment contains these components:
 - Zeebe
@@ -38,6 +38,8 @@ The full environment contains these components:
 - Elasticsearch
 - Keycloak
 - PostgreSQL
+
+> :information_source: Web Modeler is not included by default. Please see the additional [instructions below](#web-modeler-self-managed).
 
 Clone this repo and issue the following command to start your environment:
 
@@ -74,12 +76,13 @@ docker-compose -f docker-compose-core.yaml up -d
 Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file.
 
 In addition to the local environment setup with docker-compose, you can download the [Camunda Desktop Modeler](https://camunda.com/download/modeler/) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
+As an enterprise customer, you can also [use Web Modeler](#web-modeler-self-managed).
 
 Feedback and updates are welcome!
 
 ## Securing the Zeebe API
 
-By default the Zeebe GRPC API is publicly accessible without requiring any client credentials for development purposes.
+By default, the Zeebe GRPC API is publicly accessible without requiring any client credentials for development purposes.
 
 You can however enable authentication of GRPC requests in Zeebe by setting the environment variable `ZEEBE_AUTHENTICATION_MODE` to `identity`, e.g. via running:
 ```
@@ -121,11 +124,11 @@ You can navigate to the Kibana web app and start exploring the data without logi
 >   - If you don't see any indexes then make sure to export some data first (e.g. deploy a process). The indexes of the records are created when the first record of this type is exported.
 > - Go to `Analytics > Discover` and select the index pattern.
 
-## Web Modeler Self-Managed Beta Release
+## Web Modeler Self-Managed
 
-> :warning: Web Modeler Self-Managed is currently offered as a [beta release](https://docs.camunda.io/docs/next/reference/early-access#beta) with limited availability for enterprise customers only. It is not recommended for production use, and there is no maintenance service guaranteed. Special [terms & conditions](https://camunda.com/legal/terms/camunda-platform/camunda-platform-8-self-managed/) apply. However, we encourage you to provide feedback via your designated support channel or the [Camunda Forum](https://forum.camunda.io/).
+> :information_source: Web Modeler Self-Managed is available to Camunda enterprise customers only.
 
-The Docker images for Web Modeler Beta are available in a private registry. Enterprise customers either already have credentials to this registry, or they can request access to this registry through their CSM contact at Camunda.
+The Docker images for Web Modeler are available in a private registry. Enterprise customers either already have credentials to this registry, or they can request access to this registry through their CSM contact at Camunda.
 
 To run Camunda Platform with Web Modeler Self-Managed clone this repo and issue the following commands:
 
@@ -134,33 +137,35 @@ $ docker login registry.camunda.cloud
 Username: your_username
 Password: ******
 Login Succeeded
-$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml up -d
+$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml up -d
 ```
 
 To tear down the whole environment run the following command
 
 ```
-$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml down -v
+$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down -v
 ```
 
 If you want to delete everything (including any data you created).
 Alternatively, if you want to keep the data run:
 
 ```
-$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler-beta.yaml down
+$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down
 ```
 
-### Web Modeler
-Now you can access Web Modeler Self-Managed and log in with the user `demo` and password `demo` at [http://localhost:8070](http://localhost:8070).
+### Login
+You can access Web Modeler Self-Managed and log in with the user `demo` and password `demo` at [http://localhost:8070](http://localhost:8070).
 
+### Deploy or execute a process
+
+#### Without authentication
 Once you are ready to deploy or execute processes use these settings to deploy to the local Zeebe instance:
 * Authentication: `None`
 * URL: `zeebe:26500`
 
-### Web Modeler with Zeebe request authentication
-
+#### With Zeebe request authentication
 If you enabled authentication for GRPC requests on Zeebe you need to provide client credentials when deploying and executing processes:
-* Authentication: `Oauth`
+* Authentication: `OAuth`
 * URL: `zeebe:26500`
 * Client ID: `zeebe`
 * Client secret: `zecret`

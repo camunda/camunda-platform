@@ -108,7 +108,6 @@ services:
       RESTAPI_MAIL_FROM_ADDRESS: "noreply@example.com"
     networks:
     - modeler
-    - identity-network
     - camunda-platform
 
   modeler-webapp:
@@ -146,10 +145,8 @@ services:
       IDENTITY_BASE_URL: http://identity:8084/
     networks:
       - modeler
-      - identity-network
       - camunda-platform
 
 networks:
   camunda-platform:
-  identity-network:
   modeler:

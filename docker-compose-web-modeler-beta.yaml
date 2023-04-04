@@ -143,6 +143,7 @@ services:
       KEYCLOAK_REALM: camunda-platform
       KEYCLOAK_JWKS_URL: http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/certs
       IDENTITY_BASE_URL: http://identity:8084/
+      PLAY_ENABLED: "true"
     networks:
       - modeler
       - camunda-platform

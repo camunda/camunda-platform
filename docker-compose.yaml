@@ -64,9 +64,12 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - zeebe
-      - identity
-      - elasticsearch
+      zeebe:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+      identity:
+        condition: service_healthy
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
     image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION}
@@ -91,12 +94,17 @@ services:
       - CAMUNDA_TASKLIST_IDENTITY_AUDIENCE=tasklist-api
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:18080/auth/realms/camunda-platform
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/certs
+      - CAMUNDA_TASKLIST_IDENTITY_RESOURCE_PERMISSIONS_ENABLED=true
+      - CAMUNDA_TASKLIST_IDENTITY_BASEURL=http://identity:8084
     networks:
       - camunda-platform
     depends_on:
-      - zeebe
-      - identity
-      - elasticsearch
+      zeebe:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+      identity:
+        condition: service_healthy
 
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
     image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION}
@@ -119,9 +127,12 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - zeebe
-      - operate
-      - identity
+      zeebe:
+        condition: service_started
+      operate:
+        condition: service_started
+      identity:
+        condition: service_healthy
 
   optimize: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#optimize
     image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION}
@@ -147,8 +158,10 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - identity
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
+      identity:
+        condition: service_healthy
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
     container_name: identity
@@ -190,6 +203,12 @@ services:
       KEYCLOAK_CLIENTS_1_TYPE: M2M
       KEYCLOAK_CLIENTS_1_PERMISSIONS_0_RESOURCE_SERVER_ID: zeebe-api
       KEYCLOAK_CLIENTS_1_PERMISSIONS_0_DEFINITION: write:*
+      IDENTITY_DATABASE_HOST: postgres
+      IDENTITY_DATABASE_PORT: 5432
+      IDENTITY_DATABASE_NAME: bitnami_keycloak
+      IDENTITY_DATABASE_USERNAME: bn_keycloak
+      IDENTITY_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
+      RESOURCE_PERMISSIONS_ENABLED: true
     healthcheck:
       test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
       interval: 5s

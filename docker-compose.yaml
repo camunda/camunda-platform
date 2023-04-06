@@ -54,6 +54,7 @@ services:
       # For more information regarding configuration with Identity see:
       # https://docs.camunda.io/docs/self-managed/operate-deployment/authentication/#identity
       - SPRING_PROFILES_ACTIVE=identity-auth
+      - CAMUNDA_OPERATE_IDENTITY_BASEURL=http://identity:8084
       - CAMUNDA_OPERATE_IDENTITY_ISSUER_URL=http://localhost:18080/auth/realms/camunda-platform
       - CAMUNDA_OPERATE_IDENTITY_ISSUER_BACKEND_URL=http://keycloak:8080/auth/realms/camunda-platform
       - CAMUNDA_OPERATE_IDENTITY_CLIENTID=operate
@@ -61,6 +62,7 @@ services:
       - CAMUNDA_OPERATE_IDENTITY_AUDIENCE=operate-api
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:18080/auth/realms/camunda-platform
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/certs
+      - CAMUNDA_TASKLIST_IDENTITY_RESOURCEPERMISSIONSENABLED=${RESOURCE_AUTHORIZATIONS_ENABLED}
     networks:
       - camunda-platform
     depends_on:
@@ -84,6 +86,7 @@ services:
       # For more information regarding configuration with Identity see:
       # https://docs.camunda.io/docs/self-managed/tasklist-deployment/authentication/#identity
       - SPRING_PROFILES_ACTIVE=identity-auth
+      - CAMUNDA_TASKLIST_IDENTITY_BASEURL=http://identity:8084
       - CAMUNDA_TASKLIST_IDENTITY_ISSUER_URL=http://localhost:18080/auth/realms/camunda-platform
       - CAMUNDA_TASKLIST_IDENTITY_ISSUER_BACKEND_URL=http://keycloak:8080/auth/realms/camunda-platform
       - CAMUNDA_TASKLIST_IDENTITY_CLIENTID=tasklist
@@ -91,6 +94,7 @@ services:
       - CAMUNDA_TASKLIST_IDENTITY_AUDIENCE=tasklist-api
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:18080/auth/realms/camunda-platform
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/certs
+      - CAMUNDA_TASKLIST_IDENTITY_RESOURCE_PERMISSIONS_ENABLED=${RESOURCE_AUTHORIZATIONS_ENABLED}
     networks:
       - camunda-platform
     depends_on:
@@ -161,13 +165,20 @@ services:
       IDENTITY_RETRY_DELAY_SECONDS: 30
       KEYCLOAK_URL: http://keycloak:8080/auth
       IDENTITY_AUTH_PROVIDER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
+      IDENTITY_DATABASE_HOST: postgres
+      IDENTITY_DATABASE_PORT: 5432
+      IDENTITY_DATABASE_NAME: bitnami_keycloak
+      IDENTITY_DATABASE_USERNAME: bn_keycloak
+      IDENTITY_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
       KEYCLOAK_INIT_OPERATE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       KEYCLOAK_INIT_OPERATE_ROOT_URL: http://localhost:8081
       KEYCLOAK_INIT_TASKLIST_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       KEYCLOAK_INIT_TASKLIST_ROOT_URL: http://localhost:8082
       KEYCLOAK_INIT_OPTIMIZE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       KEYCLOAK_INIT_OPTIMIZE_ROOT_URL: http://localhost:8083
-      KEYCLOAK_INIT_WEBMODELER_ROOT_URL: http://localhost:8070  
+      KEYCLOAK_INIT_WEBMODELER_ROOT_URL: http://localhost:8070
+      KEYCLOAK_INIT_CONNECTORS_ROOT_URL: https://localhost:8080
+      KEYCLOAK_INIT_CONNECTORS_SECRET: c0nn3ct0rsAr3Aw3s0me
       KEYCLOAK_INIT_ZEEBE_NAME: zeebe
       KEYCLOAK_USERS_0_USERNAME: "demo"
       KEYCLOAK_USERS_0_PASSWORD: "demo"
@@ -178,19 +189,13 @@ services:
       KEYCLOAK_USERS_0_ROLES_2: "Operate"
       KEYCLOAK_USERS_0_ROLES_3: "Tasklist"
       KEYCLOAK_USERS_0_ROLES_4: "Web Modeler"
-      KEYCLOAK_CLIENTS_0_NAME: Connectors
-      KEYCLOAK_CLIENTS_0_ID: connectors
-      KEYCLOAK_CLIENTS_0_SECRET: c0nn3ct0rsAr3Aw3s0me
-      KEYCLOAK_CLIENTS_0_ROOT_URL: https://localhost:8080
-      KEYCLOAK_CLIENTS_0_REDIRECT_URIS_0: /
-      KEYCLOAK_CLIENTS_0_PERMISSIONS_0_RESOURCE_SERVER_ID: operate-api
-      KEYCLOAK_CLIENTS_0_PERMISSIONS_0_DEFINITION: read:*
-      KEYCLOAK_CLIENTS_1_NAME: zeebe
-      KEYCLOAK_CLIENTS_1_ID: ${ZEEBE_CLIENT_ID}
-      KEYCLOAK_CLIENTS_1_SECRET: ${ZEEBE_CLIENT_SECRET}
-      KEYCLOAK_CLIENTS_1_TYPE: M2M
-      KEYCLOAK_CLIENTS_1_PERMISSIONS_0_RESOURCE_SERVER_ID: zeebe-api
-      KEYCLOAK_CLIENTS_1_PERMISSIONS_0_DEFINITION: write:*
+      KEYCLOAK_CLIENTS_0_NAME: zeebe
+      KEYCLOAK_CLIENTS_0_ID: ${ZEEBE_CLIENT_ID}
+      KEYCLOAK_CLIENTS_0_SECRET: ${ZEEBE_CLIENT_SECRET}
+      KEYCLOAK_CLIENTS_0_TYPE: M2M
+      KEYCLOAK_CLIENTS_0_PERMISSIONS_0_RESOURCE_SERVER_ID: zeebe-api
+      KEYCLOAK_CLIENTS_0_PERMISSIONS_0_DEFINITION: write:*
+      RESOURCE_PERMISSIONS_ENABLED: ${RESOURCE_AUTHORIZATIONS_ENABLED}
     healthcheck:
       test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
       interval: 5s

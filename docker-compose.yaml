@@ -98,9 +98,12 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - zeebe
-      - identity
-      - elasticsearch
+      zeebe:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+      identity:
+        condition: service_healthy
 
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
     image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION}

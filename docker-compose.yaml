@@ -114,6 +114,7 @@ services:
       - CAMUNDA_OPERATE_CLIENT_CLIENT-ID=connectors
       - CAMUNDA_OPERATE_CLIENT_CLIENT-SECRET=c0nn3ct0rsAr3Aw3s0me
       - CAMUNDA_OPERATE_CLIENT_KEYCLOAK-REALM=camunda-platform
+      - OPERATE_CLIENT_ENABLED=true
       - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
     env_file: connector-secrets.txt
     networks:

@@ -76,7 +76,7 @@ docker-compose -f docker-compose-core.yaml up -d
 Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file.
 
 In addition to the local environment setup with docker-compose, you can download the [Camunda Desktop Modeler](https://camunda.com/download/modeler/) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
-As an enterprise customer, you can also [use Web Modeler](#web-modeler-self-managed).
+As an enterprise customer, you can [use Web Modeler](#web-modeler-self-managed).
 
 Feedback and updates are welcome!
 

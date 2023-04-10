@@ -39,7 +39,7 @@ The full environment contains these components:
 - Keycloak
 - PostgreSQL
 
-> :information_source: Web Modeler is not included by default. Please see the additional [instructions below](#web-modeler-self-managed).
+> :information_source: Web Modeler is not included by default. Please follow [the instructions below](#web-modeler-self-managed) to install it.
 
 Clone this repo and issue the following command to start your environment:
 

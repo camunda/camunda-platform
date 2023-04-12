@@ -173,9 +173,9 @@ If you enabled authentication for GRPC requests on Zeebe you need to provide cli
 * Audience: `zeebe-api`
 
 ### Emails
-The setup includes [MailHog](https://github.com/mailhog/MailHog) as a test SMTP server. It captures all emails sent by Web Modeler, but does not forward them to the actual recipients. 
+The setup includes [Mailpit](https://github.com/axllent/mailpit) as a test SMTP server. It captures all emails sent by Web Modeler, but does not forward them to the actual recipients. 
 
-You can access emails in MailHog's Web UI at [http://localhost:8075](http://localhost:8075).
+You can access emails in Mailpit's Web UI at [http://localhost:8075](http://localhost:8075).
 
 ## Troubleshooting
 ### Running on arm64 based hardware

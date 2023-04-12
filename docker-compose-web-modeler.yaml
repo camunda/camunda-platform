@@ -3,7 +3,7 @@
 #
 #    docker-compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml up -d
 #
-# Note: this file is using MailHog to simulate a mail server
+# Note: this file is using Mailpit to simulate a mail server
 
 version: "2.4"
 
@@ -42,12 +42,12 @@ services:
     networks:
       - modeler
 
-  mailhog:
+  mailpit:
     # If you want to use your own SMTP server, you can remove this container
     # and configure RESTAPI_MAIL_HOST, RESTAPI_MAIL_PORT, REST_API_MAIL_USER,
     # REST_API_MAIL_PASSWORD and RESTAPI_MAIL_ENABLE_TLS in modeler-restapi
-    container_name: mailhog
-    image: mailhog/mailhog:${MAILHOG_VERSION}
+    container_name: mailpit
+    image: axllent/mailpit:${MAILPIT_VERSION}
     ports:
       - "1025:1025"
       - "8075:8025"
@@ -65,7 +65,7 @@ services:
     depends_on:
       modeler-db:
         condition: service_healthy
-      mailhog:
+      mailpit:
         condition: service_started
       identity:
         condition: service_healthy
@@ -91,7 +91,7 @@ services:
       RESTAPI_DB_PORT: 5432
       RESTAPI_DB_USER: modeler-db-user
       RESTAPI_DB_PASSWORD: modeler-db-password
-      RESTAPI_MAIL_HOST: mailhog
+      RESTAPI_MAIL_HOST: mailpit
       RESTAPI_MAIL_PORT: 1025
       RESTAPI_MAIL_ENABLE_TLS: "false"
       RESTAPI_MAIL_FROM_ADDRESS: "noreply@example.com"

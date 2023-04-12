@@ -18,9 +18,9 @@ services:
       - "26500:26500"
       - "9600:9600"
     environment: # https://docs.camunda.io/docs/self-managed/zeebe-deployment/configuration/environment-variables/
-      - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE=${ZEEBE_AUTHENTICATION_MODE}
-      - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_ISSUERBACKENDURL=http://keycloak:8080/auth/realms/camunda-platform
-      - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_AUDIENCE=zeebe-api
+      - ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE=${ZEEBE_AUTHENTICATION_MODE}
+      - ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_ISSUERBACKENDURL=http://keycloak:8080/auth/realms/camunda-platform
+      - ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_AUDIENCE=zeebe-api
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
       # default is 1000, see here: https://github.com/camunda/zeebe/blob/main/exporters/elasticsearch-exporter/src/main/java/io/camunda/zeebe/exporter/ElasticsearchExporterConfiguration.java#L259

@@ -62,7 +62,7 @@ services:
       - CAMUNDA_OPERATE_IDENTITY_AUDIENCE=operate-api
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:18080/auth/realms/camunda-platform
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/certs
-      - CAMUNDA_TASKLIST_IDENTITY_RESOURCEPERMISSIONSENABLED=${RESOURCE_AUTHORIZATIONS_ENABLED}
+      - CAMUNDA_OPERATE_IDENTITY_RESOURCEPERMISSIONSENABLED=${RESOURCE_AUTHORIZATIONS_ENABLED}
     networks:
       - camunda-platform
     depends_on:

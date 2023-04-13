@@ -189,6 +189,22 @@ described in [Using docker-compose](#using-docker-compose).
 $ DOCKER_BUILDKIT=0 docker build -t bitnami/keycloak:19.0.3 "https://github.com/camunda/camunda-platform.git#main:.keycloak/"
 ```
 
+## Resource based authentications
+
+You can control access to specific processes and decision tables in Operate and Tasklist with resource
+based authentication.
+
+This feature is disabled by default and can be enabled by setting 
+`RESOURCE_AUTHORIZATIONS_ENABLED` to `true`, e.g. via running:
+
+```
+RESOURCE_AUTHORIZATIONS_ENABLED=true docker-compose up -d
+```
+or by modifying the default value in the [`.env`](.env) file.
+
+Read more about resource based authentications in the [documentation](https://docs.camunda.io/docs/self-managed/self-managed/concepts/access-control/resource-authorizations).
+
+
 ## Camunda Platform 7
 
 Looking for information on Camunda Platform 7? Check out the links below:

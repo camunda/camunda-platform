@@ -1,0 +1,30 @@
+on:
+  release:
+    types: [created]
+
+jobs:
+  release_script:
+    runs-on: ubuntu-latest
+    name: Build release script
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
+      
+      - name: Build
+        working-directory: ./release-notes-fetcher
+        run: go build
+
+      - name: Run release notes script
+        working-directory: ./release-notes-fetcher
+        run: ./release-notes-fetcher > release_notes.txt
+        env:
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Edit release notes with output from script
+        working-directory: ./release-notes-fetcher
+        run: gh release edit --notes-file release_notes.txt -R camunda/camunda-platform $GITHUB_REF
+

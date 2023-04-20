@@ -202,7 +202,7 @@ RESOURCE_AUTHORIZATIONS_ENABLED=true docker-compose up -d
 ```
 or by modifying the default value in the [`.env`](.env) file.
 
-Read more about resource based authorizations in the [documentation](https://docs.camunda.io/docs/self-managed/self-managed/concepts/access-control/resource-authorizations).
+Read more about resource based authorizations in the [documentation](https://docs.camunda.io/docs/self-managed/concepts/access-control/resource-authorizations/).
 
 
 ## Camunda Platform 7

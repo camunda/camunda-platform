@@ -20,11 +20,64 @@ jobs:
 
       - name: Run release notes script
         working-directory: ./release-notes-fetcher
-        run: ./release-notes-fetcher > release_notes.txt
+        run: set +o pipefail; ./release-notes-fetcher | tee release_notes.txt
         env:
-          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.DEV_GITHUB_PERSONAL_ACCESS_TOKEN }}
+
+      - name: Login to gh repo
+        working-directory: ./release-notes-fetcher
+        run: echo ${{ secrets.DEV_GITHUB_PERSONAL_ACCESS_TOKEN }} | gh auth login --with-token
 
       - name: Edit release notes with output from script
         working-directory: ./release-notes-fetcher
-        run: gh release edit --notes-file release_notes.txt -R camunda/camunda-platform-release-notes-test $GITHUB_REF
+        run: gh release edit --notes-file release_notes.txt -R camunda/camunda-platform-release-notes-test $GITHUB_REF_NAME
 
+      - name: Create temporary directory for asset download/upload
+        working-directory: ./release-notes-fetcher
+        run: mkdir -p tmp
+
+      - name: Download Zeebe resources
+        working-directory: ./release-notes-fetcher/tmp
+        run: >
+          gh release
+          download "$GITHUB_REF_NAME"
+          -R camunda/zeebe
+          -p "zbctl"
+          -p "zbctl.sha1sum"
+          -p "zbctl.exe"
+          -p "zbctl.exe.sha1sum"
+          -p "zbctl.darwin"
+          -p "zbctl.darwin.sha1sum"
+          -p "camunda-zeebe-$GITHUB_REF_NAME.tar.gz"
+          -p "camunda-zeebe-$GITHUB_REF_NAME.tar.gz.sha1sum"
+          -p "camunda-zeebe-$GITHUB_REF_NAME.zip"
+          -p "camunda-zeebe-$GITHUB_REF_NAME.zip.sha1sum"
+
+
+      # Operate repo owners do not create github releases, so we just download the tags zip/tarball
+      - name: Download Operate resources
+        working-directory: ./release-notes-fetcher/tmp
+        run: |-
+          gh api /repos/camunda/operate/tarball/$GITHUB_REF_NAME > camunda-operate-$GITHUB_REF_NAME.tar.gz
+          gh api /repos/camunda/operate/zipball/$GITHUB_REF_NAME > camunda-operate-$GITHUB_REF_NAME.zip
+
+      - name: Download Tasklist resources
+        working-directory: ./release-notes-fetcher/tmp
+        run: |-
+          gh api /repos/camunda/tasklist/tarball/$GITHUB_REF_NAME > camunda-tasklist-$GITHUB_REF_NAME.tar.gz
+          gh api /repos/camunda/tasklist/zipball/$GITHUB_REF_NAME > camunda-tasklist-$GITHUB_REF_NAME.zip
+
+      - name: Download Identity resources
+        working-directory: ./release-notes-fetcher/tmp
+        run: >
+          gh release
+          download "$GITHUB_REF_NAME"
+          -R camunda-cloud/identity
+          -p "camunda-identity-$GITHUB_REF_NAME.tar.gz"
+          -p "camunda-identity-$GITHUB_REF_NAME.tar.gz.sha1sum"
+          -p "camunda-identity-$GITHUB_REF_NAME.zip"
+          -p "camunda-identity-$GITHUB_REF_NAME.zip.sha1sum"
+
+      - name: Upload resources
+        working-directory: ./release-notes-fetcher/tmp
+        run: gh release -R camunda/camunda-platform-release-notes-test upload "$GITHUB_REF_NAME" *

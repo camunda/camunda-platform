@@ -2,10 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/go-logr/logr"
-	"github.com/go-logr/logr/funcr"
 	"github.com/google/go-github/v51/github"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
 	"io"
 	"os"
@@ -22,17 +21,6 @@ const TasklistRepoName = "tasklist"
 const IdentityRepoName = "identity"
 const ReleaseNotesTemplateFileName = "release-notes-template.txt"
 
-// NewStdoutLogger returns a logr.Logger that prints to stdout.
-func NewStdoutLogger() logr.Logger {
-	return funcr.New(func(prefix, args string) {
-		if prefix != "" {
-			fmt.Printf("%s: %s\n", prefix, args)
-		} else {
-			fmt.Println(args)
-		}
-	}, funcr.Options{})
-}
-
 type CamundaPlatformRelease struct {
 	ZeebeReleaseNotes    string
 	OperateReleaseNotes  string
@@ -41,49 +29,52 @@ type CamundaPlatformRelease struct {
 }
 
 func GetChangelogReleaseContents(ctx context.Context,
-	logger logr.Logger,
 	repoName string,
 	changelogFileName string,
-	repoService *github.RepositoriesService) string {
-	opts := github.RepositoryContentGetOptions{}
+	repoService *github.RepositoriesService,
+	githubRef string) string {
+	opts := github.RepositoryContentGetOptions{
+		Ref: githubRef,
+	}
 	operateChangeLogReader, response, err := repoService.DownloadContents(ctx,
 		RepoOwner,
 		repoName,
 		changelogFileName,
 		&opts)
 	if err != nil || response.StatusCode != 200 {
-		logger.Error(err, "error", err, "StatusCode", response.StatusCode)
+		log.Error().Stack().Err(err).Msg("an error has occurred")
 	}
 
 	bytes, err := io.ReadAll(operateChangeLogReader)
 	if err != nil {
-		logger.Error(fmt.Errorf("an error has occurred"), "error", err)
+		log.Error().Stack().Err(err).Msg("an error has occurred")
 	}
 	// operateChangeLogString := string(bytes)
 	latestReleaseRegex, err := regexp.Compile(`(?s)(?m)# .*?(?:^# )`)
 	if err != nil {
-		logger.Error(fmt.Errorf("an error has occurred"), "error", err)
+		log.Error().Stack().Err(err).Msg("an error has occurred")
 	}
 	mostRecentChangeLog := latestReleaseRegex.Find(bytes)
-	mostRecentChangeLogString := string(mostRecentChangeLog[0 : len(mostRecentChangeLog)-2])
+	var firstNewlineIndex int
+	for i, s := range mostRecentChangeLog {
+		if s == '\n' {
+			firstNewlineIndex = i
+			break
+		}
+	}
+	mostRecentChangeLogString := string(mostRecentChangeLog[firstNewlineIndex : len(mostRecentChangeLog)-2])
 	return mostRecentChangeLogString
 }
 
 func GetLatestReleaseContents(ctx context.Context,
-	logger logr.Logger,
 	orgName string,
 	repoName string,
-	repoService *github.RepositoriesService) string {
-	latestRelease, response, err := repoService.GetLatestRelease(ctx, orgName, repoName)
-	if err != nil || response.StatusCode != 200 {
-		logger.Error(err, "status_code", response.StatusCode)
-	}
-	logger.Info("Latest release is: ", "latestRelease.name", latestRelease.Name)
+	repoService *github.RepositoriesService,
+	githubRef string) string {
 
-	githubRelease, response, err := repoService.GetLatestRelease(ctx, orgName, repoName)
+	githubRelease, response, err := repoService.GetReleaseByTag(ctx, orgName, repoName, githubRef)
 	if err != nil || response.StatusCode != 200 {
-		logger.Error(fmt.Errorf("Error"), "statusCode", "status code", response.StatusCode)
-		logger.Error(fmt.Errorf("an error has occurred"), "error", "errormsg", err)
+		log.Error().Stack().Err(err).Msg("An error has occurred")
 	}
 	return *githubRelease.Body
 }
@@ -94,43 +85,47 @@ func main() {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: os.Getenv("GITHUB_PERSONAL_ACCESS_TOKEN")},
 	)
+	githubRef := os.Getenv("GITHUB_REF_NAME")
 	ctx := context.TODO()
 	tc := oauth2.NewClient(ctx, ts)
 
-	logger := NewStdoutLogger()
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+
 	client := github.NewClient(tc)
 	repoService := client.Repositories
+	log.Debug().Msg("Github ref = " + githubRef)
 
 	zeebeReleaseNotes := GetLatestReleaseContents(
 		ctx,
-		logger,
 		RepoOwner,
 		ZeebeRepoName,
 		repoService,
+		githubRef,
 	)
 
 	operateReleaseNotesContents := GetChangelogReleaseContents(
 		ctx,
-		logger,
 		OperateRepoName,
 		"CHANGELOG.md",
 		repoService,
+		githubRef,
 	)
 
 	tasklistReleaseNotesContents := GetChangelogReleaseContents(
 		ctx,
-		logger,
 		TasklistRepoName,
 		"CHANGELOG.md",
 		repoService,
+		githubRef,
 	)
 
 	identityReleaseNotesContents := GetLatestReleaseContents(
 		ctx,
-		logger,
 		CloudRepoOwner,
 		IdentityRepoName,
 		repoService,
+		githubRef,
 	)
 
 	platformRelease := CamundaPlatformRelease{
@@ -142,6 +137,6 @@ func main() {
 
 	err := temp.Execute(os.Stdout, platformRelease)
 	if err != nil {
-		logger.Error(fmt.Errorf("could not parse template file"), "error", err)
+		log.Error().Stack().Err(err).Msg("could not parse template file")
 	}
 }

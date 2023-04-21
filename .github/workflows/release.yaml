@@ -26,5 +26,5 @@ jobs:
 
       - name: Edit release notes with output from script
         working-directory: ./release-notes-fetcher
-        run: gh release edit --notes-file release_notes.txt -R camunda/camunda-platform $GITHUB_REF
+        run: gh release edit --notes-file release_notes.txt -R camunda/camunda-platform-release-notes-test $GITHUB_REF
 

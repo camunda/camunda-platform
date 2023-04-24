@@ -104,4 +104,4 @@ jobs:
 
       - name: Upload resources
         working-directory: ./release-notes-fetcher/tmp
-        run: gh release -R camunda/camunda-platform-release-notes-test upload "$GITHUB_REF_NAME" *
+        run: gh release -R camunda/camunda-platform upload "$GITHUB_REF_NAME" *

@@ -27,7 +27,7 @@ jobs:
 
       - name: Run release notes script
         working-directory: ./release-notes-fetcher
-        run: set +o pipefail; ./release-notes-fetcher | tee release_notes.txt
+        run: set -o pipefail; ./release-notes-fetcher | tee release_notes.txt
         env:
           GITHUB_PERSONAL_ACCESS_TOKEN: ${{ steps.generate-github-token.outputs.token }}
 

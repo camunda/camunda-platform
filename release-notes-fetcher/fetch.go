@@ -43,16 +43,19 @@ func GetChangelogReleaseContents(ctx context.Context,
 		&opts)
 	if err != nil || response.StatusCode != 200 {
 		log.Error().Stack().Err(err).Msg("an error has occurred")
+		os.Exit(1)
 	}
 
 	bytes, err := io.ReadAll(operateChangeLogReader)
 	if err != nil {
 		log.Error().Stack().Err(err).Msg("an error has occurred")
+		os.Exit(1)
 	}
 	// operateChangeLogString := string(bytes)
 	latestReleaseRegex, err := regexp.Compile(`(?s)(?m)# .*?(?:^# )`)
 	if err != nil {
 		log.Error().Stack().Err(err).Msg("an error has occurred")
+		os.Exit(1)
 	}
 	mostRecentChangeLog := latestReleaseRegex.Find(bytes)
 	var firstNewlineIndex int
@@ -75,6 +78,7 @@ func GetLatestReleaseContents(ctx context.Context,
 	githubRelease, response, err := repoService.GetReleaseByTag(ctx, orgName, repoName, githubRef)
 	if err != nil || response.StatusCode != 200 {
 		log.Error().Stack().Err(err).Msg("An error has occurred")
+		os.Exit(1)
 	}
 	return *githubRelease.Body
 }
@@ -138,5 +142,6 @@ func main() {
 	err := temp.Execute(os.Stdout, platformRelease)
 	if err != nil {
 		log.Error().Stack().Err(err).Msg("could not parse template file")
+		os.Exit(1)
 	}
 }

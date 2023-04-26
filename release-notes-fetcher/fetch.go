@@ -86,25 +86,33 @@ func GetLatestReleaseContents(ctx context.Context,
 func main() {
 	var temp = template.Must(template.ParseFiles(ReleaseNotesTemplateFileName))
 
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: os.Getenv("GITHUB_PERSONAL_ACCESS_TOKEN")},
+	camundaTokenSource := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: os.Getenv("GITHUB_CAMUNDA_ACCESS_TOKEN")},
+	)
+	camundaCloudTokenSource := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: os.Getenv("GITHUB_CAMUNDA_CLOUD_ACCESS_TOKEN")},
 	)
 	githubRef := os.Getenv("GITHUB_REF_NAME")
 	ctx := context.TODO()
-	tc := oauth2.NewClient(ctx, ts)
+	camundaOAuthClient := oauth2.NewClient(ctx, camundaTokenSource)
+	camundaCloudOAuthClient := oauth2.NewClient(ctx, camundaCloudTokenSource)
 
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
-	client := github.NewClient(tc)
-	repoService := client.Repositories
+	camundaGithubClient := github.NewClient(camundaOAuthClient)
+	camundaCloudGithubClient := github.NewClient(camundaCloudOAuthClient)
+
+	camundaRepoService := camundaGithubClient.Repositories
+	camundaCloudRepoService := camundaCloudGithubClient.Repositories
+
 	log.Debug().Msg("Github ref = " + githubRef)
 
 	zeebeReleaseNotes := GetLatestReleaseContents(
 		ctx,
 		RepoOwner,
 		ZeebeRepoName,
-		repoService,
+		camundaRepoService,
 		githubRef,
 	)
 
@@ -112,7 +120,7 @@ func main() {
 		ctx,
 		OperateRepoName,
 		"CHANGELOG.md",
-		repoService,
+		camundaRepoService,
 		githubRef,
 	)
 
@@ -120,7 +128,7 @@ func main() {
 		ctx,
 		TasklistRepoName,
 		"CHANGELOG.md",
-		repoService,
+		camundaRepoService,
 		githubRef,
 	)
 
@@ -128,7 +136,7 @@ func main() {
 		ctx,
 		CloudRepoOwner,
 		IdentityRepoName,
-		repoService,
+		camundaCloudRepoService,
 		githubRef,
 	)
 

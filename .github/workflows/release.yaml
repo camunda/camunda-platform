@@ -18,22 +18,31 @@ jobs:
         working-directory: ./release-notes-fetcher
         run: go build
 
-      - name: Generate token for GitHub
-        id: generate-github-token
+      - name: Generate token for Camunda GitHub org
+        id: generate-camunda-github-token
         uses: tibdex/github-app-token@v1
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
+      - name: Generate token for Camunda Cloud GitHub org
+        id: generate-camunda-cloud-github-token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          repo: camunda-cloud/identity
+
       - name: Run release notes script
         working-directory: ./release-notes-fetcher
         run: set -o pipefail; ./release-notes-fetcher | tee release_notes.txt
         env:
-          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ steps.generate-github-token.outputs.token }}
+          GITHUB_CAMUNDA_ACCESS_TOKEN: ${{ steps.generate-camunda-github-token.outputs.token }}
+          GITHUB_CAMUNDA_CLOUD_ACCESS_TOKEN: ${{ steps.generate-camunda-github-token.outputs.token }}
 
       - name: Login to gh repo
         working-directory: ./release-notes-fetcher
-        run: echo ${{ steps.generate-github-token.outputs.token }} | gh auth login --with-token
+        run: echo ${{ steps.generate-camunda-github-token.outputs.token }} | gh auth login --with-token
 
       - name: Edit release notes with output from script
         working-directory: ./release-notes-fetcher
@@ -74,6 +83,10 @@ jobs:
           gh api /repos/camunda/tasklist/tarball/$GITHUB_REF_NAME > camunda-tasklist-$GITHUB_REF_NAME.tar.gz
           gh api /repos/camunda/tasklist/zipball/$GITHUB_REF_NAME > camunda-tasklist-$GITHUB_REF_NAME.zip
 
+      - name: Login to Camunda Cloud
+        working-directory: ./release-notes-fetcher
+        run: echo ${{ steps.generate-camunda-cloud-github-token.outputs.token }} | gh auth login --with-token
+
       - name: Download Identity resources
         working-directory: ./release-notes-fetcher/tmp
         run: >
@@ -84,6 +97,10 @@ jobs:
           -p "camunda-identity-$GITHUB_REF_NAME.tar.gz.sha1sum"
           -p "camunda-identity-$GITHUB_REF_NAME.zip"
           -p "camunda-identity-$GITHUB_REF_NAME.zip.sha1sum"
+
+      - name: Login back to Camunda
+        working-directory: ./release-notes-fetcher
+        run: echo ${{ steps.generate-camunda-github-token.outputs.token }} | gh auth login --with-token
 
       - name: Upload resources
         working-directory: ./release-notes-fetcher/tmp

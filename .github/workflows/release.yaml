@@ -38,7 +38,7 @@ jobs:
         run: set -o pipefail; ./release-notes-fetcher | tee release_notes.txt
         env:
           GITHUB_CAMUNDA_ACCESS_TOKEN: ${{ steps.generate-camunda-github-token.outputs.token }}
-          GITHUB_CAMUNDA_CLOUD_ACCESS_TOKEN: ${{ steps.generate-camunda-github-token.outputs.token }}
+          GITHUB_CAMUNDA_CLOUD_ACCESS_TOKEN: ${{ steps.generate-camunda-cloud-github-token.outputs.token }}
 
       - name: Login to gh repo
         working-directory: ./release-notes-fetcher

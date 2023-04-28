@@ -3,9 +3,8 @@ set -x -e
 set +o pipefail
 
 export GITHUB_REF_NAME=8.2.3
-export REPO_TO_PUBLISH_TO=camunda/camunda-platform-release-notes-test
+export REPO_TO_PUBLISH_TO=camunda/camunda-platform
 
-cd release-notes-fetcher
 go build
 
 ./release-notes-fetcher | tee release_notes.txt

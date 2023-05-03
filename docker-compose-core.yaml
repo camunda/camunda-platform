@@ -49,6 +49,8 @@ services:
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
       interval: 30s
@@ -70,6 +72,8 @@ services:
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
       interval: 30s
@@ -94,6 +98,8 @@ services:
       - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
       - CAMUNDA_OPERATE_CLIENT_USERNAME=demo
       - CAMUNDA_OPERATE_CLIENT_PASSWORD=demo
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
       interval: 30s

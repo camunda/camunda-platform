@@ -22,9 +22,9 @@ jobs:
 
       - name: "Wait until (health: starting) goes away"
         run: >-
-          while "$(docker container ls | grep "health: starting")" != ""
+          while "$(docker container ls | grep "health: starting")" != "";
           do
-          sleep 5
+          sleep 5;
           done
 
 

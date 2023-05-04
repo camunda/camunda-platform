@@ -15,10 +15,10 @@ jobs:
       - name: Bring up containers
         run: >-
           docker compose 
-            -f docker-compose-core.yaml
-            up
-            --quiet-pull
-            -d
+          -f docker-compose-core.yaml
+          up
+          --quiet-pull
+          -d
 
       - name: Wait 45 seconds
         run: sleep 45
@@ -31,7 +31,7 @@ jobs:
       - name: Check to see if all containers are healthy
         run: >-
           test
-            "$\(docker container ls --format \"table \{\{.Image\}\}\t\{\{.Status\}\}\" |
+            \"$\(docker container ls --format \"table \{\{.Image\}\}\t\{\{.Status\}\}\" |
                 grep
                   -e \"unhealthy\"
                   -e \"health: starting\"\)\"

@@ -13,6 +13,12 @@ jobs:
     name: Test deploying camunda platform on docker compose
     runs-on: ubuntu-latest
     steps:
+
+      - name: disable and stop mono-xsp4.service
+        run: |
+             sudo systemctl stop mono-xsp4.service || true
+             sudo systemctl disable mono-xsp4.service || true
+
       - uses: actions/checkout@v3
 
       - name: Bring up containers

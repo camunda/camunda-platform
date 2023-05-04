@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Bring up containers
-        run: >
+        run: >-
           docker compose 
             -f docker-compose-core.yaml
             up
@@ -24,12 +24,12 @@ jobs:
         run: sleep 45
 
       - name: Print container status
-        run: >
+        run: >-
           docker container ls --format \"table \{\{.Image\}\}\t\{\{.Status\}\}\"
 
 
       - name: Check to see if all containers are healthy
-        run: >
+        run: >-
           test
             "$\(docker container ls --format \"table \{\{.Image\}\}\t\{\{.Status\}\}\" |
                 grep

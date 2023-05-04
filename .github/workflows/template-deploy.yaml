@@ -34,7 +34,7 @@ jobs:
           "$(cat status |
           grep
           -e "unhealthy"
-          -e "health: starting)"
+          -e "health: starting")"
           =
           ""
 

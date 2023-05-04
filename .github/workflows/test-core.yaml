@@ -1,0 +1,11 @@
+name: "Test Core"
+on:
+  push:
+    branches:
+      - "**"
+jobs:
+  test_core:
+    uses: ./.github/workflows/template-deploy.yaml
+    with:
+      compose_args: "-f docker-compose-core.yaml"
+

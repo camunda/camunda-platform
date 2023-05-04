@@ -1,21 +1,23 @@
-name: "Deploy Core"
+name: "test"
 
 on:
-  push:
-    branches:
-      - "**"
+  workflow_call:
+    inputs:
+      compose_args:
+        description: arguments supplied to docker compose
+        required: true
+        type: string
 
 jobs:
   test_compose_deploy:
-    name: Test deploying camunda platform on docker-compose
+    name: Test deploying camunda platform on docker compose
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
       - name: Bring up containers
         run: >-
-          docker compose 
-          -f docker-compose-core.yaml
+          docker compose ${{ inputs.compose_args }}
           up
           --quiet-pull
           -d

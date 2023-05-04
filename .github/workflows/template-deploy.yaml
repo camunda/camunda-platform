@@ -26,17 +26,17 @@ jobs:
       - name: Print container status
         id: container_status
         run: >-
-          docker container ls --format "table {{.Image}}\t{{.Status}}"
+          docker container ls --format "table {{.Image}}\t{{.Status}}" > status
 
       - name: Check to see if all containers are healthy
         run: >-
           test
-          \"$(echo '${{ steps.container_status.outputs.* }}' |
+          "$(cat status |
           grep
-          -e \"unhealthy\"
-          -e \"health: starting\")\"
+          -e "unhealthy"
+          -e "health: starting)"
           =
-          \"\"
+          ""
 
       - name: Clean up containers
         run: docker compose down

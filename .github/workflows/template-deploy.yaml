@@ -26,7 +26,7 @@ jobs:
       - name: Print container status
         id: container_status
         run: >-
-          docker container ls --format "table {{.Image}}\t{{.Status}}" > status
+          docker container ls --format "table {{.Image}}\t{{.Status}}" | tee status
 
       - name: Check to see if all containers are healthy
         run: >-

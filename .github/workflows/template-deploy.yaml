@@ -18,6 +18,8 @@ jobs:
         run: |
              sudo systemctl stop mono-xsp4.service || true
              sudo systemctl disable mono-xsp4.service || true
+             sudo killall mono || true
+             sudo killall xsp4 || true
 
       - uses: actions/checkout@v3
 

@@ -18,8 +18,20 @@ jobs:
       - name: Wait 45 seconds
         run: sleep 45
 
+      - name: Print container status
+        run: >
+          'docker container ls --format "table {{.Image}}\t{{.Status}}"'
+
+
       - name: Check to see if all containers are healthy
-        run: test "$(docker container ls --format "table {{.Image}}\t{{.Status}}" | grep -e unhealthy -e "health: starting")" = ""
+        run: >
+          'test
+            "$(docker container ls --format "table {{.Image}}\t{{.Status}}" |
+                grep
+                  -e "unhealthy"
+                  -e "health: starting")"
+            =
+            ""'
 
       - name: Clean up containers
         run: docker compose down

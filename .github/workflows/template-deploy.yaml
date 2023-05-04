@@ -1,0 +1,25 @@
+name: "Deploy Core"
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  test_compose_deploy:
+    name: Test deploying camunda platform on docker-compose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Bring up containers
+        run: docker compose -f docker-compose-core.yaml up -d
+
+      - name: Wait 45 seconds
+        run: sleep 45
+
+      - name: Check to see if all containers are healthy
+        run: test "$(docker container ls --format "table {{.Image}}\t{{.Status}}" | grep -e unhealthy -e "health: starting")" = ""
+
+      - name: Clean up containers
+        run: docker compose down

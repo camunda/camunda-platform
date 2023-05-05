@@ -25,7 +25,9 @@ jobs:
 
       - name: Login to private registry
         run: >-
-          echo ${{ secrets.CI_DISTRIBUTION_REGISTRY_PASSWORD }} | docker login --password-stdin -u ci-distribution registry.camunda.cloud
+          echo "$PASSWORD" | docker login -u ci-distribution --password-stdin registry.camunda.cloud
+        env:
+          PASSWORD: ${{ secrets.CI_DISTRIBUTION_REGISTRY_PASSWORD }}
 
       - name: Bring up containers
         run: >-

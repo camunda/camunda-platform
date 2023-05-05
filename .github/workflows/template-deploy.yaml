@@ -23,6 +23,10 @@ jobs:
 
       - uses: actions/checkout@v3
 
+      - name: Login to private registry
+        run: >-
+          echo ${{ secrets.CI_DISTRIBUTION_REGISTRY_PASSWORD }} | docker login -u ci-distribution registry.camunda.cloud
+
       - name: Bring up containers
         run: >-
           docker compose ${{ inputs.compose_args }}

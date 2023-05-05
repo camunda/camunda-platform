@@ -41,7 +41,6 @@ jobs:
           sleep 5;
           done
 
-
       - name: Print container status
         id: container_status
         run: >-
@@ -57,5 +56,3 @@ jobs:
           =
           ""
 
-      - name: Clean up containers
-        run: docker compose down

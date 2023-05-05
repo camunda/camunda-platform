@@ -1,0 +1,58 @@
+name: "test"
+
+on:
+  workflow_call:
+    inputs:
+      compose_args:
+        description: arguments supplied to docker compose
+        required: true
+        type: string
+
+jobs:
+  test_compose_deploy:
+    name: Test deploying camunda platform on docker compose
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: disable and stop mono-xsp4.service
+        run: |
+             sudo systemctl stop mono-xsp4.service || true
+             sudo systemctl disable mono-xsp4.service || true
+             sudo killall mono || true
+             sudo killall xsp4 || true
+
+      - uses: actions/checkout@v3
+
+      - name: Login to private registry
+        run: >-
+          echo '${{ secrets.CI_DISTRIBUTION_REGISTRY_PASSWORD }}' | docker login -u ci-distribution --password-stdin  registry.camunda.cloud
+
+      - name: Bring up containers
+        run: >-
+          docker compose ${{ inputs.compose_args }}
+          up
+          --quiet-pull
+          -d
+
+      - name: "Wait until (health: starting) goes away"
+        run: >-
+          while [ "$(docker container ls | grep "health: starting")" != "" ];
+          do
+          sleep 5;
+          done
+
+      - name: Print container status
+        id: container_status
+        run: >-
+          docker container ls --format "table {{.Image}}\t{{.Status}}" | tee status
+
+      - name: Check to see if all containers are healthy
+        run: >-
+          test
+          "$(cat status |
+          grep
+          -e "unhealthy"
+          -e "health: starting")"
+          =
+          ""
+

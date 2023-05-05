@@ -1,0 +1,12 @@
+name: "Test docker-compose.yaml"
+on:
+  push:
+    branches:
+      - "**"
+jobs:
+  test_core:
+    uses: ./.github/workflows/template-deploy.yaml
+    secrets: inherit
+    with:
+      compose_args: "-f docker-compose.yaml"
+

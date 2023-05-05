@@ -6,6 +6,7 @@ on:
 jobs:
   test_core:
     uses: ./.github/workflows/template-deploy.yaml
+    secrets: inherit
     with:
       compose_args: "-f docker-compose-core.yaml"
 

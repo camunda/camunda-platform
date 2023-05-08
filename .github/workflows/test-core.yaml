@@ -9,4 +9,5 @@ jobs:
     secrets: inherit
     with:
       compose_args: "-f docker-compose-core.yaml"
+      run_e2e_tests: false
 

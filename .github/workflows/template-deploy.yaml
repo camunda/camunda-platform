@@ -7,6 +7,10 @@ on:
         description: arguments supplied to docker compose
         required: true
         type: string
+      run_e2e_tests:
+        description: runs playwright tests
+        required: true
+        type: boolean
 
 jobs:
   test_compose_deploy:
@@ -56,3 +60,29 @@ jobs:
           =
           ""
 
+      - uses: actions/setup-node@v3
+        if: ${{ inputs.run_e2e_tests }}
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        if: ${{ inputs.run_e2e_tests }}
+        run: npm ci
+        working-directory: ./e2e_tests
+
+      - name: Install Playwright Browsers
+        if: ${{ inputs.run_e2e_tests }}
+        run: npx playwright install --with-deps
+        working-directory: ./e2e_tests
+
+      - name: Run Playwright tests
+        if: ${{ inputs.run_e2e_tests }}
+        run: npx playwright test
+        working-directory: ./e2e_tests
+
+      - uses: actions/upload-artifact@v3
+        if: ${{ inputs.run_e2e_tests }}
+        with:
+          name: playwright-report
+          path: e2e_tests/playwright-report/
+          retention-days: 30

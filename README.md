@@ -178,6 +178,13 @@ The setup includes [Mailpit](https://github.com/axllent/mailpit) as a test SMTP 
 You can access emails in Mailpit's Web UI at [http://localhost:8075](http://localhost:8075).
 
 ## Troubleshooting
+
+### Submitting Issues
+When submitting an issue on this repository, please make sure your issue is related to the docker compose deployment
+method of the Camunda Platform. All questions regarding to functionality of the web applications should be instead
+posted on the [Camunda Forum](https://forum.camunda.io/). This is the best way for users to query for existing answers
+that others have already encountered. We also have a category on that forum specifically for [Deployment Related Topics](https://forum.camunda.io/c/camunda-platform-8-topics/deploying-camunda-platform-8/33).
+
 ### Running on arm64 based hardware
 When using arm64-based hardware like a M1 or M2 Mac the Keycloak container might not start because Bitnami only
 provides amd64-based images. Until bitnami adds

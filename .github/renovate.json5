@@ -1,0 +1,46 @@
+{
+  "extends": ["config:base"],
+  "description": "Keeps camunda-platform up to date",
+  "baseBranches": ["main", "/^stable\\/.*/"],
+  "dependencyDashboard": true,
+
+  "packageRules": [
+    {
+      "matchBaseBranches": ["/^stable\\/8.0/"],
+      "matchDepNames": ["camunda/operate"],
+      "allowedVersions": "<8.1.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.1/"],
+      "matchDepNames": ["camunda/operate"],
+      "allowedVersions": "<8.2.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.2/"],
+      "matchDepNames": ["camunda/operate"],
+      "allowedVersions": "<8.3.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.3/"],
+      "matchDepNames": ["camunda/operate"],
+      "allowedVersions": "<8.4.0",
+    },
+  ],
+
+  "regexManagers": [
+    {
+      "fileMatch": [".env"],
+      "matchStrings": ["CAMUNDA_PLATFORM_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
+      // Watch camunda/operate registry even though this env variable is also used in
+      // * camunda/identity
+      // * camunda/tasklist
+      // * camunda/zeebe
+      //
+      // If one of these images does not exist yet, the expected behavior is that
+      // the PR gets submitted, but the CI build will not pass because the other
+      // images will not be available.
+      "depNameTemplate": "camunda/operate",
+      "datasourceTemplate": "docker",
+    },
+  ],
+}

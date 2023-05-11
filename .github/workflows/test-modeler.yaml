@@ -9,4 +9,4 @@ jobs:
     secrets: inherit
     with:
       compose_args: "-f docker-compose.yaml -f docker-compose-web-modeler.yaml"
-
+      run_e2e_tests: true

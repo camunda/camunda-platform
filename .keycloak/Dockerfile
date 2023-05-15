@@ -1,6 +1,6 @@
 # This Dockerfile will build an arm64 Keycloak image that can be used in the same way
 # as the docker images provided by bitnami/keycloak
-ARG KEYCLOAK_VERSION=19.0.3
+ARG KEYCLOAK_VERSION=21.1.1
 
 # Inspired by https://github.com/keycloak/keycloak/blob/main/quarkus/container/Dockerfile
 # and https://github.com/bitnami/containers/blob/main/bitnami/keycloak/19/debian-11/Dockerfile

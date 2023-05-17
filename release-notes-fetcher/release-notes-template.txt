@@ -1,0 +1,11 @@
+# Zeebe
+{{.ZeebeReleaseNotes}}
+
+# Operate
+{{.OperateReleaseNotes}}
+
+# Tasklist
+{{.TasklistReleaseNotes}}
+
+# Identity
+{{.IdentityReleaseNotes}}

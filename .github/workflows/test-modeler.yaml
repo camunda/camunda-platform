@@ -1,0 +1,12 @@
+name: "Test docker-compose-web-modeler.yaml"
+on:
+  push:
+    branches:
+      - "**"
+jobs:
+  test_modeler_yaml:
+    uses: ./.github/workflows/template-deploy.yaml
+    secrets: inherit
+    with:
+      compose_args: "-f docker-compose.yaml -f docker-compose-web-modeler.yaml"
+      run_e2e_tests: true

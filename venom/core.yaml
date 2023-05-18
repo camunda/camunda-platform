@@ -1,0 +1,36 @@
+name: Test core functionality of Camunda Platform
+
+# Uppercase vars are provided as Venom env vars.
+vars:
+  releaseName: '{{ .RELEASE_NAME | default "integration" }}'
+
+testcases:
+
+# https://docs.camunda.io/docs/self-managed/identity/user-guide/generating-m2m-tokens/
+- name: Generating machine-to-machine token
+  steps:
+  - name: "{{ .value.component }}"
+    type: http
+    range:
+    - component: Tasklist
+      clientID: tasklist
+      clientSecret: "XALaRPl5qwTEItdwCMiPS62nVpKs7dL7"
+    - component: Operate
+      clientID: operate
+      clientSecret: "XALaRPl5qwTEItdwCMiPS62nVpKs7dL7"
+    - component: Optimize
+      clientID: optimize
+      clientSecret: "XALaRPl5qwTEItdwCMiPS62nVpKs7dL7"
+    method: POST
+    url: "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token"
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+    body: |-
+      client_id={{ .value.clientID }}&client_secret={{ .value.clientSecret }}&grant_type=client_credentials
+    info: |
+      Component: {{ .value.component }}
+      - Request Body: {{ .result.request.body }}
+      - Response Body: {{ .result.body }}
+      - Response Error (if any): {{ .result.err }}
+    assertions:
+    - result.statuscode ShouldEqual 200

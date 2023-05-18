@@ -7,19 +7,13 @@ vars:
 testcases:
 
 # https://docs.camunda.io/docs/self-managed/identity/user-guide/generating-m2m-tokens/
-- name: Generating machine-to-machine token
+- name: tasklist
   steps:
-  - name: "{{ .value.component }}"
+  - name: tasklist step
     type: http
     range:
     - component: Tasklist
       clientID: tasklist
-      clientSecret: "XALaRPl5qwTEItdwCMiPS62nVpKs7dL7"
-    - component: Operate
-      clientID: operate
-      clientSecret: "XALaRPl5qwTEItdwCMiPS62nVpKs7dL7"
-    - component: Optimize
-      clientID: optimize
       clientSecret: "XALaRPl5qwTEItdwCMiPS62nVpKs7dL7"
     method: POST
     url: "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token"
@@ -34,3 +28,26 @@ testcases:
       - Response Error (if any): {{ .result.err }}
     assertions:
     - result.statuscode ShouldEqual 200
+    vars:
+      oauth2token:
+        from: result.bodyjson.access_token
+        default: bad
+- name: Using m2m token
+  steps:
+  - name: "{{ .value.component }}-2"
+    type: http
+    range:
+    - component: Tasklist
+      clientID: tasklist
+      oauth2_token: "{{.tasklist.oauth2token}}"
+    method: POST
+    headers:
+      Authorization: "Bearer {{.value.oauth2_token}}"
+      Accept: "application/json"
+    url: "http://localhost:8082/v1/tasks/search"
+    info: |
+      Component: {{ .value.component }}
+      - Request Body: {{ .result.request.body }}
+      - Response Body: {{ .result.body }}
+      - Response Error (if any): {{ .result.err }}
+

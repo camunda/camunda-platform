@@ -13,8 +13,8 @@ testcases:
     type: http
     range:
     - component: Tasklist
-      clientID: tasklist
-      clientSecret: "XALaRPl5qwTEItdwCMiPS62nVpKs7dL7"
+      clientID: jessecli
+      clientSecret: "Lfbj5IvgFrrXJ7hKuTWDjgk3I25GnCD2"
     method: POST
     url: "http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token"
     headers:
@@ -43,7 +43,6 @@ testcases:
     method: POST
     headers:
       Authorization: "Bearer {{.value.oauth2_token}}"
-      Accept: "application/json"
     url: "http://localhost:8082/v1/tasks/search"
     info: |
       Component: {{ .value.component }}

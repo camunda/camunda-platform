@@ -25,6 +25,14 @@
       "matchDepNames": ["camunda/operate"],
       "allowedVersions": "<8.4.0",
     },
+    {
+      "matchDepNames": ["postgres"],
+      "matchUpdateTypes": ["patch"],
+    },
+    {
+      "matchDepNames": ["bitnami/keycloak"],
+      "matchUpdateTypes": ["patch"],
+    },
   ],
 
   "regexManagers": [
@@ -40,6 +48,18 @@
       // the PR gets submitted, but the CI build will not pass because the other
       // images will not be available.
       "depNameTemplate": "camunda/operate",
+      "datasourceTemplate": "docker",
+    },
+    {
+      "fileMatch": [".env"],
+      "matchStrings": ["KEYCLOAK_SERVER_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
+      "depNameTemplate": "bitnami/keycloak",
+      "datasourceTemplate": "docker",
+    },
+    {
+      "fileMatch": [".env"],
+      "matchStrings": ["POSTGRES_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
+      "depNameTemplate": "postgres",
       "datasourceTemplate": "docker",
     },
   ],

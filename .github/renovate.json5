@@ -26,12 +26,15 @@
       "allowedVersions": "<8.4.0",
     },
     {
-      "matchDepNames": ["postgres"],
-      "matchUpdateTypes": ["patch"],
+      "matchDepNames": ["bitnami/keycloak"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false,
     },
     {
-      "matchDepNames": ["bitnami/keycloak"],
-      "matchUpdateTypes": ["patch"],
+      // we manually made this package for renovate. 
+      // no need to update it again
+      "matchDepNames": ["docker.io/bitnami/keycloak"],
+      "enabled": false,
     },
   ],
 
@@ -51,15 +54,9 @@
       "datasourceTemplate": "docker",
     },
     {
-      "fileMatch": [".env"],
-      "matchStrings": ["KEYCLOAK_SERVER_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
+      "fileMatch": [".env", ".keycloak/Dockerfile"],
+      "matchStrings": ["KEYCLOAK_SERVER_VERSION\\s*=\\s*(?<currentValue>\\S+)", "KEYCLOAK_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
       "depNameTemplate": "bitnami/keycloak",
-      "datasourceTemplate": "docker",
-    },
-    {
-      "fileMatch": [".env"],
-      "matchStrings": ["POSTGRES_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
-      "depNameTemplate": "postgres",
       "datasourceTemplate": "docker",
     },
   ],

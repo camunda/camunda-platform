@@ -135,6 +135,8 @@ services:
       timeout: 1s
       retries: 5
       start_period: 30s
+    volumes:
+      - "./.optimize/environment-config.yaml:/optimize/config/environment-config.yaml"
     restart: on-failure
     networks:
       - camunda-platform

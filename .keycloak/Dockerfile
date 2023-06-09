@@ -9,7 +9,7 @@ FROM registry.access.redhat.com/ubi8-minimal AS build
 ARG KEYCLOAK_VERSION
 ARG KEYCLOAK_DIST=https://github.com/keycloak/keycloak/releases/download/$KEYCLOAK_VERSION/keycloak-$KEYCLOAK_VERSION.tar.gz
 
-RUN microdnf install -y tar gzip
+RUN microdnf install -y tar gzip && microdnf clean all 
 
 ADD $KEYCLOAK_DIST /tmp/keycloak/
 

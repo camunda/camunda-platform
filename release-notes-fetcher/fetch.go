@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/google/go-github/v51/github"
+	"github.com/google/go-github/v53/github"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"

@@ -20,9 +20,9 @@ For production setups we recommend using [Helm charts](https://docs.camunda.io/d
 - [Zeebe Workflow Engine](https://github.com/camunda/zeebe)
 - [Contact](https://docs.camunda.io/contact/)
 
-## Using docker-compose
+## Using docker compose
 
-> :information_source: The docker-compose file in this repository uses the latest [compose specification](https://docs.docker.com/compose/compose-file/), which was introduced with docker-compose version 1.27.0+. Please make sure to use an up-to-date docker-compose version.
+> :information_source: The docker-compose file in this repository uses the latest [compose specification](https://docs.docker.com/compose/compose-file/), which was introduced with docker compose version 1.27.0+. Please make sure to use an up-to-date docker compose version.
 
 > :information_source: Docker 20.10.16+ is required.
 
@@ -44,7 +44,7 @@ The full environment contains these components:
 Clone this repo and issue the following command to start your environment:
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 Wait a few minutes for the environment to start up and settle down. Monitor the logs, especially the Keycloak container log, to ensure the components have started.
@@ -64,18 +64,18 @@ The workflow engine Zeebe is available using gRPC at `localhost:26500`.
 To tear down the whole environment run the following command:
 
 ```
-docker-compose down -v
+docker compose down -v
 ```
 
 If Optimize, Identity, and Keycloak are not needed you can use the [docker-compose-core.yaml](docker-compose-core.yaml) instead which does not include these components:
 
 ```
-docker-compose -f docker-compose-core.yaml up -d
+docker compose -f docker-compose-core.yaml up -d
 ```
 
 Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file.
 
-In addition to the local environment setup with docker-compose, you can download the [Camunda Desktop Modeler](https://camunda.com/download/modeler/) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
+In addition to the local environment setup with docker compose, you can download the [Camunda Desktop Modeler](https://camunda.com/download/modeler/) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
 As an enterprise customer, you can [use Web Modeler](#web-modeler-self-managed).
 
 Feedback and updates are welcome!
@@ -86,7 +86,7 @@ By default, the Zeebe GRPC API is publicly accessible without requiring any clie
 
 You can however enable authentication of GRPC requests in Zeebe by setting the environment variable `ZEEBE_AUTHENTICATION_MODE` to `identity`, e.g. via running:
 ```
-ZEEBE_AUTHENTICATION_MODE=identity docker-compose up -d
+ZEEBE_AUTHENTICATION_MODE=identity docker compose up -d
 ```
 or by modifying the default value in the [`.env`](.env) file.
 
@@ -137,20 +137,20 @@ $ docker login registry.camunda.cloud
 Username: your_username
 Password: ******
 Login Succeeded
-$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml up -d
+$ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml up -d
 ```
 
 To tear down the whole environment run the following command
 
 ```
-$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down -v
+$ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down -v
 ```
 
 If you want to delete everything (including any data you created).
 Alternatively, if you want to keep the data run:
 
 ```
-$ docker-compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down
+$ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down
 ```
 
 ### Login
@@ -205,7 +205,7 @@ This feature is disabled by default and can be enabled by setting
 `RESOURCE_AUTHORIZATIONS_ENABLED` to `true`, e.g. via running:
 
 ```
-RESOURCE_AUTHORIZATIONS_ENABLED=true docker-compose up -d
+RESOURCE_AUTHORIZATIONS_ENABLED=true docker compose up -d
 ```
 or by modifying the default value in the [`.env`](.env) file.
 

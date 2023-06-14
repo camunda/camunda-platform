@@ -76,6 +76,9 @@ services:
     environment:
       JAVA_OPTIONS: -Xmx128m
       LOGGING_LEVEL_IO_CAMUNDA_MODELER: DEBUG
+      SPRING_DATASOURCE_URL: jdbc:postgresql://modeler-db:5432/modeler-db
+      SPRING_DATASOURCE_USERNAME: modeler-db-user
+      SPRING_DATASOURCE_PASSWORD: modeler-db-password
       SPRING_PROFILES_INCLUDE: default-logging
       RESTAPI_PUSHER_HOST: modeler-websockets
       RESTAPI_PUSHER_PORT: "8060"
@@ -86,11 +89,6 @@ services:
       RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
       RESTAPI_IDENTITY_BASE_URL: http://identity:8084/
       RESTAPI_SERVER_URL: http://localhost:8070
-      RESTAPI_DB_HOST: modeler-db
-      RESTAPI_DB_NAME: modeler-db
-      RESTAPI_DB_PORT: 5432
-      RESTAPI_DB_USER: modeler-db-user
-      RESTAPI_DB_PASSWORD: modeler-db-password
       RESTAPI_MAIL_HOST: mailpit
       RESTAPI_MAIL_PORT: 1025
       RESTAPI_MAIL_ENABLE_TLS: "false"

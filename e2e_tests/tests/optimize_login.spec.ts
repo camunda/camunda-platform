@@ -11,7 +11,7 @@ test('test', async ({ page }) => {
   await page.getByLabel('Password').fill('demo');
   await page.getByRole('button', { name: 'Log in' }).click();
   try {
-    await page.getByRole('button', { name: 'Close' }).click({timeout: 5000});
+    await page.getByText('Close').click({timeout: 5000});
   } catch (e) {
     if (e instanceof playwright.errors.TimeoutError) {
       console.log("Popup of release features sometimes appears here. Perhaps you've already closed this out once. ignoring...");

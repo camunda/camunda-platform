@@ -25,6 +25,17 @@
       "matchDepNames": ["camunda/operate"],
       "allowedVersions": "<8.4.0",
     },
+    {
+      "matchDepNames": ["bitnami/keycloak"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false,
+    },
+    {
+      // we manually made this package for renovate. 
+      // no need to update it again
+      "matchDepNames": ["docker.io/bitnami/keycloak"],
+      "enabled": false,
+    },
   ],
 
   "regexManagers": [
@@ -40,6 +51,12 @@
       // the PR gets submitted, but the CI build will not pass because the other
       // images will not be available.
       "depNameTemplate": "camunda/operate",
+      "datasourceTemplate": "docker",
+    },
+    {
+      "fileMatch": [".env", ".keycloak/Dockerfile"],
+      "matchStrings": ["KEYCLOAK_SERVER_VERSION\\s*=\\s*(?<currentValue>\\S+)", "KEYCLOAK_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
+      "depNameTemplate": "bitnami/keycloak",
       "datasourceTemplate": "docker",
     },
   ],

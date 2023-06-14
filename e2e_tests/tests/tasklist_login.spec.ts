@@ -10,6 +10,6 @@ test('test', async ({ page }) => {
   await page.getByLabel('Password').click();
   await page.getByLabel('Password').fill('demo');
   await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('button', { name: 'Filter options' }).click();
+  await page.getByRole('combobox', { name: 'Filter options' }).click();
   await page.getByText('Assigned to me').click();
 });

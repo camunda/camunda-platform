@@ -37,9 +37,10 @@ jobs:
 
       - name: Run release notes script
         working-directory: ./release-notes-fetcher
-        run: set -o pipefail; ./release-notes-fetcher | tee release_notes.txt
+        # hard-codes 8.2.3 since GITHUB_REF_NAME points to the branch name usually
+        # and we just want to see if a valid version can fetch notes
+        run: set -o pipefail; GITHUB_REF_NAME=8.2.3 ./release-notes-fetcher | tee release_notes.txt
         env:
           GITHUB_CAMUNDA_ACCESS_TOKEN: ${{ steps.generate-camunda-github-token.outputs.token }}
           GITHUB_CAMUNDA_CLOUD_ACCESS_TOKEN: ${{ steps.generate-camunda-cloud-github-token.outputs.token }}
-          GITHUB_REF_NAME: 8.2.3
 

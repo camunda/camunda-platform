@@ -1,0 +1,46 @@
+name: "Test release notes script"
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  release_script:
+    runs-on: ubuntu-latest
+    name: Build release script
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
+      
+      - name: Build
+        working-directory: ./release-notes-fetcher
+        run: go build
+
+      - name: Generate token for Camunda GitHub org
+        id: generate-camunda-github-token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Generate token for Camunda Cloud GitHub org
+        id: generate-camunda-cloud-github-token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          repository: camunda-cloud/identity
+
+      - name: Run release notes script
+        working-directory: ./release-notes-fetcher
+        # hard-codes 8.2.3 since GITHUB_REF_NAME points to the branch name usually
+        # and we just want to see if a valid version can fetch notes
+        run: set -o pipefail; GITHUB_REF_NAME=8.2.3 ./release-notes-fetcher | tee release_notes.txt
+        env:
+          GITHUB_CAMUNDA_ACCESS_TOKEN: ${{ steps.generate-camunda-github-token.outputs.token }}
+          GITHUB_CAMUNDA_CLOUD_ACCESS_TOKEN: ${{ steps.generate-camunda-cloud-github-token.outputs.token }}
+

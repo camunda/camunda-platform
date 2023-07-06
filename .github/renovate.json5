@@ -31,6 +31,10 @@
       "enabled": false,
     },
     {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+    },
+    {
       // we manually made this package for renovate. 
       // no need to update it again
       "matchDepNames": ["docker.io/bitnami/keycloak"],

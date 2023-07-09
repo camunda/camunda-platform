@@ -12,6 +12,8 @@ services:
   modeler-db:
     container_name: modeler-db
     image: postgres:${POSTGRES_VERSION}
+    ports:
+      - "5432:5432"
     healthcheck:
       test: pg_isready -d modeler-db -U modeler-db-user
       interval: 5s

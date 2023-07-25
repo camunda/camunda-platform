@@ -37,7 +37,7 @@ RUN ln -s /opt/keycloak /opt/bitnami/keycloak
 RUN sed -i 's/export JAVA_HOME=\"\/opt\/bitnami\/java\"//' /opt/bitnami/scripts/keycloak-env.sh
 
 RUN microdnf update -y && \
-    microdnf install -y --nodocs java-11-openjdk-headless glibc-langpack-en hostname tar gzip && microdnf clean all && rm -rf /var/cache/yum/* && \
+    microdnf install -y --nodocs java-11-openjdk-headless glibc-langpack-en hostname tar gzip tzdata-java-2023c && microdnf clean all && rm -rf /var/cache/yum/* && \
     echo "keycloak:x:0:root" >> /etc/group && \
     echo "keycloak:x:1000:0:keycloak user:/opt/keycloak:/sbin/nologin" >> /etc/passwd
 

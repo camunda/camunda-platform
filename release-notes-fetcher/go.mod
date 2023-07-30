@@ -6,7 +6,7 @@ require (
 	github.com/google/go-github/v51 v51.0.0
 	github.com/google/go-github/v52 v52.0.0
 	github.com/google/go-github/v53 v53.2.0
-	github.com/rs/zerolog v1.29.1
+	github.com/rs/zerolog v1.30.0
 	golang.org/x/oauth2 v0.10.0
 )
 

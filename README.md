@@ -67,6 +67,8 @@ To tear down the whole environment run the following command:
 docker compose down -v
 ```
 
+### Using the basic components
+
 If Optimize, Identity, and Keycloak are not needed you can use the [docker-compose-core.yaml](docker-compose-core.yaml) instead which does not include these components:
 
 ```

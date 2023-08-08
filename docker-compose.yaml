@@ -143,7 +143,6 @@ services:
       - CAMUNDA_OPERATE_CLIENT_CLIENT-ID=connectors
       - CAMUNDA_OPERATE_CLIENT_CLIENT-SECRET=XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       - CAMUNDA_OPERATE_CLIENT_KEYCLOAK-REALM=camunda-platform
-      - OPERATE_CLIENT_ENABLED=true
       - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true

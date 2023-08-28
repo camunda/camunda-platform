@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: "1.20"
-      
+
       - name: Build
         working-directory: ./release-notes-fetcher
         run: go build
@@ -52,7 +52,7 @@ jobs:
         working-directory: ./release-notes-fetcher
         run: mkdir -p tmp
 
-      # Operate and tasklist binaries are uploaded to zeebes repo
+      # Tasklist binaries are uploaded to zeebes repo
       - name: Download Zeebe resources
         working-directory: ./release-notes-fetcher/tmp
         run: >
@@ -69,14 +69,21 @@ jobs:
           -p "camunda-zeebe-$GITHUB_REF_NAME.tar.gz.sha1sum"
           -p "camunda-zeebe-$GITHUB_REF_NAME.zip"
           -p "camunda-zeebe-$GITHUB_REF_NAME.zip.sha1sum"
-          -p "camunda-operate-$GITHUB_REF_NAME.zip"
-          -p "camunda-operate-$GITHUB_REF_NAME.zip.sha1sum"
-          -p "camunda-operate-$GITHUB_REF_NAME.tar.gz"
-          -p "camunda-operate-$GITHUB_REF_NAME.tar.gz.sha1sum"
           -p "camunda-tasklist-$GITHUB_REF_NAME.zip"
           -p "camunda-tasklist-$GITHUB_REF_NAME.zip.sha1sum"
           -p "camunda-tasklist-$GITHUB_REF_NAME.tar.gz"
           -p "camunda-tasklist-$GITHUB_REF_NAME.tar.gz.sha1sum"
+
+      - name: Download Operate resources
+        working-directory: ./release-notes-fetcher/tmp
+        run: >
+          gh release
+          download "$GITHUB_REF_NAME"
+          -R camunda/operate
+          -p "camunda-operate-$GITHUB_REF_NAME.zip"
+          -p "camunda-operate-$GITHUB_REF_NAME.zip.sha1sum"
+          -p "camunda-operate-$GITHUB_REF_NAME.tar.gz"
+          -p "camunda-operate-$GITHUB_REF_NAME.tar.gz.sha1sum"
 
       - name: Login to Camunda Cloud
         working-directory: ./release-notes-fetcher

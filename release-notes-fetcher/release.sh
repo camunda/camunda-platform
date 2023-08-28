@@ -27,14 +27,18 @@ gh release \
   -p "camunda-zeebe-$GITHUB_REF_NAME.tar.gz.sha1sum" \
   -p "camunda-zeebe-$GITHUB_REF_NAME.zip" \
   -p "camunda-zeebe-$GITHUB_REF_NAME.zip.sha1sum" \
-  -p "camunda-operate-$GITHUB_REF_NAME.zip" \
-  -p "camunda-operate-$GITHUB_REF_NAME.zip.sha1sum" \
-  -p "camunda-operate-$GITHUB_REF_NAME.tar.gz" \
-  -p "camunda-operate-$GITHUB_REF_NAME.tar.gz.sha1sum" \
   -p "camunda-tasklist-$GITHUB_REF_NAME.zip" \
   -p "camunda-tasklist-$GITHUB_REF_NAME.zip.sha1sum" \
   -p "camunda-tasklist-$GITHUB_REF_NAME.tar.gz" \
   -p "camunda-tasklist-$GITHUB_REF_NAME.tar.gz.sha1sum"
+
+gh release \
+  download "$GITHUB_REF_NAME" \
+  -R camunda/operate \
+  -p "camunda-operate-$GITHUB_REF_NAME.zip" \
+  -p "camunda-operate-$GITHUB_REF_NAME.zip.sha1sum" \
+  -p "camunda-operate-$GITHUB_REF_NAME.tar.gz" \
+  -p "camunda-operate-$GITHUB_REF_NAME.tar.gz.sha1sum" \
 
 gh release \
   download "$GITHUB_REF_NAME" \

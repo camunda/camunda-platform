@@ -3,15 +3,14 @@ module github.com/camunda/camunda-platform/release-notes-fetcher
 go 1.19
 
 require (
-	github.com/google/go-github/v51 v51.0.0
-	github.com/google/go-github/v52 v52.0.0
+	github.com/google/go-github/v54 v54.0.0
 	github.com/rs/zerolog v1.30.0
 	golang.org/x/oauth2 v0.11.0
 )
 
 require (
 	github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 // indirect
-	github.com/cloudflare/circl v1.1.0 // indirect
+	github.com/cloudflare/circl v1.3.3 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect

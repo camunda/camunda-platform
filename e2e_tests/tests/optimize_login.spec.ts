@@ -17,5 +17,6 @@ test('test', async ({ page }) => {
       console.log("Popup of release features sometimes appears here. Perhaps you've already closed this out once. ignoring...");
     }
   }
+  await page.getByText('Collections').click({timeout: 5000});
   await page.getByRole('button', { name: 'Create New Dashboard' }).click();
 });

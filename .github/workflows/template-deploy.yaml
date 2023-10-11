@@ -25,7 +25,7 @@ jobs:
              sudo killall mono || true
              sudo killall xsp4 || true
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Login to private registry
         run: >-

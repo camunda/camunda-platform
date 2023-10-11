@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build release script
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Go
         uses: actions/setup-go@v4

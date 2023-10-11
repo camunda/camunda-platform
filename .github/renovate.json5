@@ -31,6 +31,10 @@
       "enabled": false,
     },
     {
+      "matchDepNames": ["github.com/google/go-github/v54"],
+      "enabled": false,
+    },
+    {
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
     },

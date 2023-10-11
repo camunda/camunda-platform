@@ -33,7 +33,8 @@ jobs:
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
-          repositories: ["camunda-cloud/identity"]
+          repositories: 
+            - "camunda-cloud/identity"
 
       - name: Run release notes script
         working-directory: ./release-notes-fetcher

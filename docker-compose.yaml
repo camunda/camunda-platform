@@ -8,7 +8,7 @@
 
 # This is a full configuration with Zeebe, Operate, Tasklist, Optimize, Identity, Keycloak, and Elasticsearch
 # See docker-compose-core.yml for a lightweight configuration that does not include Optimize, Identity, and Keycloak.
-
+# 
 services:
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
@@ -29,8 +29,14 @@ services:
       - ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK=0.998
       - ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK=0.999
       - "JAVA_TOOL_OPTIONS=-Xms512m -Xmx512m"
+      - ZEEBE_BROKER_GATEWAY_SECURITY_CERTIFICATECHAINPATH=/etc/zeebe-certs/myserver.crt
+      - ZEEBE_BROKER_GATEWAY_SECURITY_PRIVATEKEYPATH=/etc/zeebe-certs/myserver.key
+      - ZEEBE_BROKER_GATEWAY_SECURITY_ENABLED=true
     restart: always
     volumes:
+      - type: bind
+        source: ./Zeebe-Certs
+        target: /etc/zeebe-certs
       - zeebe:/usr/local/zeebe/data
     networks:
       - camunda-platform

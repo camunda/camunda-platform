@@ -1,4 +1,4 @@
-# Camunda Platform 8
+f# Camunda Platform 8
 
 This repository contains links to Camunda Platform 8 resources, the official release artifacts (binaries), and supporting config files for running Docker Compose as a local development option. 
 
@@ -191,13 +191,12 @@ that others have already encountered. We also have a category on that forum spec
 
 ### Running on arm64 based hardware
 When using arm64-based hardware like a M1 or M2 Mac the Keycloak container might not start because Bitnami only
-provides amd64-based images. Until bitnami adds
-[support for linux/arm64 images](https://github.com/bitnami/charts/issues/7305), you can build and tag an arm-based
+provides amd64-based images for versions <  22. You can build and tag an arm-based
 image locally using the following command. After building and tagging the image you can start the environment as
 described in [Using docker-compose](#using-docker-compose).
 
 ```
-$ DOCKER_BUILDKIT=0 docker build -t bitnami/keycloak:19.0.3 "https://github.com/camunda/camunda-platform.git#main:.keycloak/"
+$ DOCKER_BUILDKIT=0 docker build -t bitnami/keycloak:19.0.3 "https://github.com/camunda/camunda-platform.git#8.2.15:.keycloak/"
 ```
 
 ## Resource based authorizations

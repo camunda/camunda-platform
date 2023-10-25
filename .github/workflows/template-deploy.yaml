@@ -60,7 +60,7 @@ jobs:
           =
           ""
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         if: ${{ inputs.run_e2e_tests }}
         with:
           node-version: 18

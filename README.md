@@ -1,4 +1,4 @@
-f# Camunda Platform 8
+# Camunda Platform 8
 
 This repository contains links to Camunda Platform 8 resources, the official release artifacts (binaries), and supporting config files for running Docker Compose as a local development option. 
 

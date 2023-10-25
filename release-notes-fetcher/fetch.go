@@ -110,10 +110,10 @@ func main() {
 		githubRef,
 	)
 
-	operateReleaseNotesContents := GetChangelogReleaseContents(
+	operateReleaseNotesContents := GetLatestReleaseContents(
 		ctx,
+		RepoOwner,
 		OperateRepoName,
-		"CHANGELOG.md",
 		camundaRepoService,
 		githubRef,
 	)

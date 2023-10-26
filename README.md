@@ -165,12 +165,12 @@ You can access Web Modeler Self-Managed and log in with the user `demo` and pass
 #### Without authentication
 Once you are ready to deploy or execute processes use these settings to deploy to the local Zeebe instance:
 * Authentication: `None`
-* URL: `zeebe:26500`
+* URL: `http://zeebe:26500`
 
 #### With Zeebe request authentication
 If you enabled authentication for GRPC requests on Zeebe you need to provide client credentials when deploying and executing processes:
 * Authentication: `OAuth`
-* URL: `zeebe:26500`
+* URL: `http://zeebe:26500`
 * Client ID: `zeebe`
 * Client secret: `zecret`
 * OAuth URL: `http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token`

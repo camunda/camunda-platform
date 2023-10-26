@@ -31,7 +31,7 @@
       "enabled": false,
     },
     {
-      "matchDepNames": ["github.com/google/go-github/**"],
+      "matchDatasources": ["go"],
       "enabled": false,
     },
     {

@@ -29,6 +29,12 @@ services:
     restart: always
     volumes:
       - zeebe:/usr/local/zeebe/data
+    healthcheck:
+      test: [ "CMD-SHELL", "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - camunda-platform
     depends_on:
@@ -43,6 +49,14 @@ services:
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -O - -q 'http://localhost:8080/actuator/health/readiness'" ]
+      interval: 30s
+      timeout: 1s
+      retries: 5
+      start_period: 30s
     networks:
       - camunda-platform
     depends_on:
@@ -58,6 +72,14 @@ services:
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
+      interval: 30s
+      timeout: 1s
+      retries: 5
+      start_period: 30s
     networks:
       - camunda-platform
     depends_on:
@@ -76,7 +98,15 @@ services:
       - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
       - CAMUNDA_OPERATE_CLIENT_USERNAME=demo
       - CAMUNDA_OPERATE_CLIENT_PASSWORD=demo
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
     env_file: connector-secrets.txt
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
+      interval: 30s
+      timeout: 1s
+      retries: 5
+      start_period: 30s
     networks:
       - camunda-platform
     depends_on:

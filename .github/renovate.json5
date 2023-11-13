@@ -15,7 +15,7 @@
       "enabled": false,
       "matchManagers": ["regex"],
       "matchPaths": [".env"],
-      "matchBaseBranches": ["/^stable\\/8.0/", "/^stable\\/8.1/", "/^stable\\/8.2/", "/^stable\\/8.3/"],
+      "matchBaseBranches": ["/^stable\\/8.0/", "/^stable\\/8.1/", "/^stable\\/8.2/"],
       "matchUpdateTypes": ["minor"]
     },{
       "matchBaseBranches": ["/^stable\\/8.0/"],

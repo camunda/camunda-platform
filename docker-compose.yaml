@@ -32,6 +32,12 @@ services:
     restart: always
     volumes:
       - zeebe:/usr/local/zeebe/data
+    healthcheck:
+      test: [ "CMD-SHELL", "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/9600' || exit 1" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - camunda-platform
     depends_on:
@@ -103,6 +109,14 @@ services:
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:18080/auth/realms/camunda-platform
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/certs
       - CAMUNDA_TASKLIST_IDENTITY_RESOURCE_PERMISSIONS_ENABLED=${RESOURCE_AUTHORIZATIONS_ENABLED}
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
+      interval: 30s
+      timeout: 1s
+      retries: 5
+      start_period: 30s
     networks:
       - camunda-platform
     depends_on:
@@ -131,7 +145,15 @@ services:
       - CAMUNDA_OPERATE_CLIENT_KEYCLOAK-REALM=camunda-platform
       - OPERATE_CLIENT_ENABLED=true
       - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
     env_file: connector-secrets.txt
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
+      interval: 30s
+      timeout: 1s
+      retries: 5
+      start_period: 30s
     networks:
       - camunda-platform
     depends_on:
@@ -157,9 +179,17 @@ services:
       - CAMUNDA_OPTIMIZE_IDENTITY_AUDIENCE=optimize-api
       - CAMUNDA_OPTIMIZE_SECURITY_AUTH_COOKIE_SAME_SITE_ENABLED=false
       - CAMUNDA_OPTIMIZE_UI_LOGOUT_HIDDEN=true
+      - management.endpoints.web.exposure.include=health
+      - management.endpoint.health.probes.enabled=true
     volumes:
       - "./.optimize/environment-config.yaml:/optimize/config/environment-config.yaml"
     restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8090/api/readyz" ]
+      interval: 30s
+      timeout: 1s
+      retries: 5
+      start_period: 30s
     networks:
       - camunda-platform
     depends_on:

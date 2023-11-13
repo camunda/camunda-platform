@@ -1,0 +1,103 @@
+{
+  "extends": ["config:base"],
+  "description": "Keeps camunda-platform up to date",
+  "baseBranches": ["main", "/^stable\\/.*/"],
+  "dependencyDashboard": true,
+
+  "packageRules": [
+    {
+      // Disable major version update for all Helm components.
+      "enabled": false,
+      "matchManagers": ["regex"],
+      "matchUpdateTypes": ["major"]
+    },{
+      // Disable minor version update for previous Camunda releases which will only get patch updates.
+      "enabled": false,
+      "matchManagers": ["regex"],
+      "matchPaths": [".env"],
+      "matchBaseBranches": ["/^stable\\/8.0/", "/^stable\\/8.1/", "/^stable\\/8.2/"],
+      "matchUpdateTypes": ["minor"]
+    },{
+      "matchBaseBranches": ["/^stable\\/8.0/"],
+      "matchDepNames": ["camunda/operate"],
+      "allowedVersions": "<8.1.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.1/"],
+      "matchDepNames": ["camunda/operate"],
+      "allowedVersions": "<8.2.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.2/"],
+      "matchDepNames": ["camunda/operate"],
+      "allowedVersions": "<8.3.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.3/"],
+      "matchDepNames": ["camunda/operate"],
+      "allowedVersions": "<8.4.0",
+    },
+    {
+      "matchDepNames": ["bitnami/keycloak"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false,
+    },
+    {
+      "matchDatasources": ["go"],
+      "enabled": false,
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+    },
+    {
+      // we manually made this package for renovate. 
+      // no need to update it again
+      "matchDepNames": ["docker.io/bitnami/keycloak"],
+      "enabled": false,
+    },
+  ],
+
+  "regexManagers": [
+    {
+      "fileMatch": [".env"],
+      "matchStrings": ["CAMUNDA_PLATFORM_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
+      // Watch camunda/operate registry even though this env variable is also used in
+      // * camunda/identity
+      // * camunda/tasklist
+      // * camunda/zeebe
+      //
+      // If one of these images does not exist yet, the expected behavior is that
+      // the PR gets submitted, but the CI build will not pass because the other
+      // images will not be available.
+      "depNameTemplate": "camunda/operate",
+      "datasourceTemplate": "docker",
+    },
+    {
+      // This is mainly used to update Web-Modeler image tag.
+      // section is copied from camunda/camunda-platform-helm
+      "fileMatch": [".env"],
+      "datasourceTemplate":"docker",
+      "matchStrings": [
+        "# renovate: datasource=docker depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s*?(\\S+)=(?<currentValue>\\S+)"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "fileMatch": [".env", ".keycloak/Dockerfile"],
+      "matchStrings": ["KEYCLOAK_SERVER_VERSION\\s*=\\s*(?<currentValue>\\S+)", "KEYCLOAK_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
+      "depNameTemplate": "bitnami/keycloak",
+      "datasourceTemplate": "docker",
+    },
+  ],
+  "hostRules": [
+    {
+      "hostType": "docker",
+      "matchHost": "https://registry.camunda.cloud",
+      "username": "ci-distribution",
+      "encrypted": {
+        "password": "wcFMA/xDdHCJBTolAQ//RsP2fh5uJzDLWbGDX8vdX9fvyvTX1D3f01ElIPGNOp9CC6cBmXTjdYK2b07G+eZaJM+AMhAADmGXMQDMa5Z0M5AeCV0gLT7Fe9SYjFiUGXEwX7zidqqCA8Dv0JbQQGiQSgD28f1NQ3Yo8MIiAaVoVXGukqMLYk6XvMBkBVUxjIItLeRUnnU+yk/g3zQKKLAZZrjzVJvCKx9dSW1LmrOUyEWQxo8yXZ5svzsiXKxaO+qHyEvs7kUreJodqkQY4i84mNlScWjJI8jlnqTN0OMw7lnXk+thppUqiRt8Wkg0sMW2OJuvQ9cMQRQFOJpc4TA7+6+E4TUEpejOsmJTNxsr4oU++pT8Hfzua1vAIr+sJmghuQjSo9QghM8OaC3G2fdAB3emcdCzCdt/gQMq+fCOE75/0TJNwZnxXQ3KWOeWyRVVK1/3PrjQHJuia4F7S9W/7qyTMY9IrlNvejBwaa6gFFWBX3VwpmQsaW4lHOj3DBzYvRF37lPCGjEQS4DOczVUmzie+ZkUPNNCKUZ0QR26TBlqSMTo7A1IGVxVU1Q36Ni7psgYKQGkRRM6yY0S2n/LLQBP8g5hP4jatG6Hn/sbD7CsTZOCzJR5ctES5BzSiIUO/3yqaM4R0SgSAucLBnzZ0XXkdUCf8GQHlD6GmAwYN8BzobMQQ9YYyZOhrSWT6UrScgESnEmZOesrQfE+mVTrDJJj9BtxvJISqKUECKcZxYHs7w7DdfuRRtGnbuAXBhm6c92ZVOBn/EKlWv0ynpxCeziJk7VRcEr7212nYfrzufiseI8fxCUvmypVD06ZYfZUTF1zgqrvg8PdSX7GBn34xDzs/A"
+      }
+    }
+  ]
+}

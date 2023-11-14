@@ -24,6 +24,36 @@
     },
     {
       "matchBaseBranches": ["/^stable\\/8.1/"],
+      "matchDepNames": ["camunda/optimize"],
+      "allowedVersions": "<3.10.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.1/"],
+      "matchDepNames": ["camunda/connectors-bundle"],
+      "allowedVersions": "<0.17.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.1/"],
+      "matchDepNames": ["camunda/web-modeler"],
+      "allowedVersions": "<0.9.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.2/"],
+      "matchDepNames": ["camunda/optimize"],
+      "allowedVersions": "<3.11.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.2/"],
+      "matchDepNames": ["camunda/connectors-bundle"],
+      "allowedVersions": "<0.24.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.2/"],
+      "matchDepNames": ["camunda/web-modeler"],
+      "allowedVersions": "<8.3.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.1/"],
       "matchDepNames": ["camunda/operate"],
       "allowedVersions": "<8.2.0",
     },

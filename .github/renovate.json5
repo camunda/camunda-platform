@@ -10,14 +10,16 @@
       "enabled": false,
       "matchManagers": ["regex"],
       "matchUpdateTypes": ["major"]
-    },{
+    },
+    {
       // Disable minor version update for previous Camunda releases which will only get patch updates.
       "enabled": false,
       "matchManagers": ["regex"],
       "matchPaths": [".env"],
-      "matchBaseBranches": ["/^stable\\/8.0/", "/^stable\\/8.1/", "/^stable\\/8.2/"],
+      "matchBaseBranches": ["/^stable\\/8\\..*/"],
       "matchUpdateTypes": ["minor"]
-    },{
+    },
+    {
       "matchBaseBranches": ["/^stable\\/8.0/"],
       "matchDepNames": ["camunda/operate"],
       "allowedVersions": "<8.1.0",

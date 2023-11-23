@@ -10,48 +10,16 @@
       "enabled": false,
       "matchManagers": ["regex"],
       "matchUpdateTypes": ["major"]
-    },{
+    },
+    {
       // Disable minor version update for previous Camunda releases which will only get patch updates.
       "enabled": false,
       "matchManagers": ["regex"],
       "matchPaths": [".env"],
-      "matchBaseBranches": ["/^stable\\/8.0/", "/^stable\\/8.1/", "/^stable\\/8.2/"],
+      "matchBaseBranches": ["/^stable\\/8\\..*/"],
       "matchUpdateTypes": ["minor"]
-    },{
-      "matchBaseBranches": ["/^stable\\/8.0/"],
-      "matchDepNames": ["camunda/operate"],
-      "allowedVersions": "<8.1.0",
     },
-    {
-      "matchBaseBranches": ["/^stable\\/8.1/"],
-      "matchDepNames": ["camunda/optimize"],
-      "allowedVersions": "<3.10.0",
-    },
-    {
-      "matchBaseBranches": ["/^stable\\/8.1/"],
-      "matchDepNames": ["camunda/connectors-bundle"],
-      "allowedVersions": "<0.17.0",
-    },
-    {
-      "matchBaseBranches": ["/^stable\\/8.1/"],
-      "matchDepNames": ["camunda/web-modeler"],
-      "allowedVersions": "<0.9.0",
-    },
-    {
-      "matchBaseBranches": ["/^stable\\/8.2/"],
-      "matchDepNames": ["camunda/optimize"],
-      "allowedVersions": "<3.11.0",
-    },
-    {
-      "matchBaseBranches": ["/^stable\\/8.2/"],
-      "matchDepNames": ["camunda/connectors-bundle"],
-      "allowedVersions": "<0.24.0",
-    },
-    {
-      "matchBaseBranches": ["/^stable\\/8.2/"],
-      "matchDepNames": ["camunda/web-modeler"],
-      "allowedVersions": "<8.3.0",
-    },
+    // Operate stable branch conditions
     {
       "matchBaseBranches": ["/^stable\\/8.1/"],
       "matchDepNames": ["camunda/operate"],
@@ -67,6 +35,55 @@
       "matchDepNames": ["camunda/operate"],
       "allowedVersions": "<8.4.0",
     },
+    // Optimize stable branch conditions
+    {
+      "matchBaseBranches": ["/^stable\\/8.1/"],
+      "matchDepNames": ["camunda/optimize"],
+      "allowedVersions": "<3.10.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.2/"],
+      "matchDepNames": ["camunda/optimize"],
+      "allowedVersions": "<3.11.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.3/"],
+      "matchDepNames": ["camunda/optimize"],
+      "allowedVersions": "<8.4.0",
+    },
+    // Connectors stable branch conditions
+    {
+      "matchBaseBranches": ["/^stable\\/8.1/"],
+      "matchDepNames": ["camunda/connectors-bundle"],
+      "allowedVersions": "<0.17.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.2/"],
+      "matchDepNames": ["camunda/connectors-bundle"],
+      "allowedVersions": "<0.24.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.3/"],
+      "matchDepNames": ["camunda/connectors-bundle"],
+      "allowedVersions": "<8.4.0",
+    },
+    // Web-Modeler stable branch conditions
+    {
+      "matchBaseBranches": ["/^stable\\/8.1/"],
+      "matchDepNames": ["camunda/web-modeler"],
+      "allowedVersions": "<0.9.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.2/"],
+      "matchDepNames": ["camunda/web-modeler"],
+      "allowedVersions": "<8.3.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.3/"],
+      "matchDepNames": ["camunda/web-modeler"],
+      "allowedVersions": "<8.4.0",
+    },
+    // Other special conditions
     {
       "matchDepNames": ["bitnami/keycloak"],
       "matchUpdateTypes": ["major", "minor"],

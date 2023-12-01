@@ -113,6 +113,7 @@ services:
     environment:
       RESTAPI_HOST: modeler-restapi
       SERVER_HOST: modeler-webapp
+      SERVER_HTTPS_ONLY: "false"
       SERVER_URL: http://localhost:8070
       PUSHER_APP_ID: modeler-app
       PUSHER_KEY: modeler-app-key

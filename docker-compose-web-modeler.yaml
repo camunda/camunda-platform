@@ -76,6 +76,7 @@ services:
     environment:
       JAVA_OPTIONS: -Xmx128m
       LOGGING_LEVEL_IO_CAMUNDA_MODELER: DEBUG
+      CAMUNDA_IDENTITY_BASEURL: http://identity:8084/
       SPRING_DATASOURCE_URL: jdbc:postgresql://modeler-db:5432/modeler-db
       SPRING_DATASOURCE_USERNAME: modeler-db-user
       SPRING_DATASOURCE_PASSWORD: modeler-db-password
@@ -87,7 +88,6 @@ services:
       RESTAPI_PUSHER_SECRET: modeler-app-secret
       RESTAPI_OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
       RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
-      RESTAPI_IDENTITY_BASE_URL: http://identity:8084/
       RESTAPI_SERVER_URL: http://localhost:8070
       RESTAPI_MAIL_HOST: mailpit
       RESTAPI_MAIL_PORT: 1025
@@ -125,11 +125,9 @@ services:
       CLIENT_PUSHER_FORCE_TLS: "false"
       CLIENT_PUSHER_KEY: modeler-app-key
       OAUTH2_CLIENT_ID: web-modeler
+      OAUTH2_JWKS_URL: http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/certs
       OAUTH2_TOKEN_AUDIENCE: web-modeler
       OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
-      KEYCLOAK_BASE_URL: http://localhost:18080
-      KEYCLOAK_REALM: camunda-platform
-      KEYCLOAK_JWKS_URL: http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/certs
       IDENTITY_BASE_URL: http://identity:8084/
       PLAY_ENABLED: "true"
     networks:

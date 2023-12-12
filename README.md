@@ -79,7 +79,7 @@ docker compose -f docker-compose-core.yaml up -d
 
 ### Deploying BPMN diagrams
 
-In addition to the local environment setup with docker compose, you can download the [Camunda Desktop Modeler](https://camunda.com/download/modeler/) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
+In addition to the local environment setup with docker compose, use the [Camunda Desktop Modeler](#desktop-modeler) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
 As an enterprise customer, you can [use Web Modeler](#web-modeler-self-managed).
 
 Feedback and updates are welcome!
@@ -128,6 +128,28 @@ You can navigate to the Kibana web app and start exploring the data without logi
 >   - If you don't see any indexes then make sure to export some data first (e.g. deploy a process). The indexes of the records are created when the first record of this type is exported.
 > - Go to `Analytics > Discover` and select the index pattern.
 
+## Desktop Modeler
+
+> :information_source: The Desktop Modeler [open source, free to use](https://github.com/camunda/camunda-modeler).
+
+[Download the Desktop Modeler](https://camunda.com/download/modeler/) to start modeling BPMN, DMN and Camunda Forms on your local machine.
+
+### Deploy or execute a process
+
+#### Without authentication
+Once you are ready to deploy or execute processes use these settings to deploy to the local Zeebe instance:
+* Authentication: `None`
+* URL: `http://localhost:26500`
+
+#### With Zeebe request authentication
+If you enabled authentication for GRPC requests on Zeebe you need to provide client credentials when deploying and executing processes:
+* Authentication: `OAuth`
+* URL: `http://localhost:26500`
+* Client ID: `zeebe`
+* Client secret: `zecret`
+* OAuth URL: `http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token`
+* Audience: `zeebe-api`
+
 ## Web Modeler Self-Managed
 
 > :information_source: Web Modeler Self-Managed is available to Camunda enterprise customers only.
@@ -173,7 +195,7 @@ If you enabled authentication for GRPC requests on Zeebe you need to provide cli
 * URL: `http://zeebe:26500`
 * Client ID: `zeebe`
 * Client secret: `zecret`
-* OAuth URL: `http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token`
+* OAuth URL: `http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token`
 * Audience: `zeebe-api`
 
 ### Emails

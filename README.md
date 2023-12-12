@@ -130,9 +130,9 @@ You can navigate to the Kibana web app and start exploring the data without logi
 
 ## Desktop Modeler
 
-> :information_source: The Desktop Modeler [open source, free to use](https://github.com/camunda/camunda-modeler).
+> :information_source: The Desktop Modeler is [open source, free to use](https://github.com/camunda/camunda-modeler).
 
-[Download the Desktop Modeler](https://camunda.com/download/modeler/) to start modeling BPMN, DMN and Camunda Forms on your local machine.
+[Download the Desktop Modeler](https://camunda.com/download/modeler/) and start modeling BPMN, DMN and Camunda Forms on your local machine.
 
 ### Deploy or execute a process
 

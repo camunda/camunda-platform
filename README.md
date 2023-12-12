@@ -201,19 +201,29 @@ $ DOCKER_BUILDKIT=0 docker build -t bitnami/keycloak:19.0.3 "https://github.com/
 
 ## Resource based authorizations
 
-You can control access to specific processes and decision tables in Operate and Tasklist with resource
-based authorization.
+You can control access to specific processes and decision tables in Operate and Tasklist with [resource based authorization](https://docs.camunda.io/docs/self-managed/concepts/access-control/resource-authorizations/).
 
 This feature is disabled by default and can be enabled by setting 
-`RESOURCE_AUTHORIZATIONS_ENABLED` to `true`, e.g. via running:
+`RESOURCE_AUTHORIZATIONS_ENABLED` to `true`, either via the [`.env`](.env) file or through the command line:
 
 ```
 RESOURCE_AUTHORIZATIONS_ENABLED=true docker compose up -d
 ```
-or by modifying the default value in the [`.env`](.env) file.
 
-Read more about resource based authorizations in the [documentation](https://docs.camunda.io/docs/self-managed/concepts/access-control/resource-authorizations/).
+## Multi-Tenancy
 
+You can use [multi-tenancy](https://docs.camunda.io/docs/self-managed/concepts/multi-tenancy/) to achieve tenant-based isolation.
+
+This feature is disabled by default and can be enabled by setting
+`MULTI_TENANCY_ENABLED` to `true`, either via the [`.env`](.env) file or through the command line:
+
+```
+ZEEBE_AUTHENICATION_MODE=identity MULTI_TENANCY_ENABLED=true docker compose up -d
+```
+
+As seen above the feature also requires you to use `identity` as an authentication provider.
+
+Ensure you [setup tenants in identity](https://docs.camunda.io/docs/self-managed/identity/user-guide/tenants/managing-tenants/) after you started the platform.
 
 ## Camunda Platform 7
 

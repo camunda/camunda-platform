@@ -80,7 +80,7 @@ jobs:
         run: npx playwright test
         working-directory: ./e2e_tests
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: ${{ inputs.run_e2e_tests }}
         with:
           name: playwright-report

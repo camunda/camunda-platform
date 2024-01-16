@@ -35,6 +35,11 @@
       "matchDepNames": ["camunda/operate"],
       "allowedVersions": "<8.4.0",
     },
+    {
+      "matchBaseBranches": ["/^stable\\/8.4/"],
+      "matchDepNames": ["camunda/operate"],
+      "allowedVersions": "<8.5.0",
+    },
     // Optimize stable branch conditions
     {
       "matchBaseBranches": ["/^stable\\/8.1/"],
@@ -50,6 +55,11 @@
       "matchBaseBranches": ["/^stable\\/8.3/"],
       "matchDepNames": ["camunda/optimize"],
       "allowedVersions": "<8.4.0",
+    },
+    {
+      "matchBaseBranches": ["/^stable\\/8.4/"],
+      "matchDepNames": ["camunda/optimize"],
+      "allowedVersions": "<8.5.0",
     },
     // Connectors stable branch conditions
     {
@@ -67,6 +77,11 @@
       "matchDepNames": ["camunda/connectors-bundle"],
       "allowedVersions": "<8.4.0",
     },
+    {
+      "matchBaseBranches": ["/^stable\\/8.4/"],
+      "matchDepNames": ["camunda/connectors-bundle"],
+      "allowedVersions": "<8.5.0",
+    },
     // Web-Modeler stable branch conditions
     {
       "matchBaseBranches": ["/^stable\\/8.1/"],
@@ -82,6 +97,11 @@
       "matchBaseBranches": ["/^stable\\/8.3/"],
       "matchDepNames": ["camunda/web-modeler"],
       "allowedVersions": "<8.4.0",
+    },
+        {
+      "matchBaseBranches": ["/^stable\\/8.4/"],
+      "matchDepNames": ["camunda/web-modeler"],
+      "allowedVersions": "<8.5.0",
     },
     // Other special conditions
     {

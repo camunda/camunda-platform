@@ -151,7 +151,6 @@ services:
       - ZEEBE_TOKEN_AUDIENCE=zeebe-api
       - ZEEBE_AUTHORIZATION_SERVER_URL=http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token
       - CAMUNDA_OPERATE_CLIENT_URL=http://operate:8080
-      - CAMUNDA_IDENTITY_BASE_URL=http://identity:8084
       - CAMUNDA_IDENTITY_ISSUER_BACKEND_URL=http://keycloak:8080/auth/realms/camunda-platform
       - CAMUNDA_IDENTITY_CLIENT_ID=connectors
       - CAMUNDA_IDENTITY_CLIENT_SECRET=XALaRPl5qwTEItdwCMiPS62nVpKs7dL7

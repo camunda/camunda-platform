@@ -332,7 +332,7 @@ services:
         hard: -1
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q yellow" ]
       interval: 30s
       timeout: 5s
       retries: 3

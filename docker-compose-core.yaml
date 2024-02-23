@@ -17,6 +17,7 @@ services:
     ports:
       - "26500:26500"
       - "9600:9600"
+      - "8083:8080"
     environment: # https://docs.camunda.io/docs/self-managed/zeebe-deployment/configuration/environment-variables/
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
@@ -25,6 +26,8 @@ services:
       # allow running with low disk space
       - ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK=0.998
       - ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK=0.999
+      - ZEEBE_BROKER_NETWORK_HOST=0.0.0.0
+      - ZEEBE_BROKER_GATEWAY_ENABLE=true
       - "JAVA_TOOL_OPTIONS=-Xms512m -Xmx512m"
     restart: always
     healthcheck:

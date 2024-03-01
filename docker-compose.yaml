@@ -12,7 +12,7 @@
 services:
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
-    image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION}
+    image: ${ZEE_IMAGE}
     container_name: zeebe
     ports:
       - "26500:26500"

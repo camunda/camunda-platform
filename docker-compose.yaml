@@ -39,7 +39,7 @@ services:
       retries: 5
       start_period: 30s
     volumes:
-      - zeebe:/usr/local/zeebe/data
+      - ${DATA_VOLUME_PREFIX}zeebe:/usr/local/zeebe/data
     networks:
       - camunda-platform
     depends_on:
@@ -75,6 +75,7 @@ services:
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
       - ZEEBE_CLIENT_CONFIG_PATH=/tmp/zeebe_auth_cache
+    restart: always
     healthcheck:
       test: [ "CMD-SHELL", "wget -O - -q 'http://localhost:8080/actuator/health/readiness'" ]
       interval: 30s
@@ -82,7 +83,7 @@ services:
       retries: 5
       start_period: 30s
     volumes:
-      - operate_tmp:/tmp
+      - ${DATA_VOLUME_PREFIX}operate_tmp:/tmp
     networks:
       - camunda-platform
     depends_on:
@@ -119,6 +120,7 @@ services:
       - CAMUNDA_TASKLIST_IDENTITY_RESOURCE_PERMISSIONS_ENABLED=${RESOURCE_AUTHORIZATIONS_ENABLED}
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
+    restart: always
     healthcheck:
       test: [ "CMD-SHELL", "wget -O - -q 'http://localhost:8080/actuator/health/readiness'" ]
       interval: 30s
@@ -126,7 +128,7 @@ services:
       retries: 5
       start_period: 30s
     volumes:
-      - tasklist_tmp:/tmp
+      - ${DATA_VOLUME_PREFIX}tasklist_tmp:/tmp
     networks:
       - camunda-platform
     depends_on:
@@ -159,6 +161,7 @@ services:
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
     env_file: connector-secrets.txt
+    restart: always
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health/readiness" ]
       interval: 30s
@@ -259,9 +262,9 @@ services:
       timeout: 15s
       retries: 30
       start_period: 60s
-    restart: on-failure
+    restart: always
     volumes:
-      - keycloak-theme:/app/keycloak-theme
+      - ${DATA_VOLUME_PREFIX}identity/keycloak-theme:/app/keycloak-theme
     networks:
       - camunda-platform
       - identity-network
@@ -278,22 +281,23 @@ services:
       POSTGRES_DB: bitnami_keycloak
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: "postgres"
-    restart: on-failure
+    restart: always
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - ${DATA_VOLUME_PREFIX}postgres:/var/lib/postgresql/data
     networks:
       - identity-network
+      - postgres #方便别的容器访问postgres
 
   keycloak: # https://hub.docker.com/r/bitnami/keycloak
     container_name: keycloak
     image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION}
     volumes:
-      - keycloak-theme:/opt/bitnami/keycloak/themes/identity
+      - ${DATA_VOLUME_PREFIX}keycloak-theme:/opt/bitnami/keycloak/themes/identity
     ports:
       - "18080:8080"
     environment:
@@ -303,7 +307,7 @@ services:
       KEYCLOAK_DATABASE_PASSWORD: "postgres"
       KEYCLOAK_ADMIN_USER: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-    restart: on-failure
+    restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/auth" ]
       interval: 30s
@@ -340,35 +344,40 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - elastic:/usr/share/elasticsearch/data
+      - ${DATA_VOLUME_PREFIX}elastic:/usr/share/elasticsearch/data
     networks:
       - camunda-platform
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
-    container_name: kibana
-    ports:
-      - 5601:5601
-    volumes:
-      - kibana:/usr/share/kibana/data
-    networks:
-      - camunda-platform
-    depends_on:
-      - elasticsearch
-    profiles:
-      - kibana
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
+  #   container_name: kibana
+  #   ports:
+  #     - 5601:5601
+  #   volumes:
+  #     - ${DATA_VOLUME_PREFIX}kibana:/usr/share/kibana/data
+  #   networks:
+  #     - camunda-platform
+  #   depends_on:
+  #     - elasticsearch
+  #   profiles:
+  #     - kibana
 
-volumes:
-  zeebe:
-  elastic:
-  postgres:
-  keycloak-theme:
-  kibana:
-  operate_tmp:
-  tasklist_tmp:
+# 映射到本地文件${DATA_VOLUME_PREFIX}，所以不需要在容器中创建
+#volumes:
+#  zeebe:
+#  elastic:
+#  postgres:
+#  keycloak-theme:
+#  kibana:
+#  operate_tmp:
+#  tasklist_tmp:
 
 networks:
   # Note there are two bridge networks: One for Camunda Platform and one for Identity.
   # Identity and Keycloak are part of both as they need to be accessible by platform components.
   camunda-platform:
   identity-network:
+  # 提前执行创建postgres，如果在这里创建会自动添加项目名前缀
+  # docker network create postgres
+  postgres:
+    external: true

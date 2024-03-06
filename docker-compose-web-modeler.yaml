@@ -23,6 +23,8 @@ services:
       POSTGRES_PASSWORD: modeler-db-password
     networks:
       - modeler
+    volumes:
+      - postgres-web:/var/lib/postgresql/data
 
   modeler-websockets:
     container_name: modeler-websockets
@@ -137,3 +139,6 @@ services:
 networks:
   camunda-platform:
   modeler:
+
+volumes:
+  postgres-web:

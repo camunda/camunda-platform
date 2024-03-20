@@ -91,8 +91,8 @@ jobs:
         working-directory: ./release-notes-fetcher/tmp
         run: >
           gh release
-          download "operate-$GITHUB_REF_NAME"
-          -R camunda/zeebe
+          download "$GITHUB_REF_NAME"
+          -R camunda/operate
           -p "camunda-operate-$GITHUB_REF_NAME.zip"
           -p "camunda-operate-$GITHUB_REF_NAME.zip.sha1sum"
           -p "camunda-operate-$GITHUB_REF_NAME.tar.gz"

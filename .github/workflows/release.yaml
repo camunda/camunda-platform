@@ -74,7 +74,20 @@ jobs:
           -p "camunda-tasklist-$GITHUB_REF_NAME.tar.gz"
           -p "camunda-tasklist-$GITHUB_REF_NAME.tar.gz.sha1sum"
 
+      - name: Download Operate resources from monorepo
+        if: ${{ startsWith(env.GITHUB_REF_NAME, '8.5') }}
+        working-directory: ./release-notes-fetcher/tmp
+        run: >
+          gh release
+          download "operate-$GITHUB_REF_NAME"
+          -R camunda/zeebe
+          -p "camunda-operate-$GITHUB_REF_NAME.zip"
+          -p "camunda-operate-$GITHUB_REF_NAME.zip.sha1sum"
+          -p "camunda-operate-$GITHUB_REF_NAME.tar.gz"
+          -p "camunda-operate-$GITHUB_REF_NAME.tar.gz.sha1sum"
+
       - name: Download Operate resources
+        if: ${{ !startsWith(env.GITHUB_REF_NAME, '8.5') }}
         working-directory: ./release-notes-fetcher/tmp
         run: >
           gh release

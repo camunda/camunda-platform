@@ -237,11 +237,11 @@ services:
       KEYCLOAK_URL: http://keycloak:8080/auth
       IDENTITY_AUTH_PROVIDER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
       IDENTITY_AUTH_PROVIDER_ISSUER_URL: http://${HOST}:18080/auth/realms/camunda-platform # 否则无法外部访问
-      IDENTITY_DATABASE_HOST: postgres
-      IDENTITY_DATABASE_PORT: 5432
-      IDENTITY_DATABASE_NAME: bitnami_keycloak
-      IDENTITY_DATABASE_USERNAME: postgres
-      IDENTITY_DATABASE_PASSWORD: "postgres"
+      IDENTITY_DATABASE_HOST: ${KEYCLOAK_DATABASE_HOST}
+      IDENTITY_DATABASE_PORT: ${KEYCLOAK_DATABASE_PORT}
+      IDENTITY_DATABASE_NAME: ${KEYCLOAK_DATABASE_NAME}
+      IDENTITY_DATABASE_USERNAME: ${KEYCLOAK_DATABASE_USER}
+      IDENTITY_DATABASE_PASSWORD: ${KEYCLOAK_DATABASE_PASSWORD}
       KEYCLOAK_INIT_OPERATE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       KEYCLOAK_INIT_OPERATE_ROOT_URL: http://${HOST}:8081
       KEYCLOAK_INIT_TASKLIST_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
@@ -285,26 +285,26 @@ services:
       keycloak:
         condition: service_healthy
 
-  postgres: # https://hub.docker.com/_/postgres
-    container_name: postgres
-    image: postgres:${POSTGRES_VERSION}
-    ports:
-      - "5432:5432" # 方便查看数据库数据
-    environment:
-      POSTGRES_DB: bitnami_keycloak
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "postgres"
-    restart: always
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - ${DATA_VOLUME_PREFIX}postgres:/var/lib/postgresql/data
-    networks:
-      - identity-network
-      - postgres #方便别的容器访问postgres
+  # postgres: # https://hub.docker.com/_/postgres
+  #   container_name: postgres
+  #   image: postgres:${POSTGRES_VERSION}
+  #   ports:
+  #     - "5432:5432" # 方便查看数据库数据
+  #   environment:
+  #     POSTGRES_DB: bitnami_keycloak
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: "postgres"
+  #   restart: always
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   volumes:
+  #     - ${DATA_VOLUME_PREFIX}postgres:/var/lib/postgresql/data
+  #   networks:
+  #     - identity-network
+  #     - postgres #方便别的容器访问postgres
 
   keycloak: # https://hub.docker.com/r/bitnami/keycloak
     container_name: keycloak
@@ -315,11 +315,13 @@ services:
       - "18080:8080"
     environment:
       KEYCLOAK_HTTP_RELATIVE_PATH: /auth
-      KEYCLOAK_DATABASE_HOST: postgres
-      KEYCLOAK_DATABASE_USER: "postgres"
-      KEYCLOAK_DATABASE_PASSWORD: "postgres"
-      KEYCLOAK_ADMIN_USER: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_DATABASE_HOST: ${KEYCLOAK_DATABASE_HOST}
+      KEYCLOAK_DATABASE_PORT: ${KEYCLOAK_DATABASE_PORT}
+      KEYCLOAK_DATABASE_NAME: ${KEYCLOAK_DATABASE_NAME}
+      KEYCLOAK_DATABASE_USER: ${KEYCLOAK_DATABASE_USER}
+      KEYCLOAK_DATABASE_PASSWORD: ${KEYCLOAK_DATABASE_PASSWORD}
+      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/auth" ]
@@ -330,8 +332,8 @@ services:
     networks:
       - camunda-platform
       - identity-network
-    depends_on:
-      - postgres
+      # depends_on:
+      # - postgres
 
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
@@ -392,5 +394,5 @@ networks:
   identity-network:
   # 提前执行创建postgres，如果在这里创建会自动添加项目名前缀
   # docker network create postgres
-  postgres:
-    external: true
+  # postgres:
+  # external: true

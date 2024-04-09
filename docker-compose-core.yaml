@@ -70,6 +70,7 @@ services:
       - "8082:8080"
     environment: # https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
+      - CAMUNDA_TASKLIST_ZEEBE_RESTADDRESS=http://zeebe:8080
       - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
       - management.endpoints.web.exposure.include=health

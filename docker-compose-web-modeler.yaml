@@ -32,7 +32,7 @@ services:
     ports:
       - "8060:8060"
     healthcheck:
-      test: /usr/bin/nc -v localhost 8060
+      test: /usr/bin/nc -v 127.0.0.1 8060
       interval: 30s
     environment:
       APP_NAME: "Web Modeler Self-Managed WebSockets"
@@ -40,7 +40,6 @@ services:
       PUSHER_APP_ID: modeler-app
       PUSHER_APP_KEY: modeler-app-key
       PUSHER_APP_SECRET: modeler-app-secret
-      PUSHER_APP_CLUSTER: modeler
     networks:
       - modeler
 

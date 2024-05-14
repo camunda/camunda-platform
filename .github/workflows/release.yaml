@@ -1,7 +1,7 @@
 on:
   push:
     tags:
-      # Example: 8.4-gen1
+      # Example: 8.4.1
       - 8\.\d+\.\d+
 jobs:
   release_script:

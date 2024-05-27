@@ -72,7 +72,7 @@ services:
       identity:
         condition: service_healthy
     healthcheck:
-      test: /usr/bin/nc -v localhost 8081
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8091/health/readiness" ]
       interval: 30s
       retries: 10
     environment:
@@ -108,7 +108,7 @@ services:
       modeler-restapi:
         condition: service_healthy
     healthcheck:
-      test: /usr/bin/nc -v localhost 8070
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8071/health/readiness" ]
       interval: 30s
       timeout: 15s
       retries: 5

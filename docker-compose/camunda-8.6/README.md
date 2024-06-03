@@ -26,6 +26,10 @@ For production setups we recommend using [Helm charts](https://docs.camunda.io/d
 
 > :information_source: Docker 20.10.16+ is required.
 
+> :information_source: The Web Modeler service names have changed with 8.6.0-alpha2. If you still have old services running from the previous setup, run `docker compose stop modeler-webapp modeler-restapi modeler-websockets` additionally when tearing down the environment.
+
+Be sure you are in the correct directory when running all the following commands. Use `cd docker-compose/camunda-8.6` to navigate to the correct directory.
+
 To spin up a complete Camunda Platform 8 Self-Managed environment locally the [docker-compose.yaml](docker-compose.yaml) file in this repository can be used.
 
 The full environment contains these components:
@@ -38,13 +42,12 @@ The full environment contains these components:
 - Elasticsearch
 - Keycloak
 - PostgreSQL
-
-> :information_source: Web Modeler is not included by default. Please follow [the instructions below](#web-modeler-self-managed) to install it.
+- Web Modeler
 
 Clone this repo and issue the following command to start your environment:
 
 ```
-docker compose up -d
+docker compose --profile full up -d
 ```
 
 Wait a few minutes for the environment to start up and settle down. Monitor the logs, especially the Keycloak container log, to ensure the components have started.
@@ -55,6 +58,7 @@ Now you can navigate to the different web apps and log in with the user `demo` a
 - Optimize: [http://localhost:8083](http://localhost:8083)
 - Identity: [http://localhost:8084](http://localhost:8084)
 - Elasticsearch: [http://localhost:9200](http://localhost:9200)
+- Web Modeler: [http://localhost:8070](http://localhost:8070)
 
 Keycloak is used to manage users. Here you can log in with the user `admin` and password `admin`
 - Keycloak: [http://localhost:18080/auth/](http://localhost:18080/auth/)
@@ -64,14 +68,14 @@ The workflow engine Zeebe is available using gRPC at `localhost:26500`.
 To tear down the whole environment run the following command:
 
 ```
-docker compose down -v
+docker compose --profile full down -v
 ```
 
-Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file.
+Zeebe, Operate, Tasklist, Web Modeler along with Optimize require a separate network from Identity as you'll see in the docker-compose file. Web Modeler also requires another separate network.
 
 ### Using the basic components
 
-If Optimize, Identity, and Keycloak are not needed you can use the [docker-compose-core.yaml](docker-compose-core.yaml) instead which does not include these components:
+If Optimize, Web Modeler, Identity, and Keycloak are not needed you can use the [docker-compose-core.yaml](docker-compose-core.yaml) instead which does not include these components:
 
 ```
 docker compose -f docker-compose-core.yaml up -d
@@ -152,31 +156,27 @@ If you enabled authentication for GRPC requests on Zeebe you need to provide cli
 
 ## Web Modeler Self-Managed
 
-> :information_source: Web Modeler Self-Managed is available to Camunda enterprise customers only.
+> :information_source: Web Modeler Self-Managed images with version <8.6.0-alpha2 are available to Camunda enterprise customers only. Follow the instructions in the root folder [README](../../README.md) to set up the environment for these versions.
 
-The Docker images for Web Modeler are available in a private registry. Enterprise customers either already have credentials to this registry, or they can request access to this registry through their CSM contact at Camunda.
+Web Modeler can be run standalone with only Identity and Keycloak as dependencies.
 
-To run Camunda Platform with Web Modeler Self-Managed clone this repo and issue the following commands:
+Issue the following commands to only start Web Modeler and its dependencies:
 
 ```
-$ docker login registry.camunda.cloud
-Username: your_username
-Password: ******
-Login Succeeded
-$ docker compose --profile web-modeler up -d
+docker compose --profile web-modeler-only up -d
 ```
 
 To tear down the whole environment run the following command
 
 ```
-$ docker compose --profile web-modeler down -v
+docker compose --profile web-modeler-only down -v
 ```
 
 If you want to delete everything (including any data you created).
 Alternatively, if you want to keep the data run:
 
 ```
-$ docker compose --profile web-modeler down
+docker compose --profile web-modeler-only down
 ```
 
 ### Login
@@ -229,7 +229,7 @@ This feature is disabled by default and can be enabled by setting
 `RESOURCE_AUTHORIZATIONS_ENABLED` to `true`, either via the [`.env`](.env) file or through the command line:
 
 ```
-RESOURCE_AUTHORIZATIONS_ENABLED=true docker compose up -d
+RESOURCE_AUTHORIZATIONS_ENABLED=true docker compose --profile full up -d
 ```
 
 ## Multi-Tenancy
@@ -240,7 +240,7 @@ This feature is disabled by default and can be enabled by setting
 `MULTI_TENANCY_ENABLED` to `true`, either via the [`.env`](.env) file or through the command line:
 
 ```
-ZEEBE_AUTHENICATION_MODE=identity MULTI_TENANCY_ENABLED=true docker compose up -d
+ZEEBE_AUTHENICATION_MODE=identity MULTI_TENANCY_ENABLED=true docker compose --profile full up -d
 ```
 
 As seen above the feature also requires you to use `identity` as an authentication provider.

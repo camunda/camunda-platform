@@ -438,9 +438,9 @@ services:
       SPRING_PROFILES_INCLUDE: default-logging
       RESTAPI_PUSHER_HOST: web-modeler-websockets
       RESTAPI_PUSHER_PORT: "8060"
-      RESTAPI_PUSHER_APP_ID: modeler-app
-      RESTAPI_PUSHER_KEY: modeler-app-key
-      RESTAPI_PUSHER_SECRET: modeler-app-secret
+      RESTAPI_PUSHER_APP_ID: web-modeler-app
+      RESTAPI_PUSHER_KEY: web-modeler-app-key
+      RESTAPI_PUSHER_SECRET: web-modeler-app-secret
       RESTAPI_OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
       RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://keycloak:8080/auth/realms/camunda-platform
       RESTAPI_SERVER_URL: http://localhost:8070
@@ -473,15 +473,15 @@ services:
       SERVER_HOST: web-modeler-webapp
       SERVER_HTTPS_ONLY: "false"
       SERVER_URL: http://localhost:8070
-      PUSHER_APP_ID: modeler-app
-      PUSHER_KEY: modeler-app-key
-      PUSHER_SECRET: modeler-app-secret
-      PUSHER_HOST: modeler-websockets
+      PUSHER_APP_ID: web-modeler-app
+      PUSHER_KEY: web-modeler-app-key
+      PUSHER_SECRET: web-modeler-app-secret
+      PUSHER_HOST: web-modeler-websockets
       PUSHER_PORT: "8060"
       CLIENT_PUSHER_HOST: localhost
       CLIENT_PUSHER_PORT: "8060"
       CLIENT_PUSHER_FORCE_TLS: "false"
-      CLIENT_PUSHER_KEY: modeler-app-key
+      CLIENT_PUSHER_KEY: web-modeler-app-key
       OAUTH2_CLIENT_ID: web-modeler
       OAUTH2_JWKS_URL: http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/certs
       OAUTH2_TOKEN_AUDIENCE: web-modeler
@@ -506,10 +506,10 @@ services:
     environment:
       APP_NAME: "Web Modeler Self-Managed WebSockets"
       APP_DEBUG: "true"
-      PUSHER_APP_ID: modeler-app
-      PUSHER_APP_KEY: modeler-app-key
-      PUSHER_APP_SECRET: modeler-app-secret
-      PUSHER_APP_CLUSTER: modeler
+      PUSHER_APP_ID: web-modeler-app
+      PUSHER_APP_KEY: web-modeler-app-key
+      PUSHER_APP_SECRET: web-modeler-app-secret
+      PUSHER_APP_CLUSTER: web-modeler
     networks:
       - web-modeler
 

@@ -502,7 +502,7 @@ services:
     ports:
       - "8060:8060"
     healthcheck:
-      test: /usr/bin/nc -v localhost 8060
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:8060/up" ]
       interval: 5s
       timeout: 15s
       retries: 30
@@ -512,7 +512,6 @@ services:
       PUSHER_APP_ID: web-modeler-app
       PUSHER_APP_KEY: web-modeler-app-key
       PUSHER_APP_SECRET: web-modeler-app-secret
-      PUSHER_APP_CLUSTER: web-modeler
     networks:
       - web-modeler
 

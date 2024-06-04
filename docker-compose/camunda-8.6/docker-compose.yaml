@@ -372,21 +372,21 @@ services:
     networks:
       - camunda-platform
 
-  modeler-db:
+  web-modeler-db:
     profiles:
       - full
       - web-modeler-only
-    container_name: modeler-db
+    container_name: web-modeler-db
     image: postgres:${POSTGRES_VERSION}
     healthcheck:
-      test: pg_isready -d modeler-db -U modeler-db-user
+      test: pg_isready -d web-modeler-db -U web-modeler-db-user
       interval: 5s
       timeout: 15s
       retries: 30
     environment:
-      POSTGRES_DB: modeler-db
-      POSTGRES_USER: modeler-db-user
-      POSTGRES_PASSWORD: modeler-db-password
+      POSTGRES_DB: web-modeler-db
+      POSTGRES_USER: web-modeler-db-user
+      POSTGRES_PASSWORD: web-modeler-db-password
     networks:
       - web-modeler
     volumes:
@@ -418,7 +418,7 @@ services:
     image: camunda/web-modeler-restapi:${CAMUNDA_WEB_MODELER_VERSION}
     command: /bin/sh -c "java $JAVA_OPTIONS org.springframework.boot.loader.JarLauncher"
     depends_on:
-      modeler-db:
+      web-modeler-db:
         condition: service_healthy
       mailpit:
         condition: service_started
@@ -432,9 +432,9 @@ services:
       JAVA_OPTIONS: -Xmx128m
       LOGGING_LEVEL_IO_CAMUNDA_MODELER: DEBUG
       CAMUNDA_IDENTITY_BASEURL: http://identity:8084/
-      SPRING_DATASOURCE_URL: jdbc:postgresql://modeler-db:5432/modeler-db
-      SPRING_DATASOURCE_USERNAME: modeler-db-user
-      SPRING_DATASOURCE_PASSWORD: modeler-db-password
+      SPRING_DATASOURCE_URL: jdbc:postgresql://web-modeler-db:5432/web-modeler-db
+      SPRING_DATASOURCE_USERNAME: web-modeler-db-user
+      SPRING_DATASOURCE_PASSWORD: web-modeler-db-password
       SPRING_PROFILES_INCLUDE: default-logging
       RESTAPI_PUSHER_HOST: web-modeler-websockets
       RESTAPI_PUSHER_PORT: "8060"

@@ -224,7 +224,7 @@ services:
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
     profiles:
       - full
-      - web-modeler-only
+      - modeling
     container_name: identity
     image: camunda/identity:${CAMUNDA_PLATFORM_VERSION}
     ports:
@@ -295,7 +295,7 @@ services:
   postgres: # https://hub.docker.com/_/postgres
     profiles:
       - full
-      - web-modeler-only
+      - modeling
     container_name: postgres
     image: postgres:${POSTGRES_VERSION}
     environment:
@@ -316,7 +316,7 @@ services:
   keycloak: # https://hub.docker.com/r/bitnami/keycloak
     profiles:
       - full
-      - web-modeler-only
+      - modeling
     container_name: keycloak
     image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION}
     volumes:
@@ -375,7 +375,7 @@ services:
   web-modeler-db:
     profiles:
       - full
-      - web-modeler-only
+      - modeling
     container_name: web-modeler-db
     image: postgres:${POSTGRES_VERSION}
     healthcheck:
@@ -398,7 +398,7 @@ services:
     # REST_API_MAIL_PASSWORD and RESTAPI_MAIL_ENABLE_TLS in web-modeler-restapi
     profiles:
       - full
-      - web-modeler-only
+      - modeling
     container_name: mailpit
     image: axllent/mailpit:${MAILPIT_VERSION}
     ports:
@@ -413,7 +413,7 @@ services:
   web-modeler-restapi:
     profiles:
       - full
-      - web-modeler-only
+      - modeling
     container_name: web-modeler-restapi
     image: camunda/web-modeler-restapi:${CAMUNDA_WEB_MODELER_VERSION}
     command: /bin/sh -c "java $JAVA_OPTIONS org.springframework.boot.loader.JarLauncher"
@@ -456,7 +456,7 @@ services:
   web-modeler-webapp:
     profiles:
       - full
-      - web-modeler-only
+      - modeling
     container_name: web-modeler-webapp
     image: camunda/web-modeler-webapp:${CAMUNDA_WEB_MODELER_VERSION}
     ports:
@@ -496,7 +496,7 @@ services:
   web-modeler-websockets:
     profiles:
       - full
-      - web-modeler-only
+      - modeling
     container_name: web-modeler-websockets
     image: camunda/web-modeler-websockets:${CAMUNDA_WEB_MODELER_VERSION}
     ports:

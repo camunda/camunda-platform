@@ -26,7 +26,7 @@ For production setups we recommend using [Helm charts](https://docs.camunda.io/d
 
 > :information_source: Docker 20.10.16+ is required.
 
-> :information_source: The Web Modeler service names have changed with 8.6.0-alpha2. If you still have old services running from the previous setup, run `docker compose stop modeler-webapp modeler-restapi modeler-websockets` additionally when tearing down the environment.
+> :information_source: The Web Modeler service names have changed with `8.6.0-alpha2`. Run `docker compose stop modeler-webapp modeler-restapi modeler-websockets` when upgrading from a previous version to stop the old services.
 
 Be sure you are in the correct directory when running all the following commands. Use `cd docker-compose/camunda-8.6` to navigate to the correct directory.
 
@@ -42,7 +42,7 @@ The full environment contains these components:
 - Elasticsearch
 - Keycloak
 - PostgreSQL
-- Web Modeler
+- Web Modeler (Restapi, Webapp and Websockets)
 
 Clone this repo and issue the following command to start your environment:
 
@@ -156,27 +156,27 @@ If you enabled authentication for GRPC requests on Zeebe you need to provide cli
 
 ## Web Modeler Self-Managed
 
-> :information_source: Web Modeler Self-Managed images with version <8.6.0-alpha2 are available to Camunda enterprise customers only. Follow the instructions in the root folder [README](../../README.md) to set up the environment for these versions.
+> :information_source: Web Modeler is currently restricted to five collaborators per project. Read more about the restriction [here](https://docs.camunda.io/docs/components/modeler/web-modeler/collaboration/).
 
-Web Modeler can be run standalone with only Identity and Keycloak as dependencies.
+Web Modeler can be run standalone with only Identity, Keycloak and Postgres as dependencies.
 
 Issue the following commands to only start Web Modeler and its dependencies:
 
 ```
-docker compose --profile web-modeler-only up -d
+docker compose --profile modeling up -d
 ```
 
 To tear down the whole environment run the following command
 
 ```
-docker compose --profile web-modeler-only down -v
+docker compose --profile modeling down -v
 ```
 
 If you want to delete everything (including any data you created).
 Alternatively, if you want to keep the data run:
 
 ```
-docker compose --profile web-modeler-only down
+docker compose --profile modeling down
 ```
 
 ### Login

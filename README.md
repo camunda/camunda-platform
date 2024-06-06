@@ -4,11 +4,11 @@ This repository contains links to Camunda Platform 8 resources, the official rel
 
 :warning: **Docker Compose is only recommended for local development.** :warning:
 
-We recommend using [SaaS](https://camunda.com/get-started/) or [Helm/Kubernetes](https://docs.camunda.io/docs/next/self-managed/platform-deployment/helm-kubernetes/overview/) for development.
+We recommend using [SaaS](https://camunda.com/get-started/) or [Helm/Kubernetes](https://docs.camunda.io/docs/self-managed/setup/overview/) for development.
 
-For more information about Self-Managed, including additional [development installation options](https://docs.camunda.io/docs/next/self-managed/platform-deployment/overview/#development), see our [documentation](https://docs.camunda.io/docs/next/self-managed/about-self-managed/).
+For more information, check Camunda 8 Self-Managed official [documentation](https://docs.camunda.io/docs/self-managed/about-self-managed/).
 
-For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/) which can be found at [helm.camunda.io](https://helm.camunda.io/).
+For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/setup/install/) which can be found at [helm.camunda.io](https://helm.camunda.io/).
 
 ## Links to additional Camunda Platform 8 repos and assets
 
@@ -20,7 +20,7 @@ For production setups we recommend using [Helm charts](https://docs.camunda.io/d
 - [Zeebe Workflow Engine](https://github.com/camunda/zeebe)
 - [Contact](https://docs.camunda.io/contact/)
 
-## Using docker compose
+## Using Docker Compose
 
 > :information_source: The docker-compose file in this repository uses the latest [compose specification](https://docs.docker.com/compose/compose-file/), which was introduced with docker compose version 1.27.0+. Please make sure to use an up-to-date docker compose version.
 
@@ -223,7 +223,7 @@ $ DOCKER_BUILDKIT=0 docker build -t bitnami/keycloak:19.0.3 "https://github.com/
 
 ## Resource based authorizations
 
-You can control access to specific processes and decision tables in Operate and Tasklist with [resource based authorization](https://docs.camunda.io/docs/self-managed/concepts/access-control/resource-authorizations/).
+You can control access to specific processes and decision tables in Operate and Tasklist with [resource-based authorization](https://docs.camunda.io/docs/self-managed/concepts/access-control/resource-authorizations/).
 
 This feature is disabled by default and can be enabled by setting 
 `RESOURCE_AUTHORIZATIONS_ENABLED` to `true`, either via the [`.env`](.env) file or through the command line:
@@ -245,7 +245,7 @@ ZEEBE_AUTHENICATION_MODE=identity MULTI_TENANCY_ENABLED=true docker compose up -
 
 As seen above the feature also requires you to use `identity` as an authentication provider.
 
-Ensure you [setup tenants in identity](https://docs.camunda.io/docs/self-managed/identity/user-guide/tenants/managing-tenants/) after you started the platform.
+Ensure you [setup tenants in identity](https://docs.camunda.io/docs/self-managed/identity/user-guide/tenants/managing-tenants/) after you start the platform.
 
 ## Camunda Platform 7
 

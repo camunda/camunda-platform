@@ -4,11 +4,11 @@ This repository contains links to Camunda Platform 8 resources, the official rel
 
 :warning: **Docker Compose is only recommended for local development.** :warning:
 
-We recommend using [SaaS](https://camunda.com/get-started/) or [Helm/Kubernetes](https://docs.camunda.io/docs/next/self-managed/platform-deployment/helm-kubernetes/overview/) for development.
+We recommend using [SaaS](https://camunda.com/get-started/) or [Helm/Kubernetes](https://docs.camunda.io/docs/self-managed/setup/overview/) for development.
 
-For more information about Self-Managed, including additional [development installation options](https://docs.camunda.io/docs/next/self-managed/platform-deployment/overview/#development), see our [documentation](https://docs.camunda.io/docs/next/self-managed/about-self-managed/).
+For more information, check Camunda 8 Self-Managed official [documentation](https://docs.camunda.io/docs/self-managed/about-self-managed/).
 
-For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/) which can be found at [helm.camunda.io](https://helm.camunda.io/).
+For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/setup/install/) which can be found at [helm.camunda.io](https://helm.camunda.io/
 
 ## Links to additional Camunda Platform 8 repos and assets
 

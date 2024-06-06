@@ -30,15 +30,16 @@ services:
     ports:
       - "8060:8060"
     healthcheck:
-      test: /usr/bin/nc -v localhost 8060
-      interval: 30s
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:8060/up" ]
+      interval: 5s
+      timeout: 15s
+      retries: 30
     environment:
       APP_NAME: "Web Modeler Self-Managed WebSockets"
       APP_DEBUG: "true"
       PUSHER_APP_ID: modeler-app
       PUSHER_APP_KEY: modeler-app-key
       PUSHER_APP_SECRET: modeler-app-secret
-      PUSHER_APP_CLUSTER: modeler
     networks:
       - modeler
 
@@ -70,9 +71,10 @@ services:
       identity:
         condition: service_healthy
     healthcheck:
-      test: /usr/bin/nc -v localhost 8081
-      interval: 30s
-      retries: 10
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8091/health/readiness" ]
+      interval: 5s
+      timeout: 15s
+      retries: 30
     environment:
       JAVA_OPTIONS: -Xmx128m
       LOGGING_LEVEL_IO_CAMUNDA_MODELER: DEBUG
@@ -106,10 +108,10 @@ services:
       modeler-restapi:
         condition: service_healthy
     healthcheck:
-      test: /usr/bin/nc -v localhost 8070
-      interval: 30s
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8071/health/readiness" ]
+      interval: 5s
       timeout: 15s
-      retries: 5
+      retries: 30
     environment:
       RESTAPI_HOST: modeler-restapi
       SERVER_HOST: modeler-webapp

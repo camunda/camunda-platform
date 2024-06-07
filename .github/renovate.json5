@@ -106,8 +106,13 @@
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
     },
+    // disable auto-merge for alpha release candidates
     {
-      // we manually made this package for renovate. 
+      "matchNewValue": "/.*alpha[0-9]*-rc[0-9]*/",
+      "automerge": false
+    },
+    {
+      // we manually made this package for renovate.
       // no need to update it again
       "matchDepNames": ["docker.io/bitnami/keycloak"],
       "enabled": false,

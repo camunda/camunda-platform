@@ -17,8 +17,8 @@ import (
 const RepoOwner = "camunda"
 const CloudRepoOwner = "camunda-cloud"
 const MainRepoName = "camunda-platform"
-const ZeebeRepoName = "zeebe"
-const OperateRepoName = "operate"
+const ZeebeRepoName = "camunda"
+const OperateRepoName = "camunda"
 const TasklistRepoName = "tasklist"
 const IdentityRepoName = "identity"
 const ReleaseNotesTemplateFileName = "release-notes-template.txt"
@@ -142,6 +142,10 @@ func main() {
 	camundaRepoService := camundaGithubClient.Repositories
 
 	log.Debug().Msg("Camunda Github ref = " + camundaReleaseVersion)
+	log.Debug().Msg("Zeebe Github ref = " + camundaAppVersions.Zeebe)
+	log.Debug().Msg("Tasklist Github ref = " + camundaAppVersions.Tasklist)
+	log.Debug().Msg("Operate Github ref = " + camundaAppVersions.Operate)
+	log.Debug().Msg("Identity Github ref = " + camundaAppVersions.Identity)
 
 	zeebeReleaseNotes := GetLatestReleaseContents(
 		ctx,
@@ -156,7 +160,7 @@ func main() {
 		RepoOwner,
 		OperateRepoName,
 		camundaRepoService,
-		camundaAppVersions.Operate,
+		"operate-" + camundaAppVersions.Operate,
 	)
 
 	tasklistReleaseNotesContents := GetChangelogReleaseContents(

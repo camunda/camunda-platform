@@ -60,7 +60,7 @@ jobs:
         run: >
           gh release
           download "$GITHUB_REF_NAME"
-          -R camunda/zeebe
+          -R camunda/camunda
           -p "zbctl"
           -p "zbctl.sha1sum"
           -p "zbctl.exe"
@@ -82,7 +82,7 @@ jobs:
         run: >
           gh release
           download "operate-$GITHUB_REF_NAME"
-          -R camunda/zeebe
+          -R camunda/camunda
           -p "camunda-operate-$GITHUB_REF_NAME.zip"
           -p "camunda-operate-$GITHUB_REF_NAME.zip.sha1sum"
           -p "camunda-operate-$GITHUB_REF_NAME.tar.gz"

@@ -81,7 +81,7 @@ jobs:
         working-directory: ./release-notes-fetcher/tmp
         run: |
           gh release download "${ZEEBE_GITREF}" \
-            -R camunda/zeebe  \
+            -R camunda/camunda  \
             -p "zbctl"  \
             -p "zbctl.sha1sum" \
             -p "zbctl.exe"  \
@@ -113,7 +113,7 @@ jobs:
         working-directory: ./release-notes-fetcher/tmp
         run: |
           gh release download "${OPERATE_GITREF}" \
-            -R camunda/camunda \
+            -R camunda/operate \
             -p "camunda-operate-${OPERATE_GITREF}.zip" \
             -p "camunda-operate-${OPERATE_GITREF}.zip.sha1sum" \
             -p "camunda-operate-${OPERATE_GITREF}.tar.gz" \

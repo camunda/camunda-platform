@@ -39,7 +39,7 @@ jobs:
         working-directory: ./release-notes-fetcher
         # The var CAMUNDA_RELEASE_NAME should be the same as GITHUB_REF_NAME but it's hard-coded as 8.3.1 tag
         # and we just want to see if a valid version can fetch notes
-        run: set -o pipefail; CAMUNDA_RELEASE_NAME=8.3.1 ./release-notes-fetcher | tee release_notes.txt
+        run: set -o pipefail; CAMUNDA_RELEASE_NAME=8.5.1 ./release-notes-fetcher | tee release_notes.txt
         env:
           GITHUB_CAMUNDA_ACCESS_TOKEN: ${{ steps.generate-camunda-github-token.outputs.token }}
           GITHUB_CAMUNDA_CLOUD_ACCESS_TOKEN: ${{ steps.generate-camunda-cloud-github-token.outputs.token }}

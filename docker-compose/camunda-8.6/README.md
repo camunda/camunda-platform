@@ -156,7 +156,7 @@ If you enabled authentication for GRPC requests on Zeebe you need to provide cli
 
 ## Web Modeler Self-Managed
 
-> :information_source: Web Modeler is currently restricted to five collaborators per project. Read more about the restriction [here](https://docs.camunda.io/docs/components/modeler/web-modeler/collaboration/).
+> :information_source: Non-production installations of Web Modeler are restricted to five collaborators per project. Refer to [the documentation](https://docs.camunda.io/docs/next/reference/licenses/) for more information.
 
 Web Modeler can be run standalone with only Identity, Keycloak and Postgres as dependencies.
 

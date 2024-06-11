@@ -10,3 +10,10 @@ jobs:
     with:
       compose_args: "-f docker-compose.yaml -f docker-compose-web-modeler.yaml"
       run_e2e_tests: true
+  test_modeler_yaml_8_6:
+    uses: ./.github/workflows/template-deploy.yaml
+    secrets: inherit
+    with:
+      compose_args: "--profile full"
+      run_e2e_tests: true
+      directory: "docker-compose/camunda-8.6"

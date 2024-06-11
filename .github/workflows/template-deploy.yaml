@@ -11,6 +11,10 @@ on:
         description: runs playwright tests
         required: true
         type: boolean
+      directory:
+        description: directory to run the tests
+        required: false
+        type: string
 
 jobs:
   test_compose_deploy:
@@ -28,10 +32,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Login to private registry
+        if: ${{ inputs.directory != 'docker-compose/camunda-8.6' }}
         run: >-
           echo '${{ secrets.CI_DISTRIBUTION_REGISTRY_PASSWORD }}' | docker login -u ci-distribution --password-stdin  registry.camunda.cloud
 
       - name: Bring up containers
+        working-directory: ${{ inputs.directory || '.' }}
         run: >-
           docker compose ${{ inputs.compose_args }}
           up

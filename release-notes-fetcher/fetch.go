@@ -157,13 +157,13 @@ func main() {
 
 	operateMonoRepoVersion, operateMonoErr := semver.NewVersion("8.5.0")
 	if operateMonoErr != nil {
-		fmt.Println("Error parsing version:", operateMonoErr)
+		log.Error().Stack().Err(operateMonoErr).Msg("Error parsing 8.5.0 version:")
 		return
 	}
 
 	operateCurrentVersion, err1 := semver.NewVersion(camundaAppVersions.Operate)
 	if err1 != nil {
-		fmt.Println("Error parsing version:", err1)
+		log.Error().Stack().Err(err1).Msg("Error parsing operate version:")
 		return
 	}
 

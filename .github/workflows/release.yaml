@@ -85,7 +85,7 @@ jobs:
         run: echo "$GITHUB_REF_NAME" | IFS=. read major minor patch && echo "MINOR_VERSION=$minor" >> "$GITHUB_OUTPUT"
 
       - name: Download Operate resources from monorepo
-        if: ${{ steps.get-major-version.outputs.MAJOR_VERSION == 8 && steps.get-minor-version.outputs.MINOR_VERSION >= 6 }}
+        if: ${{ steps.get-major-version.outputs.MAJOR_VERSION == 8 && steps.get-minor-version.outputs.MINOR_VERSION >= 5 }}
         working-directory: ./release-notes-fetcher/tmp
         run: >
           gh release

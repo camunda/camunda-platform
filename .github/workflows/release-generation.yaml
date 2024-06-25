@@ -97,8 +97,16 @@ jobs:
             -p "camunda-tasklist-${ZEEBE_GITREF}.tar.gz" \
             -p "camunda-tasklist-${ZEEBE_GITREF}.tar.gz.sha1sum"
 
+      - name: Parse major version number
+        id: get-major-version
+        run: echo ${CAMUNDA_RELEASE_NAME} | awk -F '-' '{print $1} | IFS=. read major minor patch && echo "MAJOR_VERSION=$major" >> "$GITHUB_OUTPUT"
+
+      - name: Parse minor version number
+        id: get-minor-version
+        run: echo ${CAMUNDA_RELEASE_NAME} | awk -F '-' '{print $1} | IFS=. read major minor patch && echo "MINOR_VERSION=$minor" >> "$GITHUB_OUTPUT"
+
       - name: Download Operate resources from monorepo
-        if: ${{ startsWith(env.CAMUNDA_RELEASE_NAME, '8.5') }}
+        if: ${{ steps.get-major-version.outputs.MAJOR_VERSION == 8 && steps.get-minor-version.outputs.MINOR_VERSION >= 5 }}
         working-directory: ./release-notes-fetcher/tmp
         run: |
           gh release download "operate-${OPERATE_GITREF}" \
@@ -109,7 +117,7 @@ jobs:
             -p "camunda-operate-${OPERATE_GITREF}.tar.gz.sha1sum" \
 
       - name: Download Operate resources
-        if: ${{ !startsWith(env.CAMUNDA_RELEASE_NAME, '8.5') }}
+        if: ${{ steps.get-major-version.outputs.MAJOR_VERSION == 8 && steps.get-minor-version.outputs.MINOR_VERSION < 5 }}
         working-directory: ./release-notes-fetcher/tmp
         run: |
           gh release download "${OPERATE_GITREF}" \

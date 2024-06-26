@@ -78,11 +78,11 @@ jobs:
 
       - name: Parse major version number
         id: get-major-version
-        run: echo "$GITHUB_REF_NAME" | IFS=. read major minor patch && echo "MAJOR_VERSION=$major" >> "$GITHUB_OUTPUT"
+        run: echo "$GITHUB_REF_NAME" | (IFS=. read major minor patch && echo "MAJOR_VERSION=$major") >> "$GITHUB_OUTPUT"
 
       - name: Parse minor version number
         id: get-minor-version
-        run: echo "$GITHUB_REF_NAME" | IFS=. read major minor patch && echo "MINOR_VERSION=$minor" >> "$GITHUB_OUTPUT"
+        run: echo "$GITHUB_REF_NAME" | (IFS=. read major minor patch && echo "MINOR_VERSION=$minor") >> "$GITHUB_OUTPUT"
 
       - name: Download Operate resources from monorepo
         if: ${{ steps.get-major-version.outputs.MAJOR_VERSION == 8 && steps.get-minor-version.outputs.MINOR_VERSION >= 5 }}

@@ -45,7 +45,7 @@ jobs:
 
       - name: Set Camunda application vars
         run: |
-          CAMUNDA_VERSION="$(echo ${CAMUNDA_RELEASE_NAME} | awk -F '-' '{print $1}')"
+          CAMUNDA_VERSION="$(echo ${CAMUNDA_RELEASE_NAME} | awk -F '+' '{print $1}')"
           CONFIG_FILE="release-notes-fetcher/config/release-notes-fetcher-camunda-${CAMUNDA_VERSION}.yaml"
           export GLOBAL_GITREF="$(yq '.gitRef.global' ${CONFIG_FILE})"
 
@@ -99,11 +99,11 @@ jobs:
 
       - name: Parse major version number
         id: get-major-version
-        run: echo ${CAMUNDA_RELEASE_NAME} | awk -F '-' '{print $1} | IFS=. read major minor patch && echo "MAJOR_VERSION=$major" >> "$GITHUB_OUTPUT"
+        run: echo ${CAMUNDA_RELEASE_NAME} | awk -F '+' '{print $1}' | (IFS=. read major minor patch && echo "MAJOR_VERSION=$major") >> "$GITHUB_OUTPUT"
 
       - name: Parse minor version number
         id: get-minor-version
-        run: echo ${CAMUNDA_RELEASE_NAME} | awk -F '-' '{print $1} | IFS=. read major minor patch && echo "MINOR_VERSION=$minor" >> "$GITHUB_OUTPUT"
+        run: echo ${CAMUNDA_RELEASE_NAME} | awk -F '+' '{print $1}' | (IFS=. read major minor patch && echo "MINOR_VERSION=$minor") >> "$GITHUB_OUTPUT"
 
       - name: Download Operate resources from monorepo
         if: ${{ steps.get-major-version.outputs.MAJOR_VERSION == 8 && steps.get-minor-version.outputs.MINOR_VERSION >= 5 }}

@@ -50,6 +50,7 @@ services:
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_OPERATE_CSRFPREVENTIONENABLED=false
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
     healthcheck:

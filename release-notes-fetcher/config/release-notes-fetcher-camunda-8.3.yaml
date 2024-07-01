@@ -1,0 +1,6 @@
+gitRef:
+  global: 8.3.12
+  operate: 8.3.13
+  identity:
+  tasklist:
+  zeebe:

@@ -2,5 +2,5 @@ gitRef:
   global: 8.3.13
   operate: 
   identity:
-  tasklist:  8.3.14
+  tasklist: 8.3.14
   zeebe:

@@ -12,13 +12,13 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
+	"github.com/Masterminds/semver/v3"
 )
 
 const RepoOwner = "camunda"
 const CloudRepoOwner = "camunda-cloud"
 const MainRepoName = "camunda-platform"
 const ZeebeRepoName = "camunda"
-const OperateRepoName = "camunda"
 const TasklistRepoName = "tasklist"
 const IdentityRepoName = "identity"
 const ReleaseNotesTemplateFileName = "release-notes-template.txt"
@@ -155,13 +155,36 @@ func main() {
 		camundaAppVersions.Zeebe,
 	)
 
+	operateMonoRepoVersion, operateMonoErr := semver.NewVersion("8.5.0")
+	if operateMonoErr != nil {
+		log.Error().Stack().Err(operateMonoErr).Msg("Error parsing 8.5.0 version:")
+		return
+	}
+
+	operateCurrentVersion, err1 := semver.NewVersion(camundaAppVersions.Operate)
+	if err1 != nil {
+		log.Error().Stack().Err(err1).Msg("Error parsing operate version:")
+		return
+	}
+
+	var OperateRepoTag = ""
+	var OperateRepoName = ""
+	if(operateCurrentVersion.LessThan(operateMonoRepoVersion)) {
+		OperateRepoName = "operate"
+		OperateRepoTag = camundaAppVersions.Operate
+	}else {
+		OperateRepoName = "camunda"
+		OperateRepoTag = "operate-" + camundaAppVersions.Operate
+	}
+
 	operateReleaseNotesContents := GetLatestReleaseContents(
 		ctx,
 		RepoOwner,
 		OperateRepoName,
 		camundaRepoService,
-		"operate-" + camundaAppVersions.Operate,
+		OperateRepoTag,
 	)
+
 
 	tasklistReleaseNotesContents := GetChangelogReleaseContents(
 		ctx,

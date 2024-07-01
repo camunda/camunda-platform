@@ -1,11 +1,14 @@
-# Zeebe
-{{.ZeebeReleaseNotes}}
-
-# Operate
-{{.OperateReleaseNotes}}
-
-# Tasklist
-{{.TasklistReleaseNotes}}
+# Overview
+{{ .Overview }}
 
 # Identity
-{{.IdentityReleaseNotes}}
+{{ .IdentityReleaseNotes }}
+
+# Operate
+{{ .OperateReleaseNotes }}
+
+# Tasklist
+{{ .TasklistReleaseNotes }}
+
+# Zeebe
+{{ .ZeebeReleaseNotes }}

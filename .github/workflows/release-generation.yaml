@@ -46,7 +46,7 @@ jobs:
 
       - name: Set Camunda application vars
         run: |
-          CAMUNDA_VERSION="$(echo ${CAMUNDA_RELEASE_NAME} | awk -F '+' '{print $1}')"
+          CAMUNDA_VERSION="$(echo ${CAMUNDA_RELEASE_NAME} | awk -F '[+-]' '{print $1}')"
           CONFIG_FILE="release-notes-fetcher/config/release-notes-fetcher-camunda-${CAMUNDA_VERSION}.yaml"
           export GLOBAL_GITREF="$(yq '.gitRef.global' ${CONFIG_FILE})"
 

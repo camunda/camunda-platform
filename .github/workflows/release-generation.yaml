@@ -5,6 +5,7 @@ on:
     tags:
       # Example: 8.4-gen1
       - 8\.\d+\+gen\d+
+      - 8\.\d+\.\d+
       # Example: 8.6.0-alpha1
       - 8\.\d+\-alpha\d+
 

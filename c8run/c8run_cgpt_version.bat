@@ -121,20 +121,19 @@ if "%1"=="start" (
     REM Retrieve elasticsearch
     mkdir "%PARENTDIR%\log"
     if not exist "elasticsearch-%ELASTICSEARCH_VERSION%" (
-        powershell -Command "Invoke-WebRequest -Uri 'https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-%ELASTICSEARCH_VERSION%-windows-x86_64.zip' -OutFile 'elasticsearch.zip'"
-        powershell -Command "Expand-Archive -Path 'elasticsearch.zip' -DestinationPath '%PARENTDIR%'"
+        curl -L -o elasticsearch.zip "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-%ELASTICSEARCH_VERSION%-windows-x86_64.zip"
+        tar -xf elasticsearch.zip -C "%PARENTDIR%"
     )
 
-    if not exist "camunda-zeebe-%CAMUNDA_VERSION%" (
-        powershell -Command "Invoke-WebRequest -Uri 'https://github.com/camunda/camunda/releases/download/%CAMUNDA_VERSION%/camunda-zeebe-%CAMUNDA_VERSION%.zip' -OutFile 'camunda.zip'"
-        powershell -Command "Expand-Archive -Path 'camunda.zip' -DestinationPath '%PARENTDIR%'"
+    if not exist "%PARENTDIR%\camunda-zeebe-%CAMUNDA_VERSION%" (
+        curl -L -o camunda.zip "https://github.com/camunda/camunda/releases/download/%CAMUNDA_VERSION%/camunda-zeebe-%CAMUNDA_VERSION%.zip"
+        tar -xf camunda.zip -C "%PARENTDIR%"
     )
 
-    set connectorsFileName=connector-runtime-bundle-%CAMUNDA_CONNECTORS_VERSION%-with-dependencies.jar
+    set "connectorsFileName=connector-runtime-bundle-%CAMUNDA_CONNECTORS_VERSION%-with-dependencies.jar"
     if not exist "%connectorsFileName%" (
-        powershell -Command "Invoke-WebRequest -Uri 'https://repo1.maven.org/maven2/io/camunda/connector/connector-runtime-bundle/%CAMUNDA_CONNECTORS_VERSION%/%connectorsFileName%' -OutFile '%connectorsFileName%'"
+        curl -L -o "%connectorsFileName%" "https://repo1.maven.org/maven2/io/camunda/connector/connector-runtime-bundle/%CAMUNDA_CONNECTORS_VERSION%/%connectorsFileName%"
     )
-
     REM limit the java heapspace used by ElasticSearch to 1GB
     set ES_JAVA_OPTS=-Xms1g -Xmx1g
 

@@ -8,6 +8,12 @@ on:
       # Example: 8.6.0-alpha1
       - 8\.\d+\-alpha\d+
       - 8\.\d+\.\d+
+  workflow_dispatch:
+    inputs:
+      releaseTag:
+        description: The tag for this release
+        required: true
+        type: string
 
 jobs:
   release_script:
@@ -42,7 +48,7 @@ jobs:
 
       - name: Set Camunda release tag var
         run: |
-          echo "CAMUNDA_RELEASE_NAME=${GITHUB_REF_NAME}" >> "${GITHUB_ENV}"
+          echo "CAMUNDA_RELEASE_NAME=${{ inputs.releaseTag || env.GITHUB_REF_NAME }}" >> "${GITHUB_ENV}"
 
       - name: Set Camunda application vars
         run: |

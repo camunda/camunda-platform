@@ -8,11 +8,11 @@ import (
 	"regexp"
 	"text/template"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/google/go-github/v54/github"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/oauth2"
-	"github.com/Masterminds/semver/v3"
 )
 
 const RepoOwner = "camunda"
@@ -161,38 +161,51 @@ func main() {
 		return
 	}
 
-	operateCurrentVersion, err1 := semver.NewVersion(camundaAppVersions.Operate)
-	if err1 != nil {
-		log.Error().Stack().Err(err1).Msg("Error parsing operate version:")
+	operateCurrentVersion, err := semver.NewVersion(camundaAppVersions.Operate)
+	if err != nil {
+		log.Error().Stack().Err(err).Msg("Error parsing operate version:")
 		return
 	}
 
 	var OperateRepoTag = ""
 	var OperateRepoName = ""
-	if(operateCurrentVersion.LessThan(operateMonoRepoVersion)) {
+	operateSingleAppVersion, _ := semver.NewVersion("8.6.0-alpha1")
+	if operateCurrentVersion.LessThan(operateMonoRepoVersion) {
 		OperateRepoName = "operate"
 		OperateRepoTag = camundaAppVersions.Operate
-	}else {
+	} else if operateCurrentVersion.LessThan(operateSingleAppVersion) {
 		OperateRepoName = "camunda"
 		OperateRepoTag = "operate-" + camundaAppVersions.Operate
 	}
 
-	operateReleaseNotesContents := GetLatestReleaseContents(
-		ctx,
-		RepoOwner,
-		OperateRepoName,
-		camundaRepoService,
-		OperateRepoTag,
-	)
+	operateReleaseNotesContents := ""
+	if operateCurrentVersion.LessThan(operateSingleAppVersion) {
+		operateReleaseNotesContents = GetLatestReleaseContents(
+			ctx,
+			RepoOwner,
+			OperateRepoName,
+			camundaRepoService,
+			OperateRepoTag,
+		)
+	}
 
+	var tasklistReleaseNotesContents = ""
+	tasklistSingleAppVersion, _ := semver.NewVersion("8.6.0-alpha1")
+	tasklistCurrentVersion, err := semver.NewVersion(camundaAppVersions.Tasklist)
+	if err != nil {
+		log.Error().Stack().Err(err).Msg("Error parsing Tasklist version:")
+		return
+	}
 
-	tasklistReleaseNotesContents := GetChangelogReleaseContents(
-		ctx,
-		TasklistRepoName,
-		"CHANGELOG.md",
-		camundaRepoService,
-		camundaAppVersions.Tasklist,
-	)
+	if tasklistCurrentVersion.LessThan(tasklistSingleAppVersion) {
+		tasklistReleaseNotesContents = GetChangelogReleaseContents(
+			ctx,
+			TasklistRepoName,
+			"CHANGELOG.md",
+			camundaRepoService,
+			camundaAppVersions.Tasklist,
+		)
+	}
 
 	camundaCloudTokenSource := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: os.Getenv("GITHUB_CAMUNDA_CLOUD_ACCESS_TOKEN")},
@@ -221,7 +234,7 @@ func main() {
 		IdentityReleaseNotes: identityReleaseNotesContents,
 	}
 
-	err := temp.Execute(os.Stdout, platformRelease)
+	err = temp.Execute(os.Stdout, platformRelease)
 	if err != nil {
 		log.Error().Stack().Err(err).Msg("could not parse template file")
 		os.Exit(1)

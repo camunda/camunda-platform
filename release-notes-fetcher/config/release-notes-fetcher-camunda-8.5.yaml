@@ -3,4 +3,4 @@ gitRef:
   operate: 8.5.5
   identity: 8.5.4
   tasklist: 8.5.4
-  zeebe:
+  zeebe: 8.5.6

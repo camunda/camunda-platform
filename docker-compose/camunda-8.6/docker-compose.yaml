@@ -19,7 +19,7 @@ services:
     ports:
       - "26500:26500"
       - "9600:9600"
-      - "8088:8080"
+      #- "8088:8080"
     environment: # https://docs.camunda.io/docs/self-managed/zeebe-deployment/configuration/environment-variables/
       - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE=${ZEEBE_AUTHENTICATION_MODE}
       - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_ISSUERBACKENDURL=http://keycloak:8080/auth/realms/camunda-platform
@@ -55,7 +55,7 @@ services:
     image: camunda/operate:${CAMUNDA_PLATFORM_VERSION}
     container_name: operate
     ports:
-      - "8081:8080"
+      - "8089:8080"
     environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
@@ -240,12 +240,12 @@ services:
       IDENTITY_DATABASE_USERNAME: bn_keycloak
       IDENTITY_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
       KEYCLOAK_INIT_OPERATE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
-      KEYCLOAK_INIT_OPERATE_ROOT_URL: http://${HOST}:8081
+      KEYCLOAK_INIT_OPERATE_ROOT_URL: http://${HOST}:8089
       KEYCLOAK_INIT_TASKLIST_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       KEYCLOAK_INIT_TASKLIST_ROOT_URL: http://${HOST}:8082
       KEYCLOAK_INIT_OPTIMIZE_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       KEYCLOAK_INIT_OPTIMIZE_ROOT_URL: http://${HOST}:8083
-      KEYCLOAK_INIT_WEBMODELER_ROOT_URL: http://${HOST}:8070
+      KEYCLOAK_INIT_WEBMODELER_ROOT_URL: http://${HOST}:8088
       KEYCLOAK_INIT_CONNECTORS_SECRET: XALaRPl5qwTEItdwCMiPS62nVpKs7dL7
       KEYCLOAK_INIT_CONNECTORS_ROOT_URL: http://${HOST}:8085
       KEYCLOAK_INIT_ZEEBE_NAME: zeebe

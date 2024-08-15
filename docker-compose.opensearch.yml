@@ -334,7 +334,7 @@ services:
       - postgres
 
   opensearch:
-    image: opensearchproject/opensearch:2.16.0
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
     container_name: opensearch
     # depends_on:
     #   - opensearch-init

@@ -1,0 +1,12 @@
+name: "Test docker-compose.opensearch.yaml"
+on:
+  push:
+    branches:
+      - "**"
+jobs:
+  test_docker_compose_yaml:
+    uses: ./.github/workflows/template-deploy.yaml
+    secrets: inherit
+    with:
+      compose_args: "-f docker-compose.opensearch.yaml"
+      run_e2e_tests: false

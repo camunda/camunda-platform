@@ -1,3 +1,14 @@
+# While the Docker images themselves are supported for production usage,
+# this docker-compose.yaml is designed to be used by developers to run
+# an environment locally. It is not designed to be used in production.
+# We recommend to use Kubernetes in production with our Helm Charts:
+# https://docs.camunda.io/docs/self-managed/platform-deployment/kubernetes-helm/
+# For local development, we recommend using KIND instead of `docker-compose`:
+# https://docs.camunda.io/docs/self-managed/platform-deployment/helm-kubernetes/guides/local-kubernetes-cluster/
+
+# This is a lightweight configuration with Zeebe, Operate, Tasklist, and OpenSearch
+# See docker-compose.yml for a configuration that also includes Optimize, Identity, and Keycloak.
+
 services:
   
   opensearch-init:
@@ -36,7 +47,7 @@ services:
       - opensearch
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
-    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION}
+    image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
     container_name: operate
     ports:
       - "8081:8080"
@@ -61,7 +72,7 @@ services:
       - opensearch
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
-    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION}
+    image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
     container_name: tasklist
     ports:
       - "8082:8080"

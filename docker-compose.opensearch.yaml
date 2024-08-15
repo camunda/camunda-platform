@@ -6,7 +6,7 @@
 # For local development, we recommend using KIND instead of `docker-compose`:
 # https://docs.camunda.io/docs/self-managed/platform-deployment/helm-kubernetes/guides/local-kubernetes-cluster/
 
-# This is a full configuration with Zeebe, Operate, Tasklist, Optimize, Identity, Keycloak, and Elasticsearch
+# This is a full configuration with Zeebe, Operate, Tasklist, Optimize, Identity, Keycloak, and OpenSearch
 # See docker-compose-core.yml for a lightweight configuration that does not include Optimize, Identity, and Keycloak.
 
 services:
@@ -53,7 +53,7 @@ services:
       - identity
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
-    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION}
+    image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
     container_name: operate
     ports:
       - "8081:8080"
@@ -98,7 +98,7 @@ services:
       - opensearch
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
-    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION}
+    image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
     container_name: tasklist
     ports:
       - "8082:8080"
@@ -223,7 +223,7 @@ services:
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
     container_name: identity
-    image: camunda/identity:${CAMUNDA_PLATFORM_VERSION}
+    image: camunda/identity:${CAMUNDA_IDENTITY_VERSION}
     ports:
       - "8084:8084"
     environment: # https://docs.camunda.io/docs/self-managed/identity/deployment/configuration-variables/

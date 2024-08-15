@@ -47,7 +47,7 @@ services:
       - identity
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
-    image: camunda/operate:${CAMUNDA_PLATFORM_VERSION}
+    image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
     container_name: operate
     ports:
       - "8081:8080"
@@ -91,7 +91,7 @@ services:
       - elasticsearch
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
-    image: camunda/tasklist:${CAMUNDA_PLATFORM_VERSION}
+    image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
     container_name: tasklist
     ports:
       - "8082:8080"
@@ -211,7 +211,7 @@ services:
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
     container_name: identity
-    image: camunda/identity:${CAMUNDA_PLATFORM_VERSION}
+    image: camunda/identity:${CAMUNDA_IDENTITY_VERSION}
     ports:
       - "8084:8084"
     environment: # https://docs.camunda.io/docs/self-managed/identity/deployment/configuration-variables/

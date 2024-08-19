@@ -6,10 +6,16 @@
 # For local development, we recommend using KIND instead of `docker-compose`:
 # https://docs.camunda.io/docs/self-managed/platform-deployment/helm-kubernetes/guides/local-kubernetes-cluster/
 
-# This is a lightweight configuration with Zeebe, Operate, Tasklist, and Elasticsearch
+# This is a lightweight configuration with Zeebe, Operate, Tasklist, and OpenSearch
 # See docker-compose.yml for a configuration that also includes Optimize, Identity, and Keycloak.
 
 services:
+  
+  opensearch-init:
+    image: bash
+    privileged: true
+    user: root
+    command: [ "sysctl", "-w", "vm.max_map_count=262144" ]
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
     image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION}
@@ -19,10 +25,11 @@ services:
       - "9600:9600"
       - "8088:8080"
     environment: # https://docs.camunda.io/docs/self-managed/zeebe-deployment/configuration/environment-variables/
-      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
-      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
-      # default is 1000, see here: https://github.com/camunda/zeebe/blob/main/exporters/elasticsearch-exporter/src/main/java/io/camunda/zeebe/exporter/ElasticsearchExporterConfiguration.java#L259
-      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE=1
+      - ZEEBE_BROKER_EXPORTERS_OPENSEARCH_CLASSNAME=io.camunda.zeebe.exporter.opensearch.OpensearchExporter
+      - ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_DEPLOYMENT=false
+      - ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_URL=http://opensearch:9200
+      - ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_BULK_SIZE=1
+      - ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_PROCESSMESSAGESUBSCRIPTION=true
       # allow running with low disk space
       - ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK=0.998
       - ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK=0.999
@@ -34,12 +41,10 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    volumes:
-      - zeebe:/usr/local/zeebe/data
     networks:
       - camunda-platform
     depends_on:
-      - elasticsearch
+      - opensearch
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
     image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
@@ -48,8 +53,9 @@ services:
       - "8081:8080"
     environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
-      - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
-      - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_OPERATE_DATABASE=opensearch
+      - CAMUNDA_OPERATE_OPENSEARCH_URL=http://opensearch:9200
+      - CAMUNDA_OPERATE_ZEEBEOPENSEARCH_URL=http://opensearch:9200
       - CAMUNDA_OPERATE_CSRFPREVENTIONENABLED=false
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
@@ -63,7 +69,7 @@ services:
       - camunda-platform
     depends_on:
       - zeebe
-      - elasticsearch
+      - opensearch
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
     image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
@@ -71,11 +77,12 @@ services:
     ports:
       - "8082:8080"
     environment: # https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
+      - camunda.tasklist.opensearch.url=http://opensearch:9200
+      - camunda.tasklist.zeebeOpensearch.url=http://opensearch:9200
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_TASKLIST_ZEEBE_RESTADDRESS=http://zeebe:8080
-      - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
-      - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_TASKLIST_CSRFPREVENTIONENABLED=false
+      - camunda.tasklist.database=opensearch
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
     healthcheck:
@@ -88,7 +95,7 @@ services:
       - camunda-platform
     depends_on:
       - zeebe
-      - elasticsearch
+      - opensearch
 
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
     image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION}
@@ -116,52 +123,38 @@ services:
       - zeebe
       - operate
 
-  elasticsearch: # https://hub.docker.com/_/elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
-    container_name: elasticsearch
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+  opensearch:
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
+    container_name: opensearch
+    depends_on:
+      - opensearch-init
     environment:
-      - bootstrap.memory_lock=true
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      # allow running with low disk space
-      - cluster.routing.allocation.disk.threshold_enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch
+      - discovery.seed_hosts=opensearch
+      - plugins.security.disabled=true
+      - cluster.initial_cluster_manager_nodes=opensearch
+      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
+      - path.repo=/usr/local/os-snapshots
+      - "OPENSEARCH_JAVA_OPTS=-Xms1G -Xmx1G" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=OpenSearch_Admin1234!
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    volumes:
-      - elastic:/usr/share/elasticsearch/data
+      nofile:
+        soft: 65536 # maximum number of open files for the OpenSearch user, set to at least 65536 on modern systems
+        hard: 65536
     networks:
       - camunda-platform
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
-    container_name: kibana
     ports:
-      - 5601:5601
+      - "9200:9200"
+      - "9601:9600" # required for Performance Analyzer
     volumes:
-      - kibana:/usr/share/kibana/data
-    networks:
-      - camunda-platform
-    depends_on:
-      - elasticsearch
-    profiles:
-      - kibana
+      - ./os-snapshots:/usr/local/os-snapshots
 
 volumes:
   zeebe:
-  elastic:
-  kibana:
 
 networks:
   camunda-platform:

@@ -11,11 +11,11 @@
 
 services:
 
-  # opensearch-init:
-  #   image: bash
-  #   privileged: true
-  #   user: root
-  #   command: [ "sysctl", "-w", "vm.max_map_count=262144" ]
+  opensearch-init: # recommended config https://opensearch.org/docs/1.1/opensearch/install/important-settings/
+    image: bash
+    privileged: true
+    user: root
+    command: [ "sysctl", "-w", "vm.max_map_count=262144" ]
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
     image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION}
@@ -336,8 +336,8 @@ services:
   opensearch:
     image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
     container_name: opensearch
-    # depends_on:
-    #   - opensearch-init
+    depends_on:
+      - opensearch-init
     environment:
       - cluster.name=opensearch-cluster
       - node.name=opensearch
@@ -347,7 +347,7 @@ services:
       - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
       - path.repo=/usr/local/os-snapshots
       - "OPENSEARCH_JAVA_OPTS=-Xms1G -Xmx1G" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=OpenSearch_Admin1234!
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
     ulimits:
       memlock:
         soft: -1
@@ -360,10 +360,11 @@ services:
       - "9601:9600"
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
-      interval: 30s
-      timeout: 240s
-      retries: 3
+      # test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=60s | grep -q green" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cluster/health?wait_for_status=yellow | grep -q -E 'yellow|green'" ]
+      interval: 60s
+      timeout: 30s
+      retries: 5
     volumes:
       # - opensearch-data:/usr/share/opensearch/data
       - ./os-snapshots:/usr/local/os-snapshots

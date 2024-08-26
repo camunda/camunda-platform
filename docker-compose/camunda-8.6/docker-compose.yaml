@@ -485,7 +485,7 @@ services:
       CLIENT_PUSHER_KEY: web-modeler-app-key
       OAUTH2_CLIENT_ID: web-modeler
       OAUTH2_JWKS_URL: http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/certs
-      OAUTH2_TOKEN_AUDIENCE: web-modeler
+      OAUTH2_TOKEN_AUDIENCE: web-modeler-api
       OAUTH2_TOKEN_ISSUER: http://localhost:18080/auth/realms/camunda-platform
       IDENTITY_BASE_URL: http://identity:8084/
       PLAY_ENABLED: "true"

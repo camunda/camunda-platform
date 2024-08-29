@@ -15,6 +15,10 @@ on:
         description: directory to run the tests
         required: false
         type: string
+      run_single_test:
+        description: runs a single test
+        required: false
+        type: string
 
 jobs:
   test_compose_deploy:
@@ -67,28 +71,33 @@ jobs:
           ""
 
       - uses: actions/setup-node@v4
-        if: ${{ inputs.run_e2e_tests }}
+        if: ${{ inputs.run_e2e_tests || inputs.run_single_test }}
         with:
           node-version: 18
 
       - name: Install dependencies
-        if: ${{ inputs.run_e2e_tests }}
+        if: ${{ inputs.run_e2e_tests || inputs.run_single_test }}
         run: npm ci
         working-directory: ./e2e_tests
 
       - name: Install Playwright Browsers
-        if: ${{ inputs.run_e2e_tests }}
+        if: ${{ inputs.run_e2e_tests || inputs.run_single_test }}
         run: npx playwright install --with-deps
         working-directory: ./e2e_tests
 
       - name: Run Playwright tests
-        if: ${{ inputs.run_e2e_tests }}
+        if: ${{ inputs.run_e2e_tests && inputs.run_single_test == '' }}
         run: npx playwright test
         working-directory: ./e2e_tests
 
+      - name: Run single Playwright test '${{ inputs.run_single_test }}'
+        if: ${{ inputs.run_e2e_tests && inputs.run_single_test }}
+        run: npx playwright test ${{ inputs.run_single_test }}
+        working-directory: ./e2e_tests
+
       - uses: actions/upload-artifact@v4
-        if: ${{ inputs.run_e2e_tests }}
+        if: ${{ inputs.run_e2e_tests || inputs.run_single_test }}
         with:
-          name: playwright-report
+          name: playwright-report${{ inputs.run_single_test && '-single-test' || '' }}
           path: e2e_tests/playwright-report/
           retention-days: 30

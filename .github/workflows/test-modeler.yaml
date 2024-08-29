@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "**"
+
 jobs:
   test_modeler_yaml:
     strategy:
@@ -12,7 +13,8 @@ jobs:
             run_e2e_tests: true
             directory: ""
           - compose_args: "--profile modeling"
-            run_e2e_tests: false
+            run_e2e_tests: true
+            run_single_test: "web_modeler_login.spec.ts"
             directory: "docker-compose/camunda-8.6"
     uses: ./.github/workflows/template-deploy.yaml
     name: Test deploying from directory "${{ matrix.directory || 'root' }}"
@@ -21,3 +23,4 @@ jobs:
       compose_args: ${{ matrix.compose_args }}
       run_e2e_tests: ${{ matrix.run_e2e_tests }}
       directory: ${{ matrix.directory }}
+      run_single_test: ${{ matrix.run_single_test }}

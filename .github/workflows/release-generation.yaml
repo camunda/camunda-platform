@@ -27,18 +27,19 @@ jobs:
 
       - name: Generate token for Camunda GitHub org
         id: generate-camunda-github-token
-        uses: tibdex/github-app-token@v1
+        uses: tibdex/github-app-token@v2
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Generate token for Camunda Cloud GitHub org
         id: generate-camunda-cloud-github-token
-        uses: tibdex/github-app-token@v1
+        uses: tibdex/github-app-token@v2
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
-          repository: camunda-cloud/identity
+          installation_retrieval_mode: "repository"
+          installation_retrieval_payload: "camunda-cloud/identity"
 
       - name: Set Camunda release tag var
         run: |

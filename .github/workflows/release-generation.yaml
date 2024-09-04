@@ -40,8 +40,6 @@ jobs:
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
           installation_retrieval_mode: "repository"
           installation_retrieval_payload: "camunda-cloud/identity"
-          repositories: >-
-            ["camunda-cloud/identity"]
 
       - name: Set Camunda release tag var
         run: |

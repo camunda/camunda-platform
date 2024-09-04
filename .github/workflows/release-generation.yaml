@@ -39,6 +39,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
           installation_retrieval_mode: "repository"
+          installation_retrieval_payload: "camunda-cloud/identity"
           repositories: >-
             ["camunda-cloud/identity"]
 

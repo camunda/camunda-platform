@@ -54,7 +54,7 @@ services:
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
     healthcheck:
-      test: [ "CMD-SHELL", "wget -O - -q 'http://localhost:8080/actuator/health/readiness'" ]
+      test: [ "CMD-SHELL", "wget -O - -q 'http://localhost:9600/actuator/health/readiness'" ]
       interval: 30s
       timeout: 1s
       retries: 5
@@ -79,7 +79,7 @@ services:
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
     healthcheck:
-      test: [ "CMD-SHELL", "wget -O - -q 'http://localhost:8080/actuator/health/readiness'" ]
+      test: [ "CMD-SHELL", "wget -O - -q 'http://localhost:9600/actuator/health/readiness'" ]
       interval: 30s
       timeout: 1s
       retries: 5

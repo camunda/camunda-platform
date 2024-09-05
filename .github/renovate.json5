@@ -121,20 +121,6 @@
 
   "regexManagers": [
     {
-      "fileMatch": [".env"],
-      "matchStrings": ["CAMUNDA_PLATFORM_VERSION\\s*=\\s*(?<currentValue>\\S+)"],
-      // Watch camunda/operate registry even though this env variable is also used in
-      // * camunda/identity
-      // * camunda/tasklist
-      // * camunda/zeebe
-      //
-      // If one of these images does not exist yet, the expected behavior is that
-      // the PR gets submitted, but the CI build will not pass because the other
-      // images will not be available.
-      "depNameTemplate": "camunda/operate",
-      "datasourceTemplate": "docker",
-    },
-    {
       // This is mainly used to update Web-Modeler image tag.
       // section is copied from camunda/camunda-platform-helm
       "fileMatch": [".env"],

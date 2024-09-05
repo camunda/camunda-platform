@@ -100,11 +100,6 @@ services:
       - CAMUNDA_OPERATE_CLIENT_BASEURL=http://operate:8080
       - CAMUNDA_OPERATE_CLIENT_USERNAME=demo
       - CAMUNDA_OPERATE_CLIENT_PASSWORD=demo
-#       - CAMUNDA_CLIENT_MODE=simple
-#       - CAMUNDA_CLIENT_AUTH_USERNAME=demo
-#       - CAMUNDA_CLIENT_AUTH_PASSWORD=demo
-#       - CAMUNDA_CLIENT_OPERATE_BASE_URL=http://operate:8080
-#       - CAMUNDA_CLIENT_TASKLIST_BASE_URL=http://tasklist:8080
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
     healthcheck:

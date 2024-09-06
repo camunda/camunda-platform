@@ -16,21 +16,6 @@ services:
     privileged: true
     user: root
     command: [ "sysctl", "-w", "vm.max_map_count=262144" ]
-  
-  healthcheck:
-    container_name: opensearch-healthcheck
-    profiles: ["opensearch"]
-    env_file:
-      - .env
-    depends_on:
-      opensearch:
-        condition: service_healthy
-    image: alpine:latest
-    volumes:
-      - ./config/make_green.sh:/make_green.sh
-    command: ["/bin/sh", "-c", "sh make_green.sh"]
-    networks:
-      - camunda-platform
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
     image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION}

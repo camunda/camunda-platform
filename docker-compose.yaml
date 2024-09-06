@@ -12,14 +12,14 @@
 services:
   init: # recommended config https://opensearch.org/docs/1.1/opensearch/install/important-settings/
     image: bash
-    profiles: ["opensearch", "test"]
+    profiles: ["opensearch"]
     privileged: true
     user: root
     command: [ "sysctl", "-w", "vm.max_map_count=262144" ]
   
   healthcheck:
     container_name: opensearch-healthcheck
-    profiles: ["opensearch", "test"]
+    profiles: ["opensearch"]
     env_file:
       - .env
     depends_on:
@@ -67,7 +67,7 @@ services:
     depends_on:
       - identity
       # - $(XSEARCH)
-      - opensearch
+      - ${XSEARCH}
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
     image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
@@ -112,7 +112,7 @@ services:
     depends_on:
       - zeebe
       - identity
-      - opensearch
+      - ${XSEARCH}
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
     image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
@@ -158,8 +158,6 @@ services:
     depends_on:
       zeebe:
         condition: service_started
-      # elasticsearch:
-      #   condition: service_healthy
       identity:
         condition: service_healthy
 
@@ -235,7 +233,7 @@ services:
       - camunda-platform
     depends_on:
       - identity
-      - opensearch
+      - ${XSEARCH}
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
     container_name: identity
@@ -355,13 +353,14 @@ services:
   opensearch:
     image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
     container_name: opensearch
-    profiles: ["opensearch", "test"]
+    profiles: ["opensearch"]
     depends_on:
       - init
     environment:
       cluster.name: opensearch-cluster
       network.bind_host: 0.0.0.0
       node.name: opensearch
+      plugins.security.disabled: true
       plugins.security.audit.config.index: myauditlogindex
       discovery.type: single-node
       discovery.seed_hosts: opensearch
@@ -380,14 +379,12 @@ services:
       - "9601:9600"
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "curl -k -f https://localhost:9200/_cluster/health -u admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD} | grep -q -E 'yellow|green'" ]
+      test: [ "CMD-SHELL", "curl -k -f http://localhost:9200/_cluster/health -u admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD} | grep -q -E 'yellow|green'" ]
       interval: 60s
       timeout: 10s
       retries: 5
     volumes:
-      # - opensearch-data:/usr/share/opensearch/data
-      # - opensearch:/usr/local/opensearch-snapshots
-      - ./opensearch-snapshots:/usr/local/opensearch-snapshots
+      - opensearch-data:/usr/share/opensearch/data
     networks:
       - camunda-platform
 
@@ -430,14 +427,14 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - opensearch
+      - ${XSEARCH}
     profiles:
       - kibana
 
 volumes:
   zeebe:
   elastic:
-  opensearch:
+  opensearch-data:
   postgres:
   keycloak-theme:
   kibana:

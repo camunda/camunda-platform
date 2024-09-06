@@ -10,10 +10,32 @@
 # See docker-compose.yml for a configuration that also includes Optimize, Identity, and Keycloak.
 
 services:
+  init: # recommended config https://opensearch.org/docs/1.1/opensearch/install/important-settings/
+    image: bash
+    profiles: ["opensearch"]
+    privileged: true
+    user: root
+    command: [ "sysctl", "-w", "vm.max_map_count=262144" ]
+  
+  # healthcheck:
+  #   container_name: opensearch-healthcheck
+  #   profiles: ["opensearch"]
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     opensearch:
+  #       condition: service_healthy
+  #   image: alpine:latest
+  #   volumes:
+  #     - ./config/make_green.sh:/make_green.sh
+  #   command: ["/bin/sh", "-c", "sh make_green.sh"]
+  #   networks:
+  #     - camunda-platform
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
     image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION}
     container_name: zeebe
+    profiles: ["", "opensearch"]
     ports:
       - "26500:26500"
       - "9600:9600"
@@ -44,6 +66,7 @@ services:
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
     image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
     container_name: operate
+    profiles: ["", "opensearch"]
     ports:
       - "8081:8080"
     environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
@@ -68,6 +91,7 @@ services:
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
     image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
     container_name: tasklist
+    profiles: ["", "opensearch"]
     ports:
       - "8082:8080"
     environment: # https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
@@ -93,6 +117,7 @@ services:
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
     image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION}
     container_name: connectors
+    profiles: ["", "opensearch"]
     ports:
       - "8085:8080"
     environment:
@@ -116,9 +141,48 @@ services:
       - zeebe
       - operate
 
+  opensearch:
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
+    container_name: opensearch
+    profiles: ["opensearch"]
+    depends_on:
+      - init
+    environment:
+      cluster.name: opensearch-cluster
+      network.bind_host: 0.0.0.0
+      node.name: opensearch
+      plugins.security.disabled: true
+      plugins.security.audit.config.index: myauditlogindex
+      discovery.type: single-node
+      discovery.seed_hosts: opensearch
+      bootstrap.memory_lock: true
+      OPENSEARCH_JAVA_OPTS: "-Xms1G -Xmx1G"
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+      - "9601:9600"
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -k -f http://localhost:9200/_cluster/health -u admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD} | grep -q -E 'yellow|green'" ]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    networks:
+      - camunda-platform
+
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
     container_name: elasticsearch
+    profiles: [""]
     ports:
       - "9200:9200"
       - "9300:9300"

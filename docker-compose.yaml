@@ -220,6 +220,7 @@ services:
     environment: # https://docs.camunda.io/docs/self-managed/identity/deployment/configuration-variables/
       SERVER_PORT: 8084
       IDENTITY_RETRY_DELAY_SECONDS: 30
+      IDENTITY_URL: http://${HOST}:8084
       KEYCLOAK_URL: http://keycloak:18080/auth
       IDENTITY_AUTH_PROVIDER_ISSUER_URL: http://${KEYCLOAK_HOST}:18080/auth/realms/camunda-platform
       IDENTITY_AUTH_PROVIDER_BACKEND_URL: http://keycloak:18080/auth/realms/camunda-platform

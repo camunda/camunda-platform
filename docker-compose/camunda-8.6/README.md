@@ -8,7 +8,7 @@ We recommend using [SaaS](https://camunda.com/get-started/) or [Helm/Kubernetes]
 
 For more information, check Camunda 8 Self-Managed official [documentation](https://docs.camunda.io/docs/self-managed/about-self-managed/).
 
-For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/setup/install/) which can be found at [helm.camunda.io](https://helm.camunda.io/
+For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/setup/install/) which can be found at [helm.camunda.io](https://helm.camunda.io/)
 
 ## Links to additional Camunda Platform 8 repos and assets
 

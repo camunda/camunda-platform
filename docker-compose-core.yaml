@@ -25,11 +25,9 @@ services:
       - "26500:26500"
       - "9600:9600"
       - "8088:8080"
+    env_file:
+      - .env.${XSEARCH}.core
     environment: # https://docs.camunda.io/docs/self-managed/zeebe-deployment/configuration/environment-variables/
-      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
-      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
-      # default is 1000, see here: https://github.com/camunda/zeebe/blob/main/exporters/elasticsearch-exporter/src/main/java/io/camunda/zeebe/exporter/ElasticsearchExporterConfiguration.java#L259
-      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE=1
       # allow running with low disk space
       - ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK=0.998
       - ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK=0.999
@@ -46,7 +44,7 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - elasticsearch
+      - ${XSEARCH}
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
     image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
@@ -54,10 +52,10 @@ services:
     profiles: ["", "opensearch"]
     ports:
       - "8081:8080"
+    env_file:
+      - .env.${XSEARCH}.core
     environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
-      - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
-      - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_OPERATE_CSRFPREVENTIONENABLED=false
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
@@ -71,7 +69,7 @@ services:
       - camunda-platform
     depends_on:
       - zeebe
-      - elasticsearch
+      - ${XSEARCH}
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
     image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
@@ -79,11 +77,11 @@ services:
     profiles: ["", "opensearch"]
     ports:
       - "8082:8080"
+    env_file:
+      - .env.${XSEARCH}.core
     environment: # https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_TASKLIST_ZEEBE_RESTADDRESS=http://zeebe:8080
-      - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
-      - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
       - CAMUNDA_TASKLIST_CSRFPREVENTIONENABLED=false
       - management.endpoints.web.exposure.include=health
       - management.endpoint.health.probes.enabled=true
@@ -97,7 +95,7 @@ services:
       - camunda-platform
     depends_on:
       - zeebe
-      - elasticsearch
+      - ${XSEARCH}
 
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
     image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION}
@@ -203,13 +201,14 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - elasticsearch
+      - ${XSEARCH}
     profiles:
       - kibana
 
 volumes:
   zeebe:
   elastic:
+  opensearch-data:
   kibana:
 
 networks:

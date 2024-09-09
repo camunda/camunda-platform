@@ -345,7 +345,6 @@ services:
       network.bind_host: 0.0.0.0
       node.name: opensearch
       plugins.security.disabled: true
-      plugins.security.audit.config.index: myauditlogindex
       discovery.type: single-node
       discovery.seed_hosts: opensearch
       bootstrap.memory_lock: true

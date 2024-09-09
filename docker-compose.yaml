@@ -51,7 +51,6 @@ services:
       - camunda-platform
     depends_on:
       - identity
-      # - $(XSEARCH)
       - ${XSEARCH}
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate

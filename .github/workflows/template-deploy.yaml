@@ -20,7 +20,7 @@ on:
         required: false
         type: string
       search_db:
-        description: runs playwright tests
+        description: elasticsearch or opensearch
         required: false
         default: elasticsearch
         type: string
@@ -40,8 +40,9 @@ jobs:
 
       - uses: actions/checkout@v4
       - name: change search db
-        run: >-
-          sed -i 's/SEARCH_DB=elasticsearch/SEARCH_DB=opensearch/g' .env
+        if: ${{ contains(inputs.search_db, 'opensearch') }}
+        run: |
+          sudo sed -i 's/SEARCH_DB=elasticsearch/SEARCH_DB=opensearch/g' .env
 
       - name: Login to private registry
         if: ${{ inputs.directory != 'docker-compose/camunda-8.6' }}

@@ -26,7 +26,7 @@ services:
       - "9600:9600"
       - "8088:8080"
     env_file:
-      - .env.${XSEARCH}.core
+      - .env.${SEARCH_DB}.core
     environment: # https://docs.camunda.io/docs/self-managed/zeebe-deployment/configuration/environment-variables/
       # allow running with low disk space
       - ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK=0.998
@@ -44,7 +44,7 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - ${XSEARCH}
+      - ${SEARCH_DB}
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
     image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
@@ -53,7 +53,7 @@ services:
     ports:
       - "8081:8080"
     env_file:
-      - .env.${XSEARCH}.core
+      - .env.${SEARCH_DB}.core
     environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_OPERATE_CSRFPREVENTIONENABLED=false
@@ -69,7 +69,7 @@ services:
       - camunda-platform
     depends_on:
       - zeebe
-      - ${XSEARCH}
+      - ${SEARCH_DB}
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
     image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
@@ -78,7 +78,7 @@ services:
     ports:
       - "8082:8080"
     env_file:
-      - .env.${XSEARCH}.core
+      - .env.${SEARCH_DB}.core
     environment: # https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_TASKLIST_ZEEBE_RESTADDRESS=http://zeebe:8080
@@ -95,7 +95,7 @@ services:
       - camunda-platform
     depends_on:
       - zeebe
-      - ${XSEARCH}
+      - ${SEARCH_DB}
 
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
     image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION}
@@ -153,6 +153,7 @@ services:
       - "9601:9600"
     restart: always
     healthcheck:
+     # Single node OpenSearch clusters are considered 'yellow', see https://github.com/opensearch-project/opensearch-build/issues/4285
       test: [ "CMD-SHELL", "curl -k -f http://localhost:9200/_cluster/health -u admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD} | grep -q -E 'yellow|green'" ]
       interval: 60s
       timeout: 10s
@@ -201,7 +202,7 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - ${XSEARCH}
+      - ${SEARCH_DB}
     profiles:
       - kibana
 

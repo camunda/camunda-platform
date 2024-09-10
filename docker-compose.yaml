@@ -26,7 +26,7 @@ services:
       - "9600:9600"
       - "8088:8080"
     env_file:
-      - .env.${XSEARCH}
+      - .env.${SEARCH_DB}
     environment: # https://docs.camunda.io/docs/self-managed/zeebe-deployment/configuration/environment-variables/
       - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE=${ZEEBE_AUTHENTICATION_MODE}
       - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_ISSUERBACKENDURL=http://keycloak:8080/auth/realms/camunda-platform
@@ -51,7 +51,7 @@ services:
       - camunda-platform
     depends_on:
       - identity
-      - ${XSEARCH}
+      - ${SEARCH_DB}
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
     image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
@@ -60,7 +60,7 @@ services:
     ports:
       - "8081:8080"
     env_file:
-      - .env.${XSEARCH}
+      - .env.${SEARCH_DB}
     environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
@@ -96,7 +96,7 @@ services:
     depends_on:
       - zeebe
       - identity
-      - ${XSEARCH}
+      - ${SEARCH_DB}
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
     image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
@@ -105,7 +105,7 @@ services:
     ports:
       - "8082:8080"
     env_file:
-      - .env.${XSEARCH}
+      - .env.${SEARCH_DB}
     environment: # https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_TASKLIST_ZEEBE_RESTADDRESS=http://zeebe:8080
@@ -188,7 +188,7 @@ services:
     ports:
       - "8083:8090"
     env_file:
-      - .env.${XSEARCH}
+      - .env.${SEARCH_DB}
     environment: # https://docs.camunda.io/docs/self-managed/optimize-deployment/setup/installation/#available-environment-variables
       - SPRING_PROFILES_ACTIVE=ccsm
       - CAMUNDA_OPTIMIZE_ZEEBE_ENABLED=true
@@ -217,7 +217,7 @@ services:
       - camunda-platform
     depends_on:
       - identity
-      - ${XSEARCH}
+      - ${SEARCH_DB}
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
     container_name: identity
@@ -362,6 +362,7 @@ services:
       - "9601:9600"
     restart: always
     healthcheck:
+     # Single node OpenSearch clusters are considered 'yellow', see https://github.com/opensearch-project/opensearch-build/issues/4285
       test: [ "CMD-SHELL", "curl -k -f http://localhost:9200/_cluster/health -u admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD} | grep -q -E 'yellow|green'" ]
       interval: 60s
       timeout: 10s
@@ -410,7 +411,7 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - ${XSEARCH}
+      - ${SEARCH_DB}
     profiles:
       - kibana
 

@@ -19,6 +19,11 @@ on:
         description: runs a single test
         required: false
         type: string
+      search_db:
+        description: runs playwright tests
+        required: false
+        default: elasticsearch
+        type: string
 
 jobs:
   test_compose_deploy:
@@ -34,6 +39,9 @@ jobs:
              sudo killall xsp4 || true
 
       - uses: actions/checkout@v4
+      - name: change search db
+        run: >-
+          sed -i 's/SEARCH_DB=elasticsearch/SEARCH_DB=opensearch/g' .env
 
       - name: Login to private registry
         if: ${{ inputs.directory != 'docker-compose/camunda-8.6' }}

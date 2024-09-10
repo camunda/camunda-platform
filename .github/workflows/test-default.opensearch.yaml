@@ -8,5 +8,6 @@ jobs:
     uses: ./.github/workflows/template-deploy.yaml
     secrets: inherit
     with:
-      compose_args: "-f docker-compose.opensearch.yaml"
+      compose_args: "-f docker-compose.yaml --profile opensearch"
       run_e2e_tests: false
+      search_db: opensearch

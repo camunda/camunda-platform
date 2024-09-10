@@ -28,6 +28,8 @@ For production setups we recommend using [Helm charts](https://docs.camunda.io/d
 
 > :information_source: Docker 20.10.16+ is required.
 
+> :information_source: To support token refresh and logout your local machine needs to resolve `keycloak` to `127.0.0.1` and the variable `KEYCLOAK_HOST` needs to be set to `keycloak` in the `.env` file.
+
 To spin up a complete Camunda Platform 8 Self-Managed environment locally the [docker-compose.yaml](docker-compose.yaml) file in this repository can be used.
 
 The full environment contains these components:

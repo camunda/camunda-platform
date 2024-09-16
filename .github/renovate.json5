@@ -142,9 +142,7 @@
       "hostType": "docker",
       "matchHost": "https://registry.camunda.cloud",
       "username": "ci-distribution",
-      "encrypted": {
-        "password": "wcFMA/xDdHCJBTolAQ//RsP2fh5uJzDLWbGDX8vdX9fvyvTX1D3f01ElIPGNOp9CC6cBmXTjdYK2b07G+eZaJM+AMhAADmGXMQDMa5Z0M5AeCV0gLT7Fe9SYjFiUGXEwX7zidqqCA8Dv0JbQQGiQSgD28f1NQ3Yo8MIiAaVoVXGukqMLYk6XvMBkBVUxjIItLeRUnnU+yk/g3zQKKLAZZrjzVJvCKx9dSW1LmrOUyEWQxo8yXZ5svzsiXKxaO+qHyEvs7kUreJodqkQY4i84mNlScWjJI8jlnqTN0OMw7lnXk+thppUqiRt8Wkg0sMW2OJuvQ9cMQRQFOJpc4TA7+6+E4TUEpejOsmJTNxsr4oU++pT8Hfzua1vAIr+sJmghuQjSo9QghM8OaC3G2fdAB3emcdCzCdt/gQMq+fCOE75/0TJNwZnxXQ3KWOeWyRVVK1/3PrjQHJuia4F7S9W/7qyTMY9IrlNvejBwaa6gFFWBX3VwpmQsaW4lHOj3DBzYvRF37lPCGjEQS4DOczVUmzie+ZkUPNNCKUZ0QR26TBlqSMTo7A1IGVxVU1Q36Ni7psgYKQGkRRM6yY0S2n/LLQBP8g5hP4jatG6Hn/sbD7CsTZOCzJR5ctES5BzSiIUO/3yqaM4R0SgSAucLBnzZ0XXkdUCf8GQHlD6GmAwYN8BzobMQQ9YYyZOhrSWT6UrScgESnEmZOesrQfE+mVTrDJJj9BtxvJISqKUECKcZxYHs7w7DdfuRRtGnbuAXBhm6c92ZVOBn/EKlWv0ynpxCeziJk7VRcEr7212nYfrzufiseI8fxCUvmypVD06ZYfZUTF1zgqrvg8PdSX7GBn34xDzs/A"
-      }
+      "password": "{{ secrets.DISTRO_CAMUNDA_DOCKER_REGISTRY_PASSWORD }}"
     }
   ]
 }

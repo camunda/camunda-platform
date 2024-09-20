@@ -224,7 +224,7 @@ If you enabled authentication for GRPC requests on Zeebe you need to provide cli
 * URL: `http://zeebe:26500`
 * Client ID: `zeebe`
 * Client secret: `zecret`
-* OAuth URL: `http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token`
+* OAuth URL: `http://keycloak:18080/auth/realms/camunda-platform/protocol/openid-connect/token`
 * Audience: `zeebe-api`
 
 ### Emails

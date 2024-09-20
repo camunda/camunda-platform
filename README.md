@@ -39,7 +39,7 @@ The full environment contains these components:
 - Connectors
 - Optimize
 - Identity
-- Elasticsearch
+- Elasticsearch/Opensearch
 - Keycloak
 - PostgreSQL
 
@@ -79,6 +79,12 @@ If Optimize, Identity, and Keycloak are not needed you can use the [docker-compo
 
 ```
 docker compose -f docker-compose-core.yaml up -d
+```
+**OR**
+
+Set parameter ```SEARCH_DB=opensearch``` in the file ```.env``` if you want to use OpenSearch instead of ElasticSearch
+```
+docker compose -f docker-compose-core.yaml --profile opensearch up -d
 ```
 
 ### Deploying BPMN diagrams
@@ -167,10 +173,16 @@ $ docker login registry.camunda.cloud
 Username: your_username
 Password: ******
 Login Succeeded
-$ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml up -d
 ```
 
-To tear down the whole environment run the following command
+#### To run Camunda Platform with Elasticsearch execute this commands
+
+1. Edit ```.env``` file and set parameter ```SEARCH_DB=elasticserach``` (this default value)
+2. Run command
+```
+$ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml up -d
+```
+3. To tear down the whole environment with ```ElasticSearch``` run the following command
 
 ```
 $ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down -v
@@ -181,6 +193,19 @@ Alternatively, if you want to keep the data run:
 
 ```
 $ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down
+```
+
+To run Camunda Platform with ```OpenSearch``` execute this commands
+
+1. Edit ```.env``` file and set parameter ```SEARCH_DB=opensearch```
+2. Run command
+```
+$ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml --profile opensearch up -d
+```
+3. To tear down the whole environment with Elasticsearch run the following command (-v is optional flag. Use it, if you want to delete all the data)
+
+```
+$ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml --profile opensearch down -v
 ```
 
 ### Login
@@ -199,7 +224,7 @@ If you enabled authentication for GRPC requests on Zeebe you need to provide cli
 * URL: `http://zeebe:26500`
 * Client ID: `zeebe`
 * Client secret: `zecret`
-* OAuth URL: `http://keycloak:8080/auth/realms/camunda-platform/protocol/openid-connect/token`
+* OAuth URL: `http://keycloak:18080/auth/realms/camunda-platform/protocol/openid-connect/token`
 * Audience: `zeebe-api`
 
 ### Emails

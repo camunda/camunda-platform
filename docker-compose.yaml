@@ -10,24 +10,29 @@
 # See docker-compose-core.yml for a lightweight configuration that does not include Optimize, Identity, and Keycloak.
 
 services:
+  init: # recommended config https://opensearch.org/docs/1.1/opensearch/install/important-settings/
+    image: bash
+    profiles: ["opensearch"]
+    privileged: true
+    user: root
+    command: [ "sysctl", "-w", "vm.max_map_count=262144" ]
 
   zeebe: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#zeebe
     image: camunda/zeebe:${CAMUNDA_PLATFORM_VERSION}
     container_name: zeebe
+    profiles: ["", "opensearch"]
     ports:
       - "26500:26500"
       - "9600:9600"
       - "8088:8080"
+    env_file:
+      - .env.${SEARCH_DB}
     environment: # https://docs.camunda.io/docs/self-managed/zeebe-deployment/configuration/environment-variables/
       - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE=${ZEEBE_AUTHENTICATION_MODE}
       - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_ISSUERBACKENDURL=http://keycloak:18080/auth/realms/camunda-platform
       - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_AUDIENCE=zeebe-api
       - ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_IDENTITY_BASEURL=http://identity:8084
       - ZEEBE_BROKER_GATEWAY_MULTITENANCY_ENABLED=${MULTI_TENANCY_ENABLED}
-      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
-      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
-      # default is 1000, see here: https://github.com/camunda/zeebe/blob/main/exporters/elasticsearch-exporter/src/main/java/io/camunda/zeebe/exporter/ElasticsearchExporterConfiguration.java#L259
-      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE=1
       # allow running with low disk space
       - ZEEBE_BROKER_DATA_DISKUSAGECOMMANDWATERMARK=0.998
       - ZEEBE_BROKER_DATA_DISKUSAGEREPLICATIONWATERMARK=0.999
@@ -44,22 +49,23 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - elasticsearch
+      - ${SEARCH_DB}
       - identity
 
   operate: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#operate
     image: camunda/operate:${CAMUNDA_OPERATE_VERSION}
     container_name: operate
+    profiles: ["", "opensearch"]
     ports:
       - "8081:8080"
+    env_file:
+      - .env.${SEARCH_DB}
     environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
       - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - ZEEBE_CLIENT_ID=${ZEEBE_CLIENT_ID}
       - ZEEBE_CLIENT_SECRET=${ZEEBE_CLIENT_SECRET}
       - ZEEBE_TOKEN_AUDIENCE=zeebe-api
       - ZEEBE_AUTHORIZATION_SERVER_URL=http://keycloak:18080/auth/realms/camunda-platform/protocol/openid-connect/token
-      - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
-      - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
       # For more information regarding configuration with Identity see:
       # https://docs.camunda.io/docs/self-managed/operate-deployment/authentication/#identity
       - SPRING_PROFILES_ACTIVE=identity-auth
@@ -89,13 +95,16 @@ services:
     depends_on:
       - zeebe
       - identity
-      - elasticsearch
+      - ${SEARCH_DB}
 
   tasklist: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#tasklist
     image: camunda/tasklist:${CAMUNDA_TASKLIST_VERSION}
     container_name: tasklist
+    profiles: ["", "opensearch"]
     ports:
       - "8082:8080"
+    env_file:
+      - .env.${SEARCH_DB}
     environment: # https://docs.camunda.io/docs/self-managed/tasklist-deployment/configuration/
       - CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS=zeebe:26500
       - CAMUNDA_TASKLIST_ZEEBE_RESTADDRESS=http://zeebe:8080
@@ -104,8 +113,6 @@ services:
       - ZEEBE_CLIENT_CONFIG_PATH=/tmp/zeebe_auth_cache
       - ZEEBE_TOKEN_AUDIENCE=zeebe-api
       - ZEEBE_AUTHORIZATION_SERVER_URL=http://keycloak:18080/auth/realms/camunda-platform/protocol/openid-connect/token
-      - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
-      - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
       # For more information regarding configuration with Identity see:
       # https://docs.camunda.io/docs/self-managed/tasklist-deployment/authentication/#identity
       - SPRING_PROFILES_ACTIVE=identity-auth
@@ -134,14 +141,15 @@ services:
     depends_on:
       zeebe:
         condition: service_started
-      elasticsearch:
-        condition: service_healthy
+      # elasticsearch:
+      #   condition: service_healthy
       identity:
         condition: service_healthy
 
   connectors: # https://docs.camunda.io/docs/components/integration-framework/connectors/out-of-the-box-connectors/available-connectors-overview/
     image: camunda/connectors-bundle:${CAMUNDA_CONNECTORS_VERSION}
     container_name: connectors
+    profiles: ["", "opensearch"]
     ports:
       - "8085:8080"
     environment:
@@ -178,11 +186,12 @@ services:
   optimize: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#optimize
     image: camunda/optimize:${CAMUNDA_OPTIMIZE_VERSION}
     container_name: optimize
+    profiles: ["", "opensearch"]
     ports:
       - "8083:8090"
+    env_file:
+      - .env.${SEARCH_DB}
     environment: # https://docs.camunda.io/docs/self-managed/optimize-deployment/setup/installation/#available-environment-variables
-      - OPTIMIZE_ELASTICSEARCH_HOST=elasticsearch
-      - OPTIMIZE_ELASTICSEARCH_HTTP_PORT=9200
       - SPRING_PROFILES_ACTIVE=ccsm
       - CAMUNDA_OPTIMIZE_ZEEBE_ENABLED=true
       - CAMUNDA_OPTIMIZE_ENTERPRISE=false
@@ -210,11 +219,12 @@ services:
       - camunda-platform
     depends_on:
       - identity
-      - elasticsearch
+      - ${SEARCH_DB}
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
     container_name: identity
     image: camunda/identity:${CAMUNDA_IDENTITY_VERSION}
+    profiles: ["", "opensearch"]
     ports:
       - "8084:8084"
     environment: # https://docs.camunda.io/docs/self-managed/identity/deployment/configuration-variables/
@@ -285,6 +295,7 @@ services:
   postgres: # https://hub.docker.com/_/postgres
     container_name: postgres
     image: postgres:${POSTGRES_VERSION}
+    profiles: ["", "opensearch"]
     environment:
       POSTGRES_DB: bitnami_keycloak
       POSTGRES_USER: bn_keycloak
@@ -303,6 +314,7 @@ services:
   keycloak: # https://hub.docker.com/r/bitnami/keycloak
     container_name: keycloak
     image: bitnami/keycloak:${KEYCLOAK_SERVER_VERSION}
+    profiles: ["", "opensearch"]
     volumes:
       - keycloak-theme:/opt/bitnami/keycloak/themes/identity
     ports:
@@ -327,9 +339,48 @@ services:
     depends_on:
       - postgres
 
+  opensearch:
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSION}
+    container_name: opensearch
+    profiles: ["opensearch"]
+    depends_on:
+      - init
+    environment:
+      cluster.name: opensearch-cluster
+      network.bind_host: 0.0.0.0
+      node.name: opensearch
+      plugins.security.disabled: true
+      discovery.type: single-node
+      discovery.seed_hosts: opensearch
+      bootstrap.memory_lock: true
+      OPENSEARCH_JAVA_OPTS: "-Xms1G -Xmx1G"
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_INITIAL_ADMIN_PASSWORD}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+      - "9601:9600"
+    restart: always
+    healthcheck:
+     # Single node OpenSearch clusters are considered 'yellow', see https://github.com/opensearch-project/opensearch-build/issues/4285
+      test: [ "CMD-SHELL", "curl -k -f http://localhost:9200/_cluster/health -u admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD} | grep -q -E 'yellow|green'" ]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    networks:
+      - camunda-platform
+
   elasticsearch: # https://hub.docker.com/_/elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
     container_name: elasticsearch
+    profiles: [""]
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -365,13 +416,14 @@ services:
     networks:
       - camunda-platform
     depends_on:
-      - elasticsearch
+      - ${SEARCH_DB}
     profiles:
       - kibana
 
 volumes:
   zeebe:
   elastic:
+  opensearch-data:
   postgres:
   keycloak-theme:
   kibana:

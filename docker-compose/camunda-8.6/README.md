@@ -44,6 +44,7 @@ The full environment contains these components:
 - PostgreSQL
 - Web Modeler (Restapi, Webapp and Websockets)
 
+<a id="start-full-profile"></a>
 Clone this repo and issue the following command to start your environment:
 
 ```
@@ -90,11 +91,11 @@ Feedback and updates are welcome!
 
 ## Securing the Zeebe API
 
-By default, the Zeebe GRPC API is publicly accessible without requiring any client credentials for development purposes.
+By default, the Zeebe gRPC API is publicly accessible without requiring any client credentials for development purposes.
 
-You can however enable authentication of GRPC requests in Zeebe by setting the environment variable `ZEEBE_AUTHENTICATION_MODE` to `identity`, e.g. via running:
+You can however enable authentication of gRPC requests in Zeebe by setting the environment variable `ZEEBE_AUTHENTICATION_MODE` to `identity`, e.g. via running:
 ```
-ZEEBE_AUTHENTICATION_MODE=identity docker compose up -d
+ZEEBE_AUTHENTICATION_MODE=identity docker compose --profile full up -d
 ```
 or by modifying the default value in the [`.env`](.env) file.
 
@@ -146,7 +147,7 @@ Once you are ready to deploy or execute processes use these settings to deploy t
 * URL: `http://localhost:26500`
 
 #### With Zeebe request authentication
-If you enabled authentication for GRPC requests on Zeebe you need to provide client credentials when deploying and executing processes:
+If you enabled [authentication for gRPC requests](#securing-the-zeebe-api) on Zeebe you need to provide client credentials when deploying and executing processes:
 * Authentication: `OAuth`
 * URL: `http://localhost:26500`
 * Client ID: `zeebe`
@@ -154,11 +155,15 @@ If you enabled authentication for GRPC requests on Zeebe you need to provide cli
 * OAuth URL: `http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token`
 * Audience: `zeebe-api`
 
-## Web Modeler Self-Managed
+## Web Modeler
 
-> :information_source: Non-production installations of Web Modeler are restricted to five collaborators per project. Refer to [the documentation](https://docs.camunda.io/docs/next/reference/licenses/) for more information.
+> [!IMPORTANT]
+> Non-production installations of Web Modeler are restricted to five collaborators per project.
+> Refer to [the documentation](https://docs.camunda.io/docs/next/reference/licenses/) for more information.
 
-Web Modeler can be run standalone with only Identity, Keycloak and Postgres as dependencies.
+### Standalone setup
+
+Web Modeler can be run standalone with only Identity, Keycloak and Postgres as dependencies by using the Docker Compose `modeling` profile.
 
 Issue the following commands to only start Web Modeler and its dependencies:
 
@@ -166,37 +171,41 @@ Issue the following commands to only start Web Modeler and its dependencies:
 docker compose --profile modeling up -d
 ```
 
-To tear down the whole environment run the following command
+To tear down the whole environment run the following command:
 
 ```
 docker compose --profile modeling down -v
 ```
 
-If you want to delete everything (including any data you created).
-Alternatively, if you want to keep the data run:
+> [!WARNING]
+> This will also delete any data you created.
+
+Alternatively, if you want to keep the data, run:
 
 ```
 docker compose --profile modeling down
 ```
 
 ### Login
-You can access Web Modeler Self-Managed and log in with the user `demo` and password `demo` at [http://localhost:8070](http://localhost:8070).
+You can access Web Modeler and log in with the user `demo` and password `demo` at [http://localhost:8070](http://localhost:8070).
 
 ### Deploy or execute a process
 
+The local Zeebe instance (that is started when using the Docker Compose [`full` profile](#start-full-profile)) is pre-configured in Web Modeler.
+
+Once you are ready to deploy or execute a process, you can just use this instance without having to enter the cluster endpoint manually.
+The correct authentication type is also preset based on the [`ZEEBE_AUTHENTICATION_MODE` environment variable](#securing-the-zeebe-api).
+
 #### Without authentication
-Once you are ready to deploy or execute processes use these settings to deploy to the local Zeebe instance:
-* Authentication: `None`
-* URL: `http://zeebe:26500`
+No additional input is required.
 
 #### With Zeebe request authentication
-If you enabled authentication for GRPC requests on Zeebe you need to provide client credentials when deploying and executing processes:
-* Authentication: `OAuth`
-* URL: `http://zeebe:26500`
+If you enabled [authentication for gRPC requests](#securing-the-zeebe-api) on Zeebe, use the following client credentials when deploying and executing processes:
 * Client ID: `zeebe`
 * Client secret: `zecret`
-* OAuth URL: `http://keycloak:18080/auth/realms/camunda-platform/protocol/openid-connect/token`
-* Audience: `zeebe-api`
+
+> [!NOTE]
+> The correct OAuth token URL and audience are preset internally.
 
 ### Emails
 The setup includes [Mailpit](https://github.com/axllent/mailpit) as a test SMTP server. It captures all emails sent by Web Modeler, but does not forward them to the actual recipients. 

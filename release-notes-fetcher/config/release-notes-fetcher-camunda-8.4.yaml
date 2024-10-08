@@ -1,6 +1,6 @@
 gitRef:
-  global: 8.4.11
-  operate:
-  identity: 8.4.10
-  tasklist:
-  zeebe: 8.4.10
+  global: 8.4.12
+  operate: 8.4.13
+  identity:
+  tasklist: 8.4.13
+  zeebe:

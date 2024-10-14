@@ -21,7 +21,7 @@ const MainRepoName = "camunda-platform"
 const ZeebeRepoName = "camunda"
 const TasklistRepoName = "tasklist"
 const IdentityRepoName = "identity"
-const OptimizeRepoName = "optimize"
+const OptimizeRepoName = "camunda-optimize"
 const ReleaseNotesTemplateFileName = "release-notes-template.txt"
 
 type CamundaPlatformRelease struct {
@@ -36,9 +36,9 @@ type CamundaPlatformRelease struct {
 type camundaAppVersions struct {
 	Zeebe    string
 	Operate  string
-	Tasklist     string
-	Identity     string
-	Optimize     string
+	Tasklist string
+	Identity string
+	Optimize string
 }
 
 func GetChangelogReleaseContents(ctx context.Context,
@@ -129,12 +129,21 @@ func main() {
 	)
 
 	camundaReleaseVersion := getEnv("CAMUNDA_RELEASE_NAME", os.Getenv("GITHUB_REF_NAME"))
+	camundaReleaseSemver, err := semver.NewVersion(camundaReleaseVersion)
+	optimizeMonoRepoVersion, optimizeMonoErr := semver.NewVersion("8.6.0")
+
+	// For Optimize <= 8.6.0, tags are using the 3.x.x versioning
+	optimizeReleaseVersion := camundaReleaseVersion
+	if camundaReleaseSemver.LessThan(optimizeMonoRepoVersion) {
+		optimizeReleaseVersion = fmt.Sprintf("%d.%d.%d", camundaReleaseSemver.Major()-5, camundaReleaseSemver.Minor()+8, camundaReleaseSemver.Patch())
+	}
+
 	camundaAppVersions := camundaAppVersions{
 		Identity: getEnv("IDENTITY_GITREF", camundaReleaseVersion),
 		Operate:  getEnv("OPERATE_GITREF", camundaReleaseVersion),
 		Tasklist: getEnv("TASKLIST_GITREF", camundaReleaseVersion),
 		Zeebe:    getEnv("ZEEBE_GITREF", camundaReleaseVersion),
-		Optimize: getEnv("OPTIMIZE_GITREF", camundaReleaseVersion),
+		Optimize: getEnv("OPTIMIZE_GITREF", optimizeReleaseVersion),
 	}
 
 	ctx := context.TODO()
@@ -153,6 +162,7 @@ func main() {
 	log.Debug().Msg("Operate Github ref = " + camundaAppVersions.Operate)
 	log.Debug().Msg("Identity Github ref = " + camundaAppVersions.Identity)
 	log.Debug().Msg("Optimize Github ref = " + camundaAppVersions.Optimize)
+
 	zeebeReleaseNotes := GetLatestReleaseContents(
 		ctx,
 		RepoOwner,
@@ -195,7 +205,6 @@ func main() {
 		)
 	}
 
-	optimizeMonoRepoVersion, optimizeMonoErr := semver.NewVersion("8.6.0")
 	if optimizeMonoErr != nil {
 		log.Error().Stack().Err(optimizeMonoErr).Msg("Error parsing 8.6.0 version:")
 		return
@@ -211,7 +220,7 @@ func main() {
 	var OptimizeRepoName = ""
 	optimizeSingleAppVersion, _ := semver.NewVersion("8.7.0-alpha1")
 	if optimizeCurrentVersion.LessThan(optimizeMonoRepoVersion) {
-		OptimizeRepoName = "optimize"
+		OptimizeRepoName = "camunda-optimize"
 		OptimizeRepoTag = camundaAppVersions.Optimize
 	} else if optimizeCurrentVersion.LessThan(optimizeSingleAppVersion) {
 		OptimizeRepoName = "camunda"

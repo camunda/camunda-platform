@@ -12,3 +12,6 @@
 
 # Zeebe
 {{ .ZeebeReleaseNotes }}
+
+# Optimize
+{{ .OptimizeReleaseNotes }}

@@ -383,6 +383,8 @@ services:
       - modeling
     container_name: web-modeler-db
     image: postgres:${POSTGRES_VERSION}
+    ports:
+      - "5432:5432"
     healthcheck:
       test: pg_isready -d web-modeler-db -U web-modeler-db-user
       interval: 5s
@@ -435,25 +437,7 @@ services:
       timeout: 15s
       retries: 30
     environment:
-      JAVA_OPTIONS: -Xmx128m
-      LOGGING_LEVEL_IO_CAMUNDA_MODELER: DEBUG
       CAMUNDA_IDENTITY_BASEURL: http://identity:8084/
-      SPRING_DATASOURCE_URL: jdbc:postgresql://web-modeler-db:5432/web-modeler-db
-      SPRING_DATASOURCE_USERNAME: web-modeler-db-user
-      SPRING_DATASOURCE_PASSWORD: web-modeler-db-password
-      SPRING_PROFILES_INCLUDE: default-logging
-      RESTAPI_PUSHER_HOST: web-modeler-websockets
-      RESTAPI_PUSHER_PORT: "8060"
-      RESTAPI_PUSHER_APP_ID: web-modeler-app
-      RESTAPI_PUSHER_KEY: web-modeler-app-key
-      RESTAPI_PUSHER_SECRET: web-modeler-app-secret
-      RESTAPI_OAUTH2_TOKEN_ISSUER: http://${KEYCLOAK_HOST}:18080/auth/realms/camunda-platform
-      RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL: http://keycloak:18080/auth/realms/camunda-platform
-      RESTAPI_SERVER_URL: http://localhost:8070
-      RESTAPI_MAIL_HOST: mailpit
-      RESTAPI_MAIL_PORT: 1025
-      RESTAPI_MAIL_ENABLE_TLS: "false"
-      RESTAPI_MAIL_FROM_ADDRESS: "noreply@example.com"
       CAMUNDA_MODELER_CLUSTERS_0_NAME: "Local Zeebe instance"
       CAMUNDA_MODELER_CLUSTERS_0_VERSION: ${CAMUNDA_PLATFORM_VERSION}
       CAMUNDA_MODELER_CLUSTERS_0_URL_ZEEBE_GRPC: http://zeebe:26500
@@ -461,6 +445,23 @@ services:
       CAMUNDA_MODELER_CLUSTERS_0_URL_OPERATE: http://operate:8080
       CAMUNDA_MODELER_CLUSTERS_0_URL_TASKLIST: http://tasklist:8080
       CAMUNDA_MODELER_CLUSTERS_0_OAUTH_URL: http://keycloak:18080/auth/realms/camunda-platform/protocol/openid-connect/token
+      CAMUNDA_MODELER_MAIL_HOST: mailpit
+      CAMUNDA_MODELER_MAIL_PORT: 1025
+      CAMUNDA_MODELER_MAIL_ENABLE_TLS: "false"
+      CAMUNDA_MODELER_MAIL_FROM_ADDRESS: "noreply@example.com"
+      CAMUNDA_MODELER_PUSHER_HOST: web-modeler-websockets
+      CAMUNDA_MODELER_PUSHER_PORT: "8060"
+      CAMUNDA_MODELER_PUSHER_APP_ID: web-modeler-app
+      CAMUNDA_MODELER_PUSHER_KEY: web-modeler-app-key
+      CAMUNDA_MODELER_PUSHER_SECRET: web-modeler-app-secret
+      CAMUNDA_MODELER_SECURITY_JWT_ISSUER_BACKEND_URL: http://keycloak:18080/auth/realms/camunda-platform
+      CAMUNDA_MODELER_SERVER_URL: http://localhost:8070
+      SPRING_DATASOURCE_URL: jdbc:postgresql://web-modeler-db:5432/web-modeler-db
+      SPRING_DATASOURCE_USERNAME: web-modeler-db-user
+      SPRING_DATASOURCE_PASSWORD: web-modeler-db-password
+      SPRING_PROFILES_INCLUDE: default-logging
+      JAVA_OPTIONS: -Xmx128m
+      LOGGING_LEVEL_IO_CAMUNDA_MODELER: DEBUG
     # extra cluster configuration depending on the authentication mode
     env_file: ./.web-modeler/cluster-config-authentication-mode-${ZEEBE_AUTHENTICATION_MODE}.env
     networks:

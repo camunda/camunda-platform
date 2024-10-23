@@ -5,8 +5,6 @@
 #
 # Note: this file is using Mailpit to simulate a mail server
 
-version: "2.4"
-
 services:
 
   modeler-db:

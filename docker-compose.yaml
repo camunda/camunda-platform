@@ -276,6 +276,8 @@ services:
       KEYCLOAK_CLIENTS_0_PERMISSIONS_5_DEFINITION: read:*
       MULTITENANCY_ENABLED: ${MULTI_TENANCY_ENABLED}
       RESOURCE_PERMISSIONS_ENABLED: ${RESOURCE_AUTHORIZATIONS_ENABLED}
+    env_file:
+      - ./ssl_configs/identity/env
     healthcheck:
       test: [ "CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:8082/actuator/health" ]
       interval: 5s
@@ -285,6 +287,7 @@ services:
     restart: on-failure
     volumes:
       - keycloak-theme:/app/keycloak-theme
+      - ./ssl_configs/identity/certs:/opt/keycloak/conf
     networks:
       - camunda-platform
       - identity-network
@@ -317,8 +320,11 @@ services:
     profiles: ["", "opensearch"]
     volumes:
       - keycloak-theme:/opt/bitnami/keycloak/themes/identity
+      - ./ssl_configs/keycloak/certs:/opt/keycloak/conf
     ports:
-      - "18080:18080"
+      - ${KEYCLOAK_PORTS}
+      # - "18080:18080"
+      # - "18443:18443"
     environment:
       KEYCLOAK_HTTP_PORT: 18080
       KEYCLOAK_HTTP_RELATIVE_PATH: /auth
@@ -326,6 +332,8 @@ services:
       KEYCLOAK_DATABASE_PASSWORD: "#3]O?4RGj)DE7Z!9SA5"
       KEYCLOAK_ADMIN_USER: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+    env_file:
+      - ./ssl_configs/keycloak/env
     restart: on-failure
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:18080/auth"]

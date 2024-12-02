@@ -12,7 +12,7 @@ jobs:
           - compose_args: "-f docker-compose.yaml -f docker-compose-web-modeler.yaml"
             run_e2e_tests: true
             directory: ""
-          - compose_args: ""
+          - compose_args: "-f docker-compose.yaml -f docker-compose-web-modeler.yaml"
             run_e2e_tests: true
             run_single_test: "web_modeler_login.spec.ts"
             directory: "docker-compose/camunda-8.6"

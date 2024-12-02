@@ -213,7 +213,6 @@ services:
       - elasticsearch
 
   identity: # https://docs.camunda.io/docs/self-managed/platform-deployment/docker/#identity
-      - modeling
     container_name: identity
     image: camunda/identity:${CAMUNDA_PLATFORM_VERSION}
     ports:

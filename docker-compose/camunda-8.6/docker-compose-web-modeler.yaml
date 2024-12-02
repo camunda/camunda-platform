@@ -142,4 +142,5 @@ volumes:
 
 networks:
   web-modeler:
+  camunda-platform:
 

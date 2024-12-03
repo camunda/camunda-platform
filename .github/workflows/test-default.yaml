@@ -11,7 +11,7 @@ jobs:
           - compose_args: "-f docker-compose.yaml"
             run_e2e_tests: false
             directory: ""
-          - compose_args: "--profile full"
+          - compose_args: ""
             run_e2e_tests: false
             directory: "docker-compose/camunda-8.6"
     uses: ./.github/workflows/template-deploy.yaml

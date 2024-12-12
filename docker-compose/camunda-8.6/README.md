@@ -44,11 +44,11 @@ The full environment contains these components:
 - PostgreSQL
 - Web Modeler (Restapi, Webapp and Websockets)
 
-<a id="start-full-profile"></a>
+<a id="start-full"></a>
 Clone this repo and issue the following command to start your environment:
 
 ```
-docker compose --profile full up -d
+docker compose up -d
 ```
 
 Wait a few minutes for the environment to start up and settle down. Monitor the logs, especially the Keycloak container log, to ensure the components have started.
@@ -69,7 +69,7 @@ The workflow engine Zeebe is available using gRPC at `localhost:26500`.
 To tear down the whole environment run the following command:
 
 ```
-docker compose --profile full down -v
+docker compose down -v
 ```
 
 Zeebe, Operate, Tasklist, Web Modeler along with Optimize require a separate network from Identity as you'll see in the docker-compose file. Web Modeler also requires another separate network.
@@ -95,7 +95,7 @@ By default, the Zeebe gRPC API is publicly accessible without requiring any clie
 
 You can however enable authentication of gRPC requests in Zeebe by setting the environment variable `ZEEBE_AUTHENTICATION_MODE` to `identity`, e.g. via running:
 ```
-ZEEBE_AUTHENTICATION_MODE=identity docker compose --profile full up -d
+ZEEBE_AUTHENTICATION_MODE=identity docker compose up -d
 ```
 or by modifying the default value in the [`.env`](.env) file.
 
@@ -163,18 +163,18 @@ If you enabled [authentication for gRPC requests](#securing-the-zeebe-api) on Ze
 
 ### Standalone setup
 
-Web Modeler can be run standalone with only Identity, Keycloak and Postgres as dependencies by using the Docker Compose `modeling` profile.
+Web Modeler can be run standalone with only Identity, Keycloak and Postgres as dependencies by using the Docker Compose.
 
 Issue the following commands to only start Web Modeler and its dependencies:
 
 ```
-docker compose --profile modeling up -d
+docker compose -f docker-compose-web-modeler.yaml up -d
 ```
 
 To tear down the whole environment run the following command:
 
 ```
-docker compose --profile modeling down -v
+docker compose -f docker-compose-web-modeler.yaml down -v
 ```
 
 > [!WARNING]
@@ -183,7 +183,7 @@ docker compose --profile modeling down -v
 Alternatively, if you want to keep the data, run:
 
 ```
-docker compose --profile modeling down
+docker compose -f docker-compose-web-modeler.yaml down
 ```
 
 ### Login
@@ -191,7 +191,7 @@ You can access Web Modeler and log in with the user `demo` and password `demo` a
 
 ### Deploy or execute a process
 
-The local Zeebe instance (that is started when using the Docker Compose [`full` profile](#start-full-profile)) is pre-configured in Web Modeler.
+The local Zeebe instance (that is started when using the Docker Compose docker-compose.yaml is pre-configured in Web Modeler.
 
 Once you are ready to deploy or execute a process, you can just use this instance without having to enter the cluster endpoint manually.
 The correct authentication type is also preset based on the [`ZEEBE_AUTHENTICATION_MODE` environment variable](#securing-the-zeebe-api).
@@ -238,7 +238,7 @@ This feature is disabled by default and can be enabled by setting
 `RESOURCE_AUTHORIZATIONS_ENABLED` to `true`, either via the [`.env`](.env) file or through the command line:
 
 ```
-RESOURCE_AUTHORIZATIONS_ENABLED=true docker compose --profile full up -d
+RESOURCE_AUTHORIZATIONS_ENABLED=true docker compose up -d
 ```
 
 ## Multi-Tenancy
@@ -249,7 +249,7 @@ This feature is disabled by default and can be enabled by setting
 `MULTI_TENANCY_ENABLED` to `true`, either via the [`.env`](.env) file or through the command line:
 
 ```
-ZEEBE_AUTHENICATION_MODE=identity MULTI_TENANCY_ENABLED=true docker compose --profile full up -d
+ZEEBE_AUTHENICATION_MODE=identity MULTI_TENANCY_ENABLED=true docker compose up -d
 ```
 
 As seen above the feature also requires you to use `identity` as an authentication provider.

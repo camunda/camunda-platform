@@ -39,7 +39,7 @@ The full environment contains these components:
 - Connectors
 - Optimize
 - Identity
-- Elasticsearch/Opensearch
+- Elasticsearch
 - Keycloak
 - PostgreSQL
 
@@ -80,13 +80,6 @@ If Optimize, Identity, and Keycloak are not needed you can use the [docker-compo
 ```
 docker compose -f docker-compose-core.yaml up -d
 ```
-**OR**
-
-Set parameter ```SEARCH_DB=opensearch``` in the file ```.env``` if you want to use OpenSearch instead of ElasticSearch
-```
-docker compose -f docker-compose-core.yaml --profile opensearch up -d
-```
-
 ### Deploying BPMN diagrams
 
 In addition to the local environment setup with docker compose, use the [Camunda Desktop Modeler](#desktop-modeler) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
@@ -182,7 +175,8 @@ Login Succeeded
 ```
 $ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml up -d
 ```
-3. To tear down the whole environment with ```ElasticSearch``` run the following command
+
+### To tear down the whole environment run the following command
 
 ```
 $ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down -v
@@ -193,19 +187,6 @@ Alternatively, if you want to keep the data run:
 
 ```
 $ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml down
-```
-
-To run Camunda Platform with ```OpenSearch``` execute this commands
-
-1. Edit ```.env``` file and set parameter ```SEARCH_DB=opensearch```
-2. Run command
-```
-$ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml --profile opensearch up -d
-```
-3. To tear down the whole environment with Elasticsearch run the following command (-v is optional flag. Use it, if you want to delete all the data)
-
-```
-$ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml --profile opensearch down -v
 ```
 
 ### Login

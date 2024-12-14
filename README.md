@@ -166,6 +166,13 @@ $ docker login registry.camunda.cloud
 Username: your_username
 Password: ******
 Login Succeeded
+```
+
+#### To run Camunda Platform with Elasticsearch execute this commands
+
+1. Edit ```.env``` file and set parameter ```SEARCH_DB=elasticsearch``` (this default value)
+2. Run command
+```
 $ docker compose -f docker-compose.yaml -f docker-compose-web-modeler.yaml up -d
 ```
 

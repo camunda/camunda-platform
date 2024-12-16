@@ -12,13 +12,13 @@ For production and development environments, we recommend:
 For more information about Self-Managed, including additional [development installation options](https://docs.camunda.io/docs/self-managed/setup/overview/), see our [documentation](https://docs.camunda.io/docs/self-managed/about-self-managed/).
 
 ## Production Setup:
-For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/setup/install/) which can be found at [helm.camunda.io](https://helm.camunda.io/).
+For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/setup/install/), which can be found at [helm.camunda.io](https://helm.camunda.io/).
 
 ## Local Development Setup
 
-- **Camunda 8 Run** is a lightweight, self-contained distribution of Camunda Platform 8, designed to simplify deployment by bundling all required components into a single package. For more information, see [Camunda 8 Run Documentation](https://docs.camunda.io/docs/self-managed/setup/deploy/local/c8run/)
-- **Docker Compose** to start local development environment. For more information, see the Docker Compose section below.
-- **Local Kubernetes cluster** You can deploy Camunda 8 Self-Managed on your Kubernetes local cluster for development purposes. For more information see [Camunda 8 Local Kubernetes documentation ](https://docs.camunda.io/docs/self-managed/setup/deploy/local/local-kubernetes-cluster/)
+- **Camunda 8 Run**: A lightweight, self-contained distribution of Camunda Platform 8 - designed to simplify deployment by bundling all required components into a single package. For more information, see [Camunda 8 Run Documentation](https://docs.camunda.io/docs/self-managed/setup/deploy/local/c8run/)
+- **Docker Compose**: A local development environment. For more information, see the Docker Compose section below.
+- **Local Kubernetes Cluster**: Deploy Camunda 8 Self-Managed on a local Kubernetes cluster for development purposes. For more information, see [Camunda 8 Local Kubernetes documentation ](https://docs.camunda.io/docs/self-managed/setup/deploy/local/local-kubernetes-cluster/)
 
 ## Links to additional Camunda Platform 8 repos and assets
 
@@ -33,35 +33,33 @@ For production setups we recommend using [Helm charts](https://docs.camunda.io/d
 ## Using Docker Compose
 
 ### Prerequisites
-	•	Docker Compose: Version 1.27.0+ (supports the [latest compose specification](https://docs.docker.com/compose/compose-file/) ).
-	•	Docker: Version 20.10.16+.
-	•	Add keycloak to resolve to 127.0.0.1 on your local machine, and set KEYCLOAK_HOST to `keycloak` in the `.env` file for token refresh and logout functionality.
+	• Docker Compose: Version 1.27.0+ (supports the [latest compose specification](https://docs.docker.com/compose/compose-file/) ).
+	• Docker: Version 20.10.16+.
+	• Add keycloak to resolve to 127.0.0.1 on your local machine, and set KEYCLOAK_HOST to `keycloak` in the `.env` file for token refresh and logout functionality.
 
 ### Setting Up
 
-To spin up a  Camunda Platform 8 Self-Managed environment locally you can use the following docker compose configuration files:
- - [docker-compose.yaml](docker-compose.yaml) file contains all Camunda 8 Components for a full stack deployment: Zeebe, Operate, Tasklist, Connectors, Optimize, Identity, Elasticsearch, Keycloak, Web Modeler, PostgreSQL
- - [docker-compose-core.yaml](docker-compose.yaml) file contains  Camunda 8 Orchestration cluster components: Zeebe, Tasklist, Operate, Optimize, Identity and Connectors
- - [docker-compose-web-modeler.yaml](docker-compose.yaml) file contains Camunda 8 Web Modeler for modeling without Play or an orchestration cluster
+To spin up a local Camunda Platform 8 Self-Managed environment, use one of the following docker compose configuration files:
+ - [docker-compose.yaml](docker-compose.yaml): The full stack deployment including all Camunda 8 Components: Zeebe, Operate, Tasklist, Connectors, Optimize, Identity, Elasticsearch, Keycloak, Web Modeler, PostgreSQL
+ - [docker-compose-core.yaml](docker-compose.yaml): Deploys Camunda 8 Orchestration Cluster Components: Zeebe, Operate, Tasklist, Connectors, Optimize, Identity
+ - [docker-compose-web-modeler.yaml](docker-compose.yaml): Contains Camunda 8 Web Modeler for modeling purposes only - without Play or any Orchestration Cluster Components
 
 To start a complete Camunda Platform 8 Self-Managed environment locally:
 1. Clone this repository.
-2. Run:
+1. Run:
    ```bash
    docker compose up -d
    ```
-3.	Wait for the environment to initialize. Monitor logs (especially Keycloak) to ensure all components have started.
+1. Wait a few minutes for the environment to start up. Monitor the logs, especially the Keycloak container, to ensure the components have started.
 
-Wait a few minutes for the environment to start up and settle down. Monitor the logs, especially the Keycloak container log, to ensure the components have started.
-
-Now you can navigate to the different web apps and log in with the user `demo` and password `demo`:
+Navigate to the different web apps and log in with the user `demo` and password `demo`:
 - Operate: [http://localhost:8081](http://localhost:8081)
 - Tasklist: [http://localhost:8082](http://localhost:8082)
 - Optimize: [http://localhost:8083](http://localhost:8083)
 - Identity: [http://localhost:8084](http://localhost:8084)
 - Elasticsearch: [http://localhost:9200](http://localhost:9200)
 
-Keycloak is used to manage users. Here you can log in with the user `admin` and password `admin`
+Log in to Keycloak using user: `admin` and password: `admin` to manager users.
 - Keycloak: [http://localhost:18080/auth/](http://localhost:18080/auth/)
 
 The workflow engine Zeebe is available using gRPC at `localhost:26500`.

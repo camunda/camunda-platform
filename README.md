@@ -59,7 +59,7 @@ Navigate to the different web apps and log in with the user `demo` and password 
 - Identity: [http://localhost:8084](http://localhost:8084)
 - Elasticsearch: [http://localhost:9200](http://localhost:9200)
 
-Log in to Keycloak using user: `admin` and password: `admin` to manager users.
+Log in to Keycloak using user: `admin` and password: `admin` to manage users.
 - Keycloak: [http://localhost:18080/auth/](http://localhost:18080/auth/)
 
 The workflow engine Zeebe is available using gRPC at `localhost:26500`.

@@ -4,11 +4,21 @@ This repository contains links to Camunda Platform 8 resources, the official rel
 
 :warning: **Docker Compose is only recommended for local development.** :warning:
 
-We recommend using [SaaS](https://camunda.com/get-started/) or [Helm/Kubernetes](https://docs.camunda.io/docs/self-managed/setup/overview/) for development.
+For production and development environments, we recommend:
 
-For more information, check Camunda 8 Self-Managed official [documentation](https://docs.camunda.io/docs/self-managed/about-self-managed/).
+- [Camunda SaaS](https://camunda.com/get-started/) for managed hosting
+- [Helm/Kubernetes](https://docs.camunda.io/docs/self-managed/setup/overview/) for self-managed installations.
 
-For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/setup/install/) which can be found at [helm.camunda.io](https://helm.camunda.io/)
+For more information about Self-Managed, including additional [development installation options](https://docs.camunda.io/docs/self-managed/setup/overview/), see our [documentation](https://docs.camunda.io/docs/self-managed/about-self-managed/).
+
+## Production Setup:
+For production setups we recommend using [Helm charts](https://docs.camunda.io/docs/self-managed/setup/install/) which can be found at [helm.camunda.io](https://helm.camunda.io/).
+
+## Local Development Setup
+
+- **Camunda 8 Run** is a lightweight, self-contained distribution of Camunda Platform 8, designed to simplify deployment by bundling all required components into a single package. For more information see [Camunda 8 Run Documentation](https://docs.camunda.io/docs/self-managed/setup/deploy/local/c8run/)
+- **Docker Compose** to start local development environment. For more information see the docker compose section below.
+- **Local Kubernetes cluster** You can deploy Camunda 8 Self-Managed on your Kubernetes local cluster for development purposes. For more information see [Camunda 8 Local Kubernetes documenation ](https://docs.camunda.io/docs/self-managed/setup/deploy/local/local-kubernetes-cluster/)
 
 ## Links to additional Camunda Platform 8 repos and assets
 
@@ -20,36 +30,27 @@ For production setups we recommend using [Helm charts](https://docs.camunda.io/d
 - [Zeebe Workflow Engine](https://github.com/camunda/zeebe)
 - [Contact](https://docs.camunda.io/contact/)
 
-## Using docker compose
+## Using Docker Compose
 
-> :information_source: The docker-compose file in this repository uses the latest [compose specification](https://docs.docker.com/compose/compose-file/), which was introduced with docker compose version 1.27.0+. Please make sure to use an up-to-date docker compose version.
+### Prerequisites
+	•	Docker Compose: Version 1.27.0+ (supports the [latest compose specification](https://docs.docker.com/compose/compose-file/) ).
+	•	Docker: Version 20.10.16+.
+	•	Add keycloak to resolve to 127.0.0.1 on your local machine, and set KEYCLOAK_HOST to `keycloak` in the `.env` file for token refresh and logout functionality.
 
-> :information_source: Docker 20.10.16+ is required.
+### Setting Up
 
-> :information_source: The Web Modeler service names have changed with `8.6.0-alpha2`. Run `docker compose stop modeler-webapp modeler-restapi modeler-websockets` when upgrading from a previous version to stop the old services.
+To spin up a  Camunda Platform 8 Self-Managed environment locally you can use the following docker compose configuration files:
+ - [docker-compose.yaml](docker-compose.yaml) file contians all Camunda 8 Components for a full stack deployment: Zeebe, Operate, Tasklist, Connectors, Optimize, Identity, Elasticsearch, Keycloak, Web Modeler, PostgreSQL
+ - [docker-compose-core.yaml](docker-compose.yaml) file contians  Camunda 8 Orchestration cluster components: Zeebe, Tasklist, Operate, Optimize, Identity and Connectors
+ - [docker-compose-web-modeler.yaml](docker-compose.yaml) file contians Camunda 8 Web Modeler standalone installation 
 
-Be sure you are in the correct directory when running all the following commands. Use `cd docker-compose/camunda-8.6` to navigate to the correct directory.
-
-To spin up a complete Camunda Platform 8 Self-Managed environment locally the [docker-compose.yaml](docker-compose.yaml) file in this repository can be used.
-
-The full environment contains these components:
-- Zeebe
-- Operate
-- Tasklist
-- Connectors
-- Optimize
-- Identity
-- Elasticsearch
-- Keycloak
-- PostgreSQL
-- Web Modeler (Restapi, Webapp and Websockets)
-
-<a id="start-full"></a>
-Clone this repo and issue the following command to start your environment:
-
-```
-docker compose up -d
-```
+To start a complete Camunda Platform 8 Self-Managed environment locally:
+1. Clone this repository.
+2. Run:
+   ```bash
+   docker compose up -d
+   ```
+3.	Wait for the environment to initialize. Monitor logs (especially Keycloak) to ensure all components have started.
 
 Wait a few minutes for the environment to start up and settle down. Monitor the logs, especially the Keycloak container log, to ensure the components have started.
 
@@ -59,24 +60,23 @@ Now you can navigate to the different web apps and log in with the user `demo` a
 - Optimize: [http://localhost:8083](http://localhost:8083)
 - Identity: [http://localhost:8084](http://localhost:8084)
 - Elasticsearch: [http://localhost:9200](http://localhost:9200)
-- Web Modeler: [http://localhost:8070](http://localhost:8070)
 
 Keycloak is used to manage users. Here you can log in with the user `admin` and password `admin`
 - Keycloak: [http://localhost:18080/auth/](http://localhost:18080/auth/)
 
 The workflow engine Zeebe is available using gRPC at `localhost:26500`.
 
-To tear down the whole environment run the following command:
+### Stopping the Environment
 
 ```
 docker compose down -v
 ```
 
-Zeebe, Operate, Tasklist, Web Modeler along with Optimize require a separate network from Identity as you'll see in the docker-compose file. Web Modeler also requires another separate network.
+Zeebe, Operate, Tasklist, along with Optimize require a separate network from Identity as you'll see in the docker-compose file.
 
-### Using the basic components
+### Minimal Setup 
 
-If Optimize, Web Modeler, Identity, and Keycloak are not needed you can use the [docker-compose-core.yaml](docker-compose-core.yaml) instead which does not include these components:
+For a minimal setup (excluding Optimize, Identity, Web Modeler and Keycloak), use:
 
 ```
 docker compose -f docker-compose-core.yaml up -d
@@ -85,15 +85,15 @@ docker compose -f docker-compose-core.yaml up -d
 ### Deploying BPMN diagrams
 
 In addition to the local environment setup with docker compose, use the [Camunda Desktop Modeler](#desktop-modeler) to locally model BPMN diagrams for execution and directly deploy them to your local environment.
-As an enterprise customer, you can [use Web Modeler](#web-modeler-self-managed).
+You can also [use Web Modeler](#web-modeler-self-managed).
 
 Feedback and updates are welcome!
 
 ## Securing the Zeebe API
 
-By default, the Zeebe gRPC API is publicly accessible without requiring any client credentials for development purposes.
+By default, the Zeebe GRPC API is publicly accessible without requiring any client credentials for development purposes.
 
-You can however enable authentication of gRPC requests in Zeebe by setting the environment variable `ZEEBE_AUTHENTICATION_MODE` to `identity`, e.g. via running:
+You can however enable authentication of GRPC requests in Zeebe by setting the environment variable `ZEEBE_AUTHENTICATION_MODE` to `identity`, e.g. via running:
 ```
 ZEEBE_AUTHENTICATION_MODE=identity docker compose up -d
 ```
@@ -147,7 +147,7 @@ Once you are ready to deploy or execute processes use these settings to deploy t
 * URL: `http://localhost:26500`
 
 #### With Zeebe request authentication
-If you enabled [authentication for gRPC requests](#securing-the-zeebe-api) on Zeebe you need to provide client credentials when deploying and executing processes:
+If you enabled authentication for GRPC requests on Zeebe you need to provide client credentials when deploying and executing processes:
 * Authentication: `OAuth`
 * URL: `http://localhost:26500`
 * Client ID: `zeebe`
@@ -155,7 +155,7 @@ If you enabled [authentication for gRPC requests](#securing-the-zeebe-api) on Ze
 * OAuth URL: `http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token`
 * Audience: `zeebe-api`
 
-## Web Modeler
+## Web Modeler Self Managed
 
 > [!IMPORTANT]
 > Non-production installations of Web Modeler are restricted to five collaborators per project.
@@ -171,7 +171,7 @@ Issue the following commands to only start Web Modeler and its dependencies:
 docker compose -f docker-compose-web-modeler.yaml up -d
 ```
 
-To tear down the whole environment run the following command:
+To tear down the whole environment run the following command (including all the data and volumes):
 
 ```
 docker compose -f docker-compose-web-modeler.yaml down -v
@@ -180,7 +180,7 @@ docker compose -f docker-compose-web-modeler.yaml down -v
 > [!WARNING]
 > This will also delete any data you created.
 
-Alternatively, if you want to keep the data, run:
+Alternatively, if you want to keep the data, run without `-v` parameter:
 
 ```
 docker compose -f docker-compose-web-modeler.yaml down
@@ -232,7 +232,7 @@ $ DOCKER_BUILDKIT=0 docker build -t bitnami/keycloak:19.0.3 "https://github.com/
 
 ## Resource based authorizations
 
-You can control access to specific processes and decision tables in Operate and Tasklist with [resource based authorization](https://docs.camunda.io/docs/self-managed/concepts/access-control/resource-authorizations/).
+You can control access to specific processes and decision tables in Operate and Tasklist with [resource-based authorization](https://docs.camunda.io/docs/self-managed/concepts/access-control/resource-authorizations/).
 
 This feature is disabled by default and can be enabled by setting 
 `RESOURCE_AUTHORIZATIONS_ENABLED` to `true`, either via the [`.env`](.env) file or through the command line:
@@ -254,7 +254,7 @@ ZEEBE_AUTHENICATION_MODE=identity MULTI_TENANCY_ENABLED=true docker compose up -
 
 As seen above the feature also requires you to use `identity` as an authentication provider.
 
-Ensure you [setup tenants in identity](https://docs.camunda.io/docs/self-managed/identity/user-guide/tenants/managing-tenants/) after you started the platform.
+Ensure you [setup tenants in identity](https://docs.camunda.io/docs/self-managed/identity/user-guide/tenants/managing-tenants/) after you start the platform.
 
 ## Camunda Platform 7
 

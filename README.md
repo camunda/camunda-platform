@@ -42,7 +42,7 @@ For production setups we recommend using [Helm charts](https://docs.camunda.io/d
 To spin up a  Camunda Platform 8 Self-Managed environment locally you can use the following docker compose configuration files:
  - [docker-compose.yaml](docker-compose.yaml) file contains all Camunda 8 Components for a full stack deployment: Zeebe, Operate, Tasklist, Connectors, Optimize, Identity, Elasticsearch, Keycloak, Web Modeler, PostgreSQL
  - [docker-compose-core.yaml](docker-compose.yaml) file contains  Camunda 8 Orchestration cluster components: Zeebe, Tasklist, Operate, Optimize, Identity and Connectors
- - [docker-compose-web-modeler.yaml](docker-compose.yaml) file contains Camunda 8 Web Modeler standalone installation 
+ - [docker-compose-web-modeler.yaml](docker-compose.yaml) file contains Camunda 8 Web Modeler for modeling without Play or an orchestration cluster
 
 To start a complete Camunda Platform 8 Self-Managed environment locally:
 1. Clone this repository.

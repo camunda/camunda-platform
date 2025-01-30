@@ -5,7 +5,7 @@
 > Docker Compose files will be removed from this repository by the release of Camunda 8.7 (April 2025).
 > Check [Camunda 8 Self-Managed - Docker Compose](https://github.com/camunda/camunda-self-managed/tree/main/docker-compose) for more details.
 
-This repository contains [releases for Camunda 8](https://github.com/camunda/camunda-platform/releases).
+This repository contains [releases for Camunda 8](https://github.com/camunda/camunda-platform/releases) for versions below 8.6.0. For Camunda releases 8.6.0 and above, please go to [camunda/camunda](https://github.com/camunda/camunda/releases) repository.
 
 For more details check:
 

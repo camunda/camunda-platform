@@ -21,6 +21,8 @@ services:
       # allow running with low disk space
       - CAMUNDA_REST_QUERY_ENABLED=true
       - CAMUNDA_DATABASE_URL=http://elasticsearch:9200
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_CLASSNAME=io.camunda.exporter.CamundaExporter
+      - ZEEBE_BROKER_EXPORTERS_CAMUNDAEXPORTER_ARGS_CONNECT_URL=http://elasticsearch:9200
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
       - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch:9200
       # default is 1000, see here: https://github.com/camunda/zeebe/blob/main/exporters/elasticsearch-exporter/src/main/java/io/camunda/zeebe/exporter/ElasticsearchExporterConfiguration.java#L259
@@ -99,7 +101,7 @@ services:
     environment:
       - CAMUNDA_CLIENT_ZEEBE_REST-ADDRESS=http://zeebe:8080
       - CAMUNDA_CLIENT_MODE=self-managed
-      - CAMUNDA_CLIENT__ZEEBE_GRPC-ADDRESS=http://zeebe:26500
+      - CAMUNDA_CLIENT_ZEEBE_GRPC-ADDRESS=http://zeebe:26500
       - CAMUNDA_CLIENT_AUTH_USERNAME=demo
       - CAMUNDA_CLIENT_AUTH_PASSWORD=demo
       - camunda.client.auth.token-url=null

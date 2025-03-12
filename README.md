@@ -23,4 +23,4 @@ For more details about Self-Managed Setup:
 - [Camunda 8 on Google GKE](https://docs.camunda.io/docs/self-managed/setup/deploy/gcp/google-gke/)
 - [Camunda 8 on Red Hat OpenShift](https://docs.camunda.io/docs/self-managed/setup/deploy/openshift/redhat-openshift/)
 
-To report **technical issues**, visit [Camunda 8 Self-Managed repository](https://github.com/camunda/camunda-self-managed).
+To report **technical issues**, visit [Camunda 8 Self-Managed repository](https://github.com/camunda/camunda-distributions).

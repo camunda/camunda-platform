@@ -94,10 +94,10 @@ jobs:
             -p "camunda-zeebe-${ZEEBE_GITREF}.tar.gz.sha1sum" \
             -p "camunda-zeebe-${ZEEBE_GITREF}.zip" \
             -p "camunda-zeebe-${ZEEBE_GITREF}.zip.sha1sum" \
-            -p "camunda-tasklist-${ZEEBE_GITREF}.zip" \
-            -p "camunda-tasklist-${ZEEBE_GITREF}.zip.sha1sum" \
-            -p "camunda-tasklist-${ZEEBE_GITREF}.tar.gz" \
-            -p "camunda-tasklist-${ZEEBE_GITREF}.tar.gz.sha1sum"
+            -p "camunda-tasklist-${TASKLIST_GITREF}.zip" \
+            -p "camunda-tasklist-${TASKLIST_GITREF}.zip.sha1sum" \
+            -p "camunda-tasklist-${TASKLIST_GITREF}.tar.gz" \
+            -p "camunda-tasklist-${TASKLIST_GITREF}.tar.gz.sha1sum"
 
       - name: Parse major version number
         id: get-major-version

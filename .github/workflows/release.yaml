@@ -34,7 +34,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
           installation_retrieval_mode: "repository"
-          installation_retrieval_payload: "camunda-cloud/identity"
+          installation_retrieval_payload: "camunda/identity"
 
       - name: Run release notes script
         working-directory: ./release-notes-fetcher
@@ -118,7 +118,7 @@ jobs:
         run: >
           gh release
           download "$GITHUB_REF_NAME"
-          -R camunda-cloud/identity
+          -R camunda/identity
           -p "camunda-identity-$GITHUB_REF_NAME.tar.gz"
           -p "camunda-identity-$GITHUB_REF_NAME.tar.gz.sha1sum"
           -p "camunda-identity-$GITHUB_REF_NAME.zip"

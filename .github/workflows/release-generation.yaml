@@ -39,7 +39,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
           installation_retrieval_mode: "repository"
-          installation_retrieval_payload: "camunda-cloud/identity"
+          installation_retrieval_payload: "camunda/identity"
 
       - name: Set Camunda release tag var
         run: |
@@ -137,7 +137,7 @@ jobs:
         working-directory: ./release-notes-fetcher/tmp
         run: |
           gh release download "${IDENTITY_GITREF}" \
-            -R camunda-cloud/identity \
+            -R camunda/identity \
             -p "camunda-identity-${IDENTITY_GITREF}.tar.gz" \
             -p "camunda-identity-${IDENTITY_GITREF}.tar.gz.sha1sum" \
             -p "camunda-identity-${IDENTITY_GITREF}.zip" \
